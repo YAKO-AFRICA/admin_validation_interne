@@ -155,9 +155,9 @@ else $effectue = 0;
 														for="click-<?= $i ?>"><i class="fa fa-mouse-pointer" id="click-<?= $i ?>">
 															Traiter</i></label>
 												<?php  } ?>
-												<label class="btn btn-secondary" style="background-color: #e74c3c ;"
+												<!-- <label class="btn btn-secondary" style="background-color: #e74c3c ;"
 													for="click-<?= $i ?>"><i class="fa fa-trash" id="click-<?= $i ?>"> Rejeter
-													</i></label>
+													</i></label> -->
 
 											</td>
 
@@ -292,7 +292,7 @@ else $effectue = 0;
 				var result = data.split('-');
 				var ind2 = result[1]
 
-				alert("dddddddddddddd" + ind2)
+				
 				const ind = extraireIndex(evt.target.id);
 				if (!ind) return;
 				const {

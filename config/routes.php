@@ -22,12 +22,12 @@ if ($request->action != null) {
                 $retourUsers = $fonction->_GetUsers($plus);
                 if ($retourUsers != NULL) {
 
-                    //print_r($retourUsers);
-
                     $_SESSION["id"] = $retourUsers->id;
                     $_SESSION["typeCompte"] = $retourUsers->typeCompte;
                     $_SESSION["utilisateur"] = $retourUsers->userConnect;
                     $_SESSION["profil"] = $retourUsers->profil;
+                    $_SESSION["cible"] = $retourUsers->cible;
+                    $_SESSION["codeagent"] = $retourUsers->codeagent;
                     $_SESSION["infos"] = $retourUsers->infos;
 
                     echo json_encode($retourUsers->infos);
@@ -329,8 +329,450 @@ if ($request->action != null) {
                         break;
                 }
             }
+            break;
+
+        case "listeMotifRejet":
 
 
+            $retourListeMotifRejet = $fonction->_GetListeMotifRejet();
+
+            if (!empty($retourListeMotifRejet)) {
+                // Réindexation du tableau si nécessaire
+                $retourListeMotifRejet = array_values($retourListeMotifRejet);
+
+                //print_r($retourListeMotifRejet);
+                // Encodage en JSON
+                echo json_encode($retourListeMotifRejet);
+            } else {
+                // En cas de données vides, renvoyer un tableau vide
+                echo json_encode([]);
+            }
+
+            break;
+
+        case "confirmerRejet":
+
+            $idprestation = GetParameter::FromArray($_REQUEST, 'idprestation');
+            $motif = GetParameter::FromArray($_REQUEST, 'motif');
+            $traiterpar = GetParameter::FromArray($_REQUEST, 'traiterpar');
+            $observation = GetParameter::FromArray($_REQUEST, 'observation');
+
+            // list($idmotif, $motif) = explode('|', $motif, 2);
+
+
+            $retour = $fonction->_getRetournePrestation(" WHERE id='" . trim($idprestation) . "'");
+            if ($retour != null) {
+                $prestation = new tbl_prestations($retour[0]);
+                $idmotif = "";
+
+                if ($motif != null) {
+                    $tablos = explode(',', $motif);
+
+
+                    foreach ($tablos as $tablo) {
+                        // Exemple de décomposition "id|libelle"
+                        list($codemotif, $libelle) = explode('|', $tablo);
+                        //echo "ID: $codemotif, Libellé: $libelle<br>";
+                        $idmotif = $codemotif;
+
+                        //SELECT * FROM `tbl_motifrejetbyprestats`
+                        $sqlQuery = "SELECT * FROM tbl_motifrejetbyprestats WHERE codemotif='" . $codemotif . "' and codeprestation='" . $prestation->code . "' LIMIT 1 ";
+                        $resultatMotif = $fonction->_getSelectDatabases($sqlQuery);
+
+                        if ($resultatMotif != NULL) {
+                            $sqlUpdatePrestation = "UPDATE tbl_motifrejetbyprestats SET updated_at= ? WHERE id = ?";
+                            $queryOptions = array(
+                                $maintenant,
+                                $resultatMotif[0]->id
+                            );
+
+                            $fonction->_Database->Update($sqlUpdatePrestation, $queryOptions);
+                        } else {
+                            $fonction->_InsertMotifRejetPrestation($prestation->code, $codemotif, $maintenant);
+                        }
+                    }
+
+                    $result = $fonction->_UpdatePrestationRejet($prestation, $traiterpar, $idmotif, $observation);
+                    if ($result != null) {
+                        $retour = $prestation->code;
+
+                        $numero = "225" . substr($prestation->cel, -10);
+                        //$numero = "2250758407197";
+                        $sms_envoi = new SMSService();
+                        $ref_sms = "YAAV-SMS-" . $prestation->id;
+                        $message = "Cher client(e), votre prestation n° " . $prestation->code . " a été rejetée." . PHP_EOL . " Consultez les détails du rejet sur votre espace personnel : urlr.me/9ZXGSr";
+                        if (strlen($message) > 160) $message = substr($message, 0, 160);
+
+                        $sms_envoi->sendOtpInfobip($numero, $message,  "YAKO AFRICA");
+
+                        $url_notification = "https://admin.prestations.yakoafricassur.com/notification-mail.php?action=confirmerRejet&idprestation=" . trim($idprestation);
+                        file_get_contents($url_notification);
+                    } else $retour = 0;
+                }
+
+                echo json_encode($retour);
+            } else echo json_encode("-1");
+
+            break;
+
+        case "validerprestation":
+
+            $idprestation = GetParameter::FromArray($_REQUEST, 'idprestation');
+            $code = GetParameter::FromArray($_REQUEST, 'code');
+            $traiterpar = GetParameter::FromArray($_REQUEST, 'traiterpar');
+            $idcontrat = GetParameter::FromArray($_REQUEST, 'idcontrat');
+            $typeOpe = GetParameter::FromArray($_REQUEST, 'typeOpe');
+            $ListeOpe = GetParameter::FromArray($_REQUEST, 'ListeOpe');
+            $delaiTrait = GetParameter::FromArray($_REQUEST, 'delaiTrait');
+
+
+            $retour = $fonction->_getRetournePrestation(" WHERE id='" . trim($idprestation) . "'");
+            if ($retour != null) {
+                $prestation = new tbl_prestations($retour[0]);
+
+                list($keyType, $typeOperation) = explode("-", $typeOpe);
+                $tablo = explode("-", $ListeOpe);
+                $count = count($tablo);
+                if ($count > 1) {
+                    $CodeTypeAvenant = $tablo[0];
+                    $DelaiTraitement = $tablo[1];
+                    $operation = $tablo[2];
+                }
+
+                //print_r($prestation);
+
+                $retourDetail = $fonction->_GetDetailsTraitementPrestation($prestation->id);
+                if ($retourDetail != null) {
+                    $result = $retourDetail;
+                } else {
+                    $result = $fonction->_InsertDetailPrestation($CodeTypeAvenant, $operation, $DelaiTraitement, $idcontrat, $prestation->id, $maintenant);
+                }
+
+                if ($result != null) {
+
+                    $numero = "225" . substr($prestation->cel, -10);
+                    //$numero = "2250758407197";
+                    $fonction->_UpdatePrestationValiderNSIL($prestation, $traiterpar);
+                    $resultat = array("result" => "SUCCESS", "total" => '0', "data" =>  "validation de la prestation");
+
+                    $sms_envoi = new SMSService();
+                    $ref_sms = "YAAV-SMS-" . $prestation->id;
+                    $message = "Cher client(e), votre prestation n° " . $prestation->code . " a été acceptée." . PHP_EOL . " Consultez son état sur votre espace personnel : urlr.me/9ZXGSr";
+                    if (strlen($message) > 160) $message = substr($message, 0, 160);
+
+                    $sms_envoi->sendOtpInfobip($numero, $message,  "YAKO AFRICA");
+
+                    $url_notification = "https://admin.prestations.yakoafricassur.com/notification-mail.php?action=validerprestation&idprestation=" . trim($idprestation);
+                    file_get_contents($url_notification);
+                } else {
+                    $resultat = array("result" => "ERROR", "total" => '0', "data" =>  "erreur lors de l'enregistrement du détail de la prestation");
+                }
+            } else {
+                $resultat = array("result" => "ERROR", "total" => '0', "data" =>  "erreur lors de la recherche de la prestation");
+            }
+
+            echo json_encode($resultat);
+
+            break;
+
+        case "exporterExcel":
+            $search = GetParameter::FromArray($_REQUEST, 'search');
+            $resultat = $fonction->_getRetournePrestation($search);
+            if ($resultat != null) {
+                echo json_encode($resultat);
+            } else {
+                echo json_encode("-1");
+            }
+
+            break;
+
+
+        case "afficherGestionnaire":
+
+            $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
+
+            $sqlQuery = "SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='$idVilleEff'  ORDER BY users.id ASC";
+            $resultat = $fonction->_getSelectDatabases($sqlQuery);
+            if ($resultat != NULL) {
+                echo json_encode($resultat);
+            } else {
+                echo json_encode("-1");
+            }
+            break;
+
+        case "ListCompteurGestionnaire":
+
+            $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
+            $daterdveff = GetParameter::FromArray($_REQUEST, 'daterdveff');
+            $idgestionnaire = GetParameter::FromArray($_REQUEST, 'idusers');
+
+            //$sqlQuery = "SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='$idVilleEff'  ORDER BY users.id ASC";
+
+            $params = "";
+            if ($idgestionnaire != null) {
+                $params = " AND tblrdv.gestionnaire='$idgestionnaire' ";
+            }
+
+            $sqlQuery = "SELECT  u.id,    u.email,     u.codeagent,  TRIM(CONCAT(u.nom, ' ', u.prenom)) AS gestionnairenom,  v.libelleVilleBureau AS villeEffect,  COUNT(r.idrdv) AS totalrdv
+                FROM     users u  INNER JOIN      tblvillebureau v ON v.idVilleBureau = u.ville 
+                INNER JOIN      tblrdv r ON r.gestionnaire = u.id   AND DATE(r.daterdveff) = '$daterdveff'  AND r.villeEffective = '$idVilleEff'  $params
+                WHERE     u.etat = '1'     AND v.idVilleBureau = '$idVilleEff' 
+                GROUP BY     u.id, u.email, u.codeagent, u.nom, u.prenom, v.libelleVilleBureau ORDER BY   totalrdv DESC ";
+
+            $resultat = $fonction->_getSelectDatabases($sqlQuery);
+            if ($resultat != NULL) {
+                echo json_encode($resultat);
+            } else {
+                echo json_encode("-1");
+            }
+            break;
+
+        case "ListCompteurGestionnaireByNISSA":
+
+            $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
+            $daterdveff = GetParameter::FromArray($_REQUEST, 'daterdveff');
+            $idgestionnaire = GetParameter::FromArray($_REQUEST, 'idusers');
+
+            $totalrdv = 0;
+            $sqlQuery = "SELECT 
+                            u.id,  u.email,  u.codeagent,  TRIM(CONCAT(u.nom, ' ', u.prenom)) AS gestionnairenom,
+                            v.libelleVilleBureau AS villeEffect,    COUNT(r.idrdv) AS totalrdv FROM users u
+                        INNER JOIN tblvillebureau v ON v.idVilleBureau = u.ville LEFT JOIN tblrdv r 
+                            ON r.gestionnaire = u.id     AND DATE(r.daterdveff) = '$daterdveff'      AND r.villeEffective = '$idVilleEff'
+                        WHERE     u.etat = '1'   AND v.idVilleBureau = '$idVilleEff' GROUP BY u.id, u.email, u.codeagent, u.nom, u.prenom, v.libelleVilleBureau ORDER BY u.id ASC ";
+            $resultat = $fonction->_getSelectDatabases($sqlQuery);
+            if ($resultat != NULL) {
+                echo json_encode($resultat);
+            } else {
+                echo json_encode("-1");
+            }
+            break;
+
+        case "getListeVillesTransformations":
+
+            $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
+
+            $params = "";
+            if ($idVilleEff != null) {
+                $params = " AND idVilleBureau != '$idVilleEff' ";
+            }
+
+            $sqlQuery = "SELECT * FROM laloyale_bdweb.tblvillebureau WHERE idVilleBureau NOT IN ('6','7')  $params ORDER BY idVilleBureau ";
+            $resultat = $fonction->_getSelectDatabases($sqlQuery);
+            if ($resultat != NULL) {
+                echo json_encode($resultat);
+            } else {
+                echo json_encode("-1");
+            }
+
+            break;
+
+        case "compteurGestionnaire":
+
+            $idrdv = GetParameter::FromArray($_REQUEST, 'id');
+            $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
+            $idgestionnaire = GetParameter::FromArray($_REQUEST, 'idusers');
+            $daterdveff = GetParameter::FromArray($_REQUEST, 'daterdveff');
+            $daterdv = GetParameter::FromArray($_REQUEST, 'daterdv');
+
+            $params = "";
+
+            if ($idgestionnaire != null) {
+                $params = " AND tblrdv.gestionnaire='$idgestionnaire' ";
+            }
+
+            $sqlQuery = "SELECT count(*) as totalrdv , tblrdv.gestionnaire , tblrdv.villeEffective , TRIM(CONCAT(users.nom ,' ', users.prenom)) as utilisateur FROM tblrdv INNER JOIN users ON tblrdv.gestionnaire = users.id WHERE date(tblrdv.daterdveff)='" . $daterdveff . "'  AND tblrdv.villeEffective='$idVilleEff' AND users.etat='1' $params GROUP BY gestionnaire,villeEffective ORDER BY totalrdv DESC";
+            $resultat = $fonction->_getSelectDatabases($sqlQuery);
+            if ($resultat != NULL) {
+                echo json_encode($resultat);
+            } else {
+                echo json_encode("-1");
+            }
+            break;
+
+        case "receptionJourRdv":
+            $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
+            $retourJourReception = $fonction->getRetourJourReception($idVilleEff);
+            $tablo = [];
+            if ($retourJourReception != null) {
+                foreach ($retourJourReception as $key => $value) {
+                    $tablo[$key] = $value->codejour;
+                }
+            }
+            echo json_encode($tablo);
+            break;
+
+        case "compteurRdv":
+
+            $daterdveff = GetParameter::FromArray($_REQUEST, 'daterdveff');
+            $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
+            $daterdv = GetParameter::FromArray($_REQUEST, 'daterdv');
+            $parms = GetParameter::FromArray($_REQUEST, 'parms');
+
+
+
+            $retourJourReception = $fonction->getRetourJourReception($idVilleEff);
+
+
+            // if ($parms == '1') {
+            //     $daterdv = $daterdveff;
+            //     list($annee, $mois, $jour) = explode('-', $daterdveff, 3);
+            //     $daterdv = trim($jour . '/' . $mois . '/' . $annee);/**/
+            // } else {
+            //     /**/
+            //     list($jour, $mois, $annee) = explode('/', $daterdv, 3);
+            //     $daterdv = date_create($annee . '-' . $mois . '-' . $jour);
+            //     $daterdv_affiche = date_format($daterdv, "d/m/Y");
+            //     $daterdv = date_format($daterdv, "Y-m-d");
+            // }
+            // list($jour, $mois, $annee) = explode('-', $daterdveff, 3);
+            // $daterdv = date_create($annee . '-' . $mois . '-' . $jour);
+            // $daterdv_affiche = date_format($daterdv, "d/m/Y");
+            // $daterdv = date_format($daterdv, "Y-m-d");
+            $daterdv = $daterdveff;
+
+
+            // // ✅ Récupération du jour de la semaine en français
+            // setlocale(LC_TIME, 'fr_FR.UTF-8', 'fra');
+            // $timestamp = strtotime($daterdv);
+
+
+            // // Affichage (pour test)
+            // echo "Date : $daterdv<br>";
+
+
+
+            $dateAfficher = date('d/m/Y', strtotime($daterdv));
+
+            $sqlQuery = "SELECT  COUNT(*) AS totalrdv, tblrdv.villeEffective,  tblrdv.daterdveff,  MIN(tblrdv.daterdv) AS daterdv_min FROM tblrdv WHERE tblrdv.villeEffective = '$idVilleEff'   AND DATE(tblrdv.daterdveff) = '" . $daterdv . "' GROUP BY tblrdv.villeEffective, tblrdv.daterdveff ORDER BY totalrdv DESC";
+            $resultat = $fonction->_getSelectDatabases($sqlQuery);
+            if ($resultat != NULL) {
+                $retour = array("daterdv" => $dateAfficher, "idVilleEff" => $idVilleEff, "total" => count($resultat), "data" => $resultat[0], "retourJourReception" => $retourJourReception);
+            } else {
+                $retour = array("daterdv" => $dateAfficher, "idVilleEff" => $idVilleEff, "total" => "0", "data" => null, "retourJourReception" => $retourJourReception);
+            }
+            echo json_encode($retour);
+
+            break;
+        case "transmettreRDV":
+
+            $idrdv = GetParameter::FromArray($_REQUEST, 'idrdv');
+            $idcontrat = GetParameter::FromArray($_REQUEST, 'idcontrat');
+            $gestionnaire = GetParameter::FromArray($_REQUEST, 'gestionnaire');
+            $objetRDV = GetParameter::FromArray($_REQUEST, 'objetRDV');
+            $dateRDVEff = GetParameter::FromArray($_REQUEST, 'daterdveff');
+
+
+            if ($idrdv != null  && $gestionnaire != null && $objetRDV != null && $dateRDVEff != null) {
+                //$resultat = $fonction->_transmettreRDV($idrdv, $idcontrat, $gestionnaire, $objetRDV, $dateRDV);
+                //echo json_encode($resultat);
+
+                $datetraitement = date('d/m/Y à H:i:s');
+                $etat = "2";
+                $traiterpar = $_SESSION["id"];
+                $reponse = "";
+
+                list($idVilleEff, $VilleEff) = explode(';', $objetRDV, 2);
+                list($idgestionnaire, $nomgestionnaire, $idvilleGestionnaire, $villesGestionnaire) = explode('|', $gestionnaire, 4);
+
+                $sqlSelect = "SELECT *  FROM tblrdv WHERE idrdv = '" . $idrdv . "' ";
+                $retour = $fonction->_getSelectDatabases($sqlSelect);
+                if ($retour != null) {
+                    $rdv = $retour[0];
+
+                    //$fonction->_InsertHistorisqueRdv($idrdv);
+                    $result = $fonction->_TransmettreRDVGestionnaire($etat, $reponse, $dateRDVEff, $datetraitement, $idgestionnaire, $idrdv, $idVilleEff, $traiterpar);
+
+
+                    $dateeffective = date('d/m/Y', strtotime($dateRDVEff));
+
+                    $sqlQuery2 = "SELECT id , email , codeagent , telephone,  TRIM(CONCAT(nom ,' ', prenom)) as gestionnairenom FROM users WHERE  id='" . $idgestionnaire . "' ";
+                    $result2 = $fonction->_getSelectDatabases($sqlQuery2);
+                    if ($result2 != NULL) {
+                        $retourGestionnaire = $result2[0];
+                        $telGestionnaire = $retourGestionnaire->telephone;
+                        $emailGestionnaire = $retourGestionnaire->email;
+                        $nomGestionnaire = $retourGestionnaire->gestionnairenom;
+
+                        $message = "Votre RDV est prévu le $dateeffective à $VilleEff. Un conseiller client vous recevra. Pour plus d'informations, Consultez votre espace client: urlr.me/9ZXGSr . ";
+                    } else {
+                        $message = "Suite à votre demande de rendez-vous, un conseiller client vous recevra le " . $dateeffective . " afin d'apporter une solution à votre préoccupation.";
+                        //$message = "Cher(e) client(e), suite à votre demande de rendez-vous, un conseiller vous recevra le " . $dateeffective . "." . PHP_EOL ."Pour toute information complémentaire, veuillez contacter le " . $telGestionnaire . ".";
+                    }
+
+                    $numero = "225" . substr($rdv->tel, -10);
+                    //$numero = "2250758407197";
+                    $ref_sms = "RDV-" . $idrdv;
+
+                    $sms_envoi = new SMSService();
+                    if (strlen($message) > 160) $message = substr($message, 0, 160);
+                    $retour = $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
+
+                    $sqlUpdatePrestation = "UPDATE tblrdv SET etatSms =? WHERE idrdv = ?";
+                    $queryOptions = array(
+                        '1',
+                        intval($idrdv)
+                    );
+                    $result = $fonction->_Database->Update($sqlUpdatePrestation, $queryOptions);
+                    if ($result != null) {
+                        $url_notification = "https://admin.prestations.yakoafricassur.com/notification-mail.php?action=transmettreRDV&idrdv=" . trim($idrdv);
+                        $retour = file_get_contents($url_notification);
+                    }
+                    echo json_encode($idrdv);
+                } else {
+                    echo json_encode("-1");
+                }
+            } else {
+                echo json_encode("-1");
+            }
+            break;
+        case "rejeterRDV":
+
+            $idrdv = GetParameter::FromArray($_REQUEST, 'idrdv');
+            $motif = GetParameter::FromArray($_REQUEST, 'motif');
+            $gestionnaire = GetParameter::FromArray($_REQUEST, 'traiterpar');
+            $observation = GetParameter::FromArray($_REQUEST, 'observation');
+
+            $sqlSelect = "SELECT tblrdv.* ,  TRIM(libelleVilleBureau) as villes  FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '" . $idrdv . "' ";
+            $retour = $fonction->_getSelectDatabases($sqlSelect);
+            if ($retour != null) {
+                $rdv = $retour[0];
+                $idmotif = "";
+                $etat = "0";
+
+                $sqlUpdatePrestation = "UPDATE tblrdv SET etat= ?, reponse=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? WHERE idrdv = ?";
+                $queryOptions = array(
+                    $etat,
+                    addslashes(htmlspecialchars(trim(ucfirst(strtolower($observation))))),
+                    $maintenant,
+                    $gestionnaire,
+                    $maintenant,
+                    '1',
+                    intval($idrdv)
+                );
+
+
+                $result = $fonction->_Database->Update($sqlUpdatePrestation, $queryOptions);
+                if ($result != null) {
+                    $retour = $idrdv;
+
+                    $numero = "225" . substr($rdv->tel, -10);
+                    $numero = "2250758407197";
+                    $ref_sms = "RDV-" . $idrdv;
+
+                    //$dateeffective = date('d/m/Y', strtotime($rdv->daterdv));
+                    $message = "Cher client(e), votre demande de rdv n° " . $rdv->codedmd . "  du " . $rdv->daterdv . " a été rejetée." . PHP_EOL . "Consultez les détails du rejet sur votre espace personnel : urlr.me/9ZXGSr";
+                    $sms_envoi = new SMSService();
+                    if (strlen($message) > 160) $message = substr($message, 0, 160);
+                    $retour = $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
+
+                    $url_notification = "https://admin.prestations.yakoafricassur.com/notification-mail.php?action=confirmerRejetRDV&idrdv=" . trim($idrdv);
+                    file_get_contents($url_notification);
+                } else $retour = 0;
+
+
+                echo json_encode($retour);
+            } else echo json_encode("-1");
 
             break;
         default:
@@ -362,7 +804,7 @@ function traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $obs
         $retour = $rdv->idrdv;
 
         $numero = "225" . substr($rdv->tel, -10);
-        $numero = "2250758407197";
+        //$numero = "2250758407197";
         $ref_sms = "RDV-" . $rdv->idrdv;
 
         //$dateeffective = date('d/m/Y', strtotime($rdv->daterdv));
@@ -444,7 +886,7 @@ function traitementApresReceptionRDV($rdv, $etat, $typeOperation, $obervation, $
         $retour = $rdv->idrdv;
 
         $numero = "225" . substr($rdv->tel, -10);
-        $numero = "2250758407197";
+        //$numero = "2250758407197";
         $ref_sms = "RDV-" . $rdv->idrdv;
 
         //$dateeffective = date('d/m/Y', strtotime($rdv->daterdv));

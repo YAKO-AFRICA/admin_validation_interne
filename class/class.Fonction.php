@@ -550,10 +550,14 @@ class Fonction
 		return $tab;
 	}
 
-	public function _getRetourneListePrestation($plus = NULL)
+	public function _getRetourneListePrestation($etape, $plus = NULL)
 	{
 
-		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . " WHERE etape ='1'  $plus ORDER BY id DESC  ");
+		if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+		else $cible = " AND prestationlibelle != 'Autre' ";
+		//print_r($_SESSION);
+
+		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . " WHERE etape ='$etape' $cible  $plus ORDER BY id DESC  ");
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
 			$this->Logger->Handler(__function__, 'echec recuperation de la liste des details ');
 			return NULL;
@@ -564,7 +568,10 @@ class Fonction
 	public function _getRetourneAllListePrestation($plus = NULL)
 	{
 
-		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . "  $plus ORDER BY id DESC  ");
+		if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+		else $cible = " AND prestationlibelle != 'Autre' ";
+
+		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . "   $plus  $cible ORDER BY id DESC  ");
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
 			$this->Logger->Handler(__function__, 'echec recuperation de la liste des details ');
 			return NULL;
@@ -631,7 +638,10 @@ class Fonction
 
 		$icone = "";
 
-		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . " WHERE etape in ('1','2','3') ORDER BY id DESC  ");
+		if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+		else $cible = " AND prestationlibelle != 'Autre' ";
+
+		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . " WHERE etape in ('1','2','3') $cible ORDER BY id DESC  ");
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
 			$this->Logger->Handler(__function__, 'echec recuperation de la liste des prestations');
 			return NULL;
@@ -1394,8 +1404,18 @@ class Fonction
 	{
 		$sqlSelect = "SELECT * FROM tbloptionrdv WHERE codelieu = '" . $user->ville . "' ORDER BY codejour ASC ";
 		$option_rdv = $this->_getSelectDatabases($sqlSelect);
-
 		return $option_rdv;
+	}
+
+	// Charge les options de rendez-vous pour chaque ville réseau
+	function getRetourJourReception($idVilleEff)
+	{
+		$sqlSelect = "SELECT * FROM tbloptionrdv WHERE codelieu = '" . $idVilleEff . "' ORDER BY codejour ASC ";
+		$resultat = $this->_getSelectDatabases($sqlSelect);
+		if ($resultat != NULL) {
+			return $resultat;
+		}
+		else return null;
 	}
 
 
@@ -1448,6 +1468,42 @@ class Fonction
 					</div>';
 		} else return false;
 	}
+
+	public function setFiltrePrestationTechnique()
+	{
+		$form = '
+		
+			<div class="card-body">
+				<form method="POST">
+					<div class="card-box p-2 m-2" style="border:2px solid #F9B233; border-radius:10px;">
+						<div class="row">
+							<div class="col-md-4 form-group">
+								<label style="color: #033f1f !important;">Date début</label>
+								<input type="date" class="form-control" name="DateDebutPrest" id="DateDebutPrest" /><br>
+							</div>
+
+							<div class="col-md-4 form-group">
+								<label style="color: #033f1f !important;">Date fin</label>
+								<input type="date" class="form-control" name="DateFinPrest" id="DateFinPrest" />
+							</div>
+
+							<div class="col-md-4 form-group">
+								<label style="color: #033f1f !important;">Type</label>
+								' . $this->getSelectTypePrestation() . '
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer" id="footer">
+						<button type="submit" name="filtreliste" id="filtreliste" class="btn btn-secondary" style="background: #F9B233; color: white">FILTRER</button>
+					</div>
+				</form>
+			</div>
+		';
+
+		return $form;
+	}
+
 
 	function _insertInfosBordereauRDV($id_villes, $villes, $id_gestionnaire, $gestionnaire, $periode_1, $periode_2, $reference, $etat = '1', $observation = null, $id_users = null, $auteur = null)
 	{
@@ -1629,7 +1685,7 @@ class Fonction
 
 	public function getRetourneTypePrestation($plus)
 	{
-		
+
 		$sqlQuery = "SELECT * FROM " . Config::TABLE_TYPE_PRESTATION . " WHERE etat = 'Actif'  $plus ORDER BY id ";
 
 		$tab = $this->_Database->Select($sqlQuery);
