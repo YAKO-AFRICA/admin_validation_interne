@@ -10,14 +10,20 @@ class Config
     const Version = "1.0.0";
 
     const LogDirectory = 'log/';
-    const DatabaseHost = 'localhost';
-    const DatabaseName = 'laloyale_bdweb';
-    const DatabaseUser = 'root';
-    const DatabasePass = '';
+    const DatabaseHost = '51.255.64.8';
+    const DatabaseName = 'laloyale_bdwebdev';
+    const DatabaseUser = 'laloyale_llvweb';
+    const DatabasePass = 'j2y1YgwwIQ6u';
+    // const LogDirectory = 'log/';
+    // const DatabaseHost = 'localhost';
+    // const DatabaseName = 'laloyale_bdweb';
+    // const DatabaseUser = 'root';
+    // const DatabasePass = '';
 
     // const DatabaseName = 'laloyale_bdweb';
     // const DatabaseUser = 'laloyale_llvweb';
     // const DatabasePass = 'j2y1YgwwIQ6u';
+
 
 
     const MessageServiceIndisponible = 'Desole, le service est momentanement indisponible. Veuillez reessayer plus tard.';

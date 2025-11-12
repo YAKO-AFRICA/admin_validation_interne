@@ -96,7 +96,13 @@ if (isset($_COOKIE["id"])) {
                             <div class="card-body radius-12 w-100 p-4"
                                 style="border:1px solid whitesmoke;background:whitesmoke;color:white">
                                 <div class="row" style="color:#033f1f!important">
-                                    <div class="col-md-6">
+                                    <div class="col-md-<?php
+                                        if ($prestation->prestationlibelle != "Autre") {
+                                    ?>6<?php
+                                        } else {
+                                        ?>12<?php
+                                        }
+                                    ?>">
                                         <p><span class="text-color">Date demande: </span><span class="text-infos"
                                                 style="font-size:18px; font-weight:bold;"><?= $prestation->lib_datedemande; ?></span></span>
                                         </p>
@@ -111,11 +117,24 @@ if (isset($_COOKIE["id"])) {
                                                 class="text-infos"
                                                 style="font-size:18px; font-weight:bold;"><?= $prestation->idcontrat; ?></span>
                                         </p>
+                                        <!--<p><span class="text-color">Commentaire :</span> </span><span class="text-infos"-->
+                                        <!--        style="font-size:18px; font-weight:bold;"><?= $prestation->msgClient; ?></span>-->
+                                        <!--</p>-->
+                                        
+                                        <?php
+                                        if ($prestation->prestationlibelle != "Autre") {
+                                        ?>
                                         <p><span class="text-color">Commentaire :</span> </span><span class="text-infos"
                                                 style="font-size:18px; font-weight:bold;"><?= $prestation->msgClient; ?></span>
                                         </p>
+                                        <?php
+                                        }
+                                        ?>
 
                                     </div>
+                                    <?php
+                                        if ($prestation->prestationlibelle != "Autre") {
+                                    ?>
                                     <div class="col-md-6">
                                         <p><span class="text-color">Montant souhaité :</span> <span class="text-infos"
                                                 style="font-size:18px; font-weight:bold;"><?= $prestation->montantSouhaite ?>
@@ -144,6 +163,9 @@ if (isset($_COOKIE["id"])) {
                                         }
                                         ?>
                                     </div>
+                                    <?php
+                                        }
+                                    ?>
                                 </div>
                             </div>
                         </div>

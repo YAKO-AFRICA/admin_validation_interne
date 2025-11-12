@@ -465,3 +465,40 @@
 2025-11-11 10:08:50|Database.Update|action =operationRDVReception: executing query[UPDATE tblrdv SET etat = ?, etatTraitement=?, libelleTraitement=?, reponse=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? WHERE idrdv = ?], boundParameters[["3","4","transformation","Fffffffffffff","2025-11-11 10:08:50","13","2025-11-11 10:08:50","1",2559]]
 2025-11-11 10:59:50|Database._Connect|action =connexion: trying to connect to the database
 2025-11-11 10:59:50|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'admin.rdv@test.com' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-12 10:41:32|Database._Connect|action =connexion: trying to connect to the database
+2025-11-12 10:41:33|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'demo.prestation' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-12 10:41:34|Database._Connect|action =intro: trying to connect to the database
+2025-11-12 10:48:27|Database._Connect|action =validerprestation: trying to connect to the database
+2025-11-12 10:49:31|Database._Connect|action =listeMotifRejet: trying to connect to the database
+2025-11-12 10:49:59|Database._Connect|action =validerprestation: trying to connect to the database
+2025-11-12 11:01:08|Database._Connect|action =connexion: trying to connect to the database
+2025-11-12 11:01:09|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'mama.fofana@laloyalevie.com' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-12 11:01:09|_GetUsers|action =connexion: echec recuperation de la liste des candidates
+2025-11-12 11:01:27|Database._Connect|action =connexion: trying to connect to the database
+2025-11-12 11:01:28|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'mama.fofana@laloyalevie.com' AND password='123456'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-12 11:01:28|_GetUsers|action =connexion: echec recuperation de la liste des candidates
+2025-11-12 11:01:50|Database._Connect|action =connexion: trying to connect to the database
+2025-11-12 11:01:50|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'mama.fofana@laloyalevie.com' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-12 11:03:42|Database._Connect|action =compteurRdv: trying to connect to the database
+2025-11-12 11:04:02|Database._Connect|action =ListCompteurGestionnaireByNISSA: trying to connect to the database
+2025-11-12 11:04:03|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-12 11:04:33|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-12 11:04:33|Database._Connect|action =ListCompteurGestionnaireByNISSA: trying to connect to the database
+2025-11-12 11:04:43|Database._Connect|action =compteurRdv: trying to connect to the database
+2025-11-12 11:06:56|Database._Connect|action =compteurRdv: trying to connect to the database
+2025-11-12 11:06:58|Database._Connect|action =ListCompteurGestionnaireByNISSA: trying to connect to the database
+2025-11-12 11:06:59|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-12 11:07:19|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-12 11:07:46|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-12 11:07:48|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-12 11:07:49|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-12 11:07:50|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-12 11:07:51|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-12 11:07:53|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-12 11:08:24|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-12 11:08:39|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-12 11:11:14|Database._Connect|action =connexion: trying to connect to the database
+2025-11-12 11:11:14|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'alain.the@laloyalevie.com' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-12 11:12:11|Database._Connect|action =connexion: trying to connect to the database
+2025-11-12 11:12:11|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'demo.prestation' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-12 11:12:12|Database._Connect|action =intro: trying to connect to the database
