@@ -18,11 +18,6 @@ if (isset($_REQUEST['filtreliste'])) {
 	if ($filtre != null) {
 		list($ii, $pars1) = explode('AND', $filtre, 2);
 		$plus = " WHERE $pars1 ";
-
-		/*print $filtre;
-		$plus = " WHERE tbl_prestations.etape ='3' $filtre ";
-		echo $sqlSelect =  "SELECT DISTINCT tbl_prestations.*, tbl_motif_rejet_prestations.libelle as libellemotif ,tbl_motif_rejet_prestations.keyword as keywordmotif   FROM tbl_prestations INNER JOIN tbl_motif_rejet_prestations ON tbl_prestations.codemotifrejet = tbl_motif_rejet_prestations.id $plus ORDER BY `tbl_prestations`.`created_at` DESC ";
-		exit;*/
 	}
 } else {
 	$filtre = '';
@@ -32,7 +27,8 @@ $plus = " WHERE tbl_prestations.etape ='3' $filtre ";
 //echo $sqlSelect =  "SELECT DISTINCT tbl_prestations.*, tbl_motifrejetprestations.libelle as libellemotif ,tbl_motifrejetprestations.code as codemotif   FROM tbl_prestations INNER JOIN tbl_motifrejetprestations ON tbl_prestations.codemotifrejet = tbl_motifrejetprestations.code $plus ORDER BY `tbl_prestations`.`created_at` DESC ";
 $sqlSelect =  "SELECT DISTINCT *  FROM tbl_prestations  $plus ORDER BY `tbl_prestations`.`created_at` DESC ";
 
-$liste_prestations = $fonction->_getSelectDatabases($sqlSelect);
+//$liste_prestations = $fonction->_getSelectDatabases($sqlSelect);
+$liste_prestations = $fonction->_getRetourneListePrestation("3", $filtre);
 if ($liste_prestations != null) $effectue = count($liste_prestations);
 else $effectue = 0;
 
@@ -76,62 +72,23 @@ else $effectue = 0;
 					</div>
 				</div>
 				<hr>
-				<i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
+				
 
-				<div class="card-box mb-10" id="myDIV">
+				<?php
+				if (isset($_SESSION['cible']) && $_SESSION['cible'] != "administratif") {
+				?>
 
-					<div class="card-body ">
-						<form method="POST">
-
-							<div class="card-box p-2 m-2" style="border:2px solid #F9B233; border-radius:10px; ">
-
-								<div class="row">
-									<div class="col-md-12">
-										<div class="row">
-											<div class="col-md-6 form-group ">
-												<h6 style="color: #033f1f !important;">Filtre date demande prestation
-												</h6>
-												<input type="date" class="form-control" name="DateDebutPrest"
-													id="DateDebutPrest" placeholder="Date Debut" /></br>
-												<input type="date" class="form-control" name="DateFinPrest"
-													id="DateFinPrest" placeholder="Date Fin" />
-											</div>
-											<div class="col-md-6 form-group ">
-												<h6 style="color: #033f1f !important;">Filtre date traitement prestation
-												</h6>
-												<input type="date" class="form-control" name="DateDebutTrait"
-													id="DateDebutTrait" placeholder="Date Debut" /></br>
-												<input type="date" class="form-control" name="DateFinTrait"
-													id="DateFinTrait" placeholder="Date Fin" />
-											</div>
-										</div>
-
-									</div>
-									<div class="col-md-12">
-										<div class="row">
-											<div class="col-md-12 form-group">
-												<h6 style="color: #033f1f !important;">Type prestation</h6>
-												<?php echo $fonction->getSelectTypePrestationFiltre(); ?>
-											</div>
-											<!--div class="col-md-12 form-group">
-												<h6 style="color: #033f1f !important;">Motif de rejet</h6>
-												<?php echo $fonction->getSelectTypeMtifRejetPrestation(); ?>
-											</div-->
-										</div>
-									</div>
-								</div>
-
-							</div>
-
-
-							<div class="modal-footer" id="footer">
-								<button type="submit" name="filtreliste" id="filtreliste" class="btn btn-secondary"
-									style="background: #F9B233; color: white">FILTRER</button>
-							</div>
-						</form>
+					<i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
+					<div class="card-box mb-10" id="myDIV">
+						<?php echo $fonction->setFiltrePrestationTechnique(); ?>
 					</div>
-				</div>
-				<hr>
+					<hr>
+				<?php
+				}else {?>
+					<div class="card-box mb-10" id="myDIV"></div>
+					<?php 
+				}
+				?>
 
 
 				<div class="row">

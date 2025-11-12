@@ -191,7 +191,7 @@ $effectue = is_array($liste_prestations) ? count($liste_prestations) : 0;
 												<td style="font-weight:bold; color:#F9B233;"><?= htmlspecialchars($rdv->villes) ?>
 												</td>
 												<td style="font-weight:bold; color:#F9B233;">
-													<?= htmlspecialchars($rdv->nomgestionnaire) ?></td>
+													<?= htmlspecialchars($rdv->nomgestionnaire ?? "Non renseigné") ?></td>
 												<td><span
 														class="<?= $retourEtat["color_statut"] ?>"><?= $retourEtat["libelle"] ?></span>
 												</td>

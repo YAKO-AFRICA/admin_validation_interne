@@ -25,7 +25,8 @@ if (isset($_REQUEST['filtreliste'])) {
 
 
 $plus = " WHERE etape ='2'  $filtre ";
-$liste_prestations = $fonction->_getRetournePrestation($plus);
+//$liste_prestations = $fonction->_getRetournePrestation($plus);
+$liste_prestations = $fonction->_getRetourneListePrestation("2", $filtre);
 if ($liste_prestations != null) $effectue = count($liste_prestations);
 else $effectue = 0;
 
@@ -65,68 +66,24 @@ else $effectue = 0;
 						</div>
 					</div>
 				</div>
-				<hr>
-				<i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
 
-				<div class="card-box mb-10" id="myDIV">
+				<?php
+				if (isset($_SESSION['cible']) && $_SESSION['cible'] != "administratif") {
+				?>
 
-					<div class="card-body ">
-						<form method="POST">
-
-							<div class="card-box p-2 m-2" style="border:2px solid #F9B233; border-radius:10px; ">
-
-								<div class="row">
-									<div class="col-md-6">
-										<div class="row">
-											<div class="col-md-6 form-group ">
-												<h6 style="color: #033f1f !important;">Filtre date demande prestation
-												</h6>
-												<input type="date" class="form-control" name="DateDebutPrest"
-													id="DateDebutPrest" placeholder="Date Debut" /></br>
-												<input type="date" class="form-control" name="DateFinPrest"
-													id="DateFinPrest" placeholder="Date Fin" />
-											</div>
-
-											<div class="col-md-6 form-group ">
-												<h6 style="color: #033f1f !important;">Filtre date traitement prestation
-												</h6>
-												<input type="date" class="form-control" name="DateDebutTrait"
-													id="DateDebutTrait" placeholder="Date Debut" /></br>
-												<input type="date" class="form-control" name="DateFinTrait"
-													id="DateFinTrait" placeholder="Date Fin" />
-											</div>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="row">
-											<div class="col-md-12 form-group">
-												<h6 style="color: #033f1f !important;">Type prestation</h6>
-												<?php echo $fonction->getSelectTypePrestationFiltre(); ?>
-											</div>
-											<div class="col-md-12 form-group">
-												<h6 style="color: #033f1f !important;">Migration NSIL</h6>
-												<select name="migration" id="migration" class="form-control"
-													data-msg="Objet" data-rule="required">
-													<option value="">...</option>
-													<option value="1">Oui</option>
-													<option value="0">En attente</option>
-												</select>
-											</div>
-										</div>
-									</div>
-								</div>
-
-							</div>
-
-
-							<div class="modal-footer" id="footer">
-								<button type="submit" name="filtreliste" id="filtreliste" class="btn btn-secondary"
-									style="background: #F9B233; color: white">FILTRER</button>
-							</div>
-						</form>
+					<i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
+					<div class="card-box mb-10" id="myDIV">
+						<?php echo $fonction->setFiltrePrestationTechnique(); ?>
 					</div>
-				</div>
-				<hr>
+					<hr>
+				<?php
+				}else {?>
+					<div class="card-box mb-10" id="myDIV"></div>
+					<?php 
+				}
+				?>
+
+
 				<div class="row">
 					<?php
 					echo $fonction->getParametreGlobalPrestations();
@@ -164,7 +121,7 @@ else $effectue = 0;
 									<th>Montant souhaite</th>
 									<th>Etat </th>
 									<th>Détail<br>traitement</th>
-									
+
 									<th>Migration NSIL</th>
 									<th class="datatable-nosort"></th>
 
@@ -187,10 +144,11 @@ else $effectue = 0;
 											<td>
 												<?php echo $prestations->created_at; ?>
 											</td>
-											
+
 											<td id="idcontrat-<?= $i ?>"><?php echo $prestations->idcontrat; ?></td>
-											<td class="text-wrap" ><?php echo $prestations->souscripteur2; ?><br>
-												<small>téléphone : <?php echo $prestations->cel; ?></small> </td>
+											<td class="text-wrap"><?php echo $prestations->souscripteur2; ?><br>
+												<small>téléphone : <?php echo $prestations->cel; ?></small>
+											</td>
 											<!-- <td><?php echo $prestations->cel; ?></td> -->
 											<td><?php echo $prestations->typeprestation; ?></td>
 											<td><?php echo $prestations->montantSouhaite; ?> FCFA</td>

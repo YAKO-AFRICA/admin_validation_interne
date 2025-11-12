@@ -18,7 +18,7 @@ if (isset($_REQUEST['filtreliste'])) {
 }
 
 
-$liste_prestations = $fonction->_getRetourneListePrestation($filtre);
+$liste_prestations = $fonction->_getRetourneListePrestation("1", $filtre);
 if ($liste_prestations != null) $effectue = count($liste_prestations);
 else $effectue = 0;
 
@@ -58,41 +58,22 @@ else $effectue = 0;
 					</div>
 				</div>
 				<hr>
-				<i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
+				<?php
+				if (isset($_SESSION['cible']) && $_SESSION['cible'] != "administratif") {
+				?>
 
-				<div class="card-box mb-10" id="myDIV">
-
-					<div class="card-body ">
-						<form method="POST">
-
-							<div class="card-box p-2 m-2" style="border:2px solid #F9B233; border-radius:10px; ">
-								<div class="row">
-									<div class="col-md-4 form-group ">
-										<label style="color: #033f1f !important;">Date debut</label>
-										<input type="date" class="form-control" name="DateDebutPrest"
-											id="DateDebutPrest" /></br>
-
-									</div>
-									<div class="col-md-4 form-group">
-										<label style="color: #033f1f !important;">Date fin</label>
-										<input type="date" class="form-control" name="DateFinPrest" id="DateFinPrest" />
-									</div>
-									<div class="col-md-4 form-group">
-										<label style="color: #033f1f !important;">Type</label>
-										<?php echo $fonction->getSelectTypePrestation(); ?>
-									</div>
-								</div>
-							</div>
-
-
-							<div class="modal-footer" id="footer">
-								<button type="submit" name="filtreliste" id="filtreliste" class="btn btn-secondary"
-									style="background: #F9B233; color: white">FILTRER</button>
-							</div>
-						</form>
+					<i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
+					<div class="card-box mb-10" id="myDIV">
+						<?php echo $fonction->setFiltrePrestationTechnique(); ?>
 					</div>
-				</div>
-				<hr>
+					<hr>
+				<?php
+				}else {?>
+					<div class="card-box mb-10" id="myDIV"></div>
+					<?php 
+				}
+				?>
+				
 				<div class="row">
 					<?php
 					echo $fonction->getParametreGlobalPrestations();

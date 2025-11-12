@@ -95,12 +95,12 @@ if (isset($_COOKIE["id"])) {
                                 style="border:1px solid whitesmoke;background:whitesmoke;color:white">
                                 <div class="row" style="color:#033f1f!important">
                                     <div class="col-md-<?php
-                                        if ($prestation->prestationlibelle != "Autre") {
-                                    ?>6<?php
-                                        } else {
-                                        ?>12<?php
-                                        }
-                                    ?>">
+                                                        if ($prestation->prestationlibelle != "Autre") {
+                                                        ?>6<?php
+                                                        } else {
+                                                            ?>12<?php
+                                                            }
+                                                                ?>">
                                         <p><span class="text-color">Date demande: </span><span class="text-infos"
                                                 style="font-size:18px; font-weight:bold;"><?= $prestation->lib_datedemande; ?></span></span>
                                         </p>
@@ -118,47 +118,47 @@ if (isset($_COOKIE["id"])) {
                                         <?php
                                         if ($prestation->prestationlibelle != "Autre") {
                                         ?>
-                                        <p><span class="text-color">Commentaire :</span> </span><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->msgClient; ?></span>
-                                        </p>
+                                            <p><span class="text-color">Commentaire :</span> </span><span class="text-infos"
+                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->msgClient; ?></span>
+                                            </p>
                                         <?php
                                         }
                                         ?>
 
                                     </div>
                                     <?php
-                                        if ($prestation->prestationlibelle != "Autre") {
+                                    if ($prestation->prestationlibelle != "Autre") {
                                     ?>
-                                    <div class="col-md-6">
-                                        <p><span class="text-color">Montant souhaité :</span> <span class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->montantSouhaite ?>
-                                                FCFA</span></p>
-                                        <p><span class="text-color">Moyen de paiement :</span> <span class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->lib_moyenPaiement; ?>
-                                        </p>
-                                        <?php
-                                        if ($prestation->moyenPaiement == "Virement_Bancaire") {
-                                        ?>
-                                            <p><span class="text-color">IBAN du compte :</span> <span class="text-infos"
-                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->IBAN; ?>
+                                        <div class="col-md-6">
+                                            <p><span class="text-color">Montant souhaité :</span> <span class="text-infos"
+                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->montantSouhaite ?>
+                                                    FCFA</span></p>
+                                            <p><span class="text-color">Moyen de paiement :</span> <span class="text-infos"
+                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->lib_moyenPaiement; ?>
                                             </p>
+                                            <?php
+                                            if ($prestation->moyenPaiement == "Virement_Bancaire") {
+                                            ?>
+                                                <p><span class="text-color">IBAN du compte :</span> <span class="text-infos"
+                                                        style="font-size:18px; font-weight:bold;"><?= $prestation->IBAN; ?>
+                                                </p>
 
-                                        <?php
-                                        } else {
-                                        ?>
-                                            <p><span class="text-color">Operateur :</span> <span class="text-infos"
-                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->lib_Operateur; ?>
-                                            </p>
-                                            <p><span class="text-color">Telephone de Paiement :</span> <span
-                                                    class="text-infos"
-                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->telPaiement; ?>
-                                            </p>
-                                        <?php
-                                        }
-                                        ?>
-                                    </div>
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <p><span class="text-color">Operateur :</span> <span class="text-infos"
+                                                        style="font-size:18px; font-weight:bold;"><?= $prestation->lib_Operateur; ?>
+                                                </p>
+                                                <p><span class="text-color">Telephone de Paiement :</span> <span
+                                                        class="text-infos"
+                                                        style="font-size:18px; font-weight:bold;"><?= $prestation->telPaiement; ?>
+                                                </p>
+                                            <?php
+                                            }
+                                            ?>
+                                        </div>
                                     <?php
-                                        }
+                                    }
                                     ?>
                                 </div>
                             </div>
@@ -500,10 +500,12 @@ if (isset($_COOKIE["id"])) {
         let idcontrat = "<?php echo $prestation->idcontrat; ?>";
         var tablo_documents = <?= json_encode($tablo_doc_attendu) ?>;
 
+
         //alert(etape + " " + idcontrat);
         //console.log(tablo_documents);
 
         $(document).ready(function() {
+
 
             if (idcontrat != "") {
                 remplirModalEtatComtrat(idcontrat)
@@ -549,6 +551,13 @@ if (isset($_COOKIE["id"])) {
                             $("#color_button").text("green");
                             $("#nom_button").text("Valider la prestation");
                             getMenuValider();
+                            
+                            chargerListeOperations();
+
+                            // --- Recharger la liste dès que l’utilisateur modifie le type d’opération ---
+                            $("#afficheuse").on("input change", "#typeOpe", function() {
+                                chargerListeOperations();
+                            });
 
                         } else {
                             $("#afficheuse").empty();
@@ -572,8 +581,54 @@ if (isset($_COOKIE["id"])) {
                     // $('#envoyer').attr('disabled', 'disabled');
                 }
             });
+
+
         })
 
+
+        // $(document).ready(function() {
+
+        //     // Ton code ici
+        //     $("#afficheuse").on("input change", "#typeOpe", function(evt) {
+        //         const val = evt.target.value.split("-");
+        //         const key = val[0];
+        //         const lib = val[1];
+
+        //         // Affiche le libellé dans #opeType
+        //         $("#opeType").text(lib);
+
+        //         // Message temporaire pendant le chargement
+        //         $("#ListeOpe").html(`<option value="">Chargement des opérations...</option>`);
+
+        //         $.ajax({
+        //             url: "https://api.laloyalevie.com/enov/op-type-operation-list",
+        //             method: "POST",
+        //             dataType: "json",
+        //             data: {
+        //                 type: key
+        //             },
+        //             success: function(response) {
+        //                 let options = `<option value="">Choisir une opération ${lib}</option>`;
+
+        //                 $.each(response, function(i, value) {
+        //                     const code = value.CodeTypeAvenant || "";
+        //                     const delai = value.DelaiTraitement || "";
+        //                     const libelle = value.MonLibelle || "";
+
+        //                     const valueOpe = `${code}-${delai} jours-${libelle}`;
+        //                     options += `<option value="${valueOpe}">${libelle} (${delai} jours)</option>`;
+        //                 });
+
+        //                 $("#ListeOpe").html(options);
+        //             },
+        //             error: function(xhr, statut, err) {
+        //                 console.error("Erreur AJAX :", err);
+        //                 $("#ListeOpe").html(`<option value="">Erreur de chargement des opérations</option>`);
+        //             }
+        //         });
+        //     });
+
+        // });
 
         $(".bx-show").click(function() {
             let path_document = $(this).data("path-doc");
@@ -860,39 +915,74 @@ if (isset($_COOKIE["id"])) {
 
 
 
-        $("#afficheuse").on("change", "#typeOpe", function(evt) {
-            var val = evt.target.value.split('-');
-            var key = val[0]
-            var lib = val[1]
-            //console.log(val)
+        // $("#afficheuse").on("change", "#typeOpe", function(evt) {
+        //     var val = evt.target.value.split('-');
+        //     var key = val[0]
+        //     var lib = val[1]
+        //     //console.log(val)
 
-            $("#opeType").val(lib)
+        //     $("#opeType").val(lib)
+
+        //     $.ajax({
+        //         url: "https://api.laloyalevie.com/enov/op-type-operation-list",
+        //         data: {
+        //             type: key
+        //         },
+        //         dataType: "json",
+        //         method: "post",
+        //         success: function(response, statut) {
+        //             //console.log(response)
+        //             var apt = "<option value=''> Choix de l\'operation " + lib + "</option>"
+
+        //             $.each(response, function(key, value) {
+        //                 let valueOpe = value.CodeTypeAvenant + '-' + value
+        //                     .DelaiTraitement + ' jours' + '-' + value.MonLibelle
+        //                 apt += '<option  value="' + valueOpe + '">' + value.MonLibelle +
+        //                     '-(' + value.DelaiTraitement + ' jours)' + '</option>'
+        //             })
+        //             $("#ListeOpe").html(apt)
+        //         },
+        //         error: function(response, statut, err) {
+        //             console.log(err)
+        //             console.log(response)
+        //         }
+        //     })
+        // })
+
+        function chargerListeOperations() {
+            const val = $("#typeOpe").val().split("-");
+            const key = val[0];
+            const lib = val[1] || "";
+
+            if (!key) return;
+
+            $("#opeType").text(lib);
+            $("#ListeOpe").html(`<option value="">Chargement des opérations...</option>`);
 
             $.ajax({
                 url: "https://api.laloyalevie.com/enov/op-type-operation-list",
+                method: "POST",
+                dataType: "json",
                 data: {
                     type: key
                 },
-                dataType: "json",
-                method: "post",
-                success: function(response, statut) {
-                    //console.log(response)
-                    var apt = "<option value=''> Choix de l\'operation " + lib + "</option>"
-
-                    $.each(response, function(key, value) {
-                        let valueOpe = value.CodeTypeAvenant + '-' + value
-                            .DelaiTraitement + ' jours' + '-' + value.MonLibelle
-                        apt += '<option  value="' + valueOpe + '">' + value.MonLibelle +
-                            '-(' + value.DelaiTraitement + ' jours)' + '</option>'
-                    })
-                    $("#ListeOpe").html(apt)
+                success: function(response) {
+                    let options = `<option value="">Choisir une opération ${lib}</option>`;
+                    $.each(response, function(i, value) {
+                        const code = value.CodeTypeAvenant || "";
+                        const delai = value.DelaiTraitement || "";
+                        const libelle = value.MonLibelle || "";
+                        const valueOpe = `${code}-${delai} jours-${libelle}`;
+                        options += `<option value="${valueOpe}">${libelle} (${delai} jours)</option>`;
+                    });
+                    $("#ListeOpe").html(options);
                 },
-                error: function(response, statut, err) {
-                    console.log(err)
-                    console.log(response)
+                error: function(xhr, statut, err) {
+                    console.error("Erreur AJAX :", err);
+                    $("#ListeOpe").html(`<option value="">Erreur de chargement</option>`);
                 }
-            })
-        })
+            });
+        }
 
 
         $("#afficheuse").on("change", "#ListeOpe", function(evt) {
@@ -921,53 +1011,113 @@ if (isset($_COOKIE["id"])) {
             window.history.back();
         }
 
+        // function getMenuValider() {
+
+        //     let valueType = ""
+        //     let cible = "<?php echo $_SESSION['cible']; ?>";
+        //     if (cible == "administratif") {
+        //         valueType = "AVT-Administratif"
+        //     } else {
+        //         valueType = "TECH-Technique"
+        //     }
+
+
+
+        //     let notif = `
+        //             <!-- Le reste de ton contenu ici -->
+        //             <h4 class="text-center p-2" style="color:#033f1f;  font-weight:bold; "> Verification pour migration NSIL </h4>
+        //                                         <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
+
+        //                     <div class="row">
+        //                         <div class="form-group col-md-2 col-sm-12">
+        //                             <label for="tel" class="col-form-label">id contrat :</label>
+        //                             <input type="text" class="form-control" id="actionType" name="actionType" value="valider" hidden>
+        //                             <input type="text" class="form-control" id="idcontrat" name="idcontrat" value="<?php echo $prestation->idcontrat; ?>" disabled>
+        //                             </div>
+        //                         <div class="form-group col-md-3 col-sm-12">
+        //                             <label for="validationTextarea" class="form-label" style="font-size:16px; font-weight:bold;">Type d\'opération (<span style="color:red;">*</span>)</label>
+        //                                 <select name="typeOpe" id="typeOpe" class="form-control " required>
+        //                                     <option value="">...</option>
+        //                                     <option value="TECH-Technique" ${valueType === "TECH-Technique" ? "selected" : "disabled"} >Technique</option>
+        //                                     <option value="AVT-Administratif" ${valueType === "AVT-Administratif" ? "selected" : "disabled"}>Administratif</option>
+        //                                 </select>
+        //                         </div>
+        //                         <div class="form-group col-md-5 col-sm-12">
+        //                             <label for="validationTextarea" class="form-label" style="font-size:16px; font-weight:bold;" >Liste d\'opération <span id="opeType"></span> (<span style="color:red;">*</span>)</label>
+        //                                 <select name="ListeOpe" id="ListeOpe" class="form-control " required>
+
+        //                                 </select>
+        //                         </div>
+        //                         <div class="form-group col-md-2 col-sm-12">
+        //                             <label for="tel" class="col-form-label">Délai de traitement :</label>
+        //                             <input type="text" class="form-control" id="delaiTrait" name="delaiTrait" value="" disabled>
+        //                         </div>
+        //                     </div>`;
+
+        //     let bouton_valider = `<button type="submit" name="valider" id="valider" class="btn btn-success" style="background:#033f1f;font-weight:bold; color:white"> Accepter la prestation</button> 
+        //         <div id="spinner" style="display: none; margin-top: 10px;">
+        //           <div class="spinner-border" style="color: #076633;" role="status">
+        //             <span class="visually-hidden"></span>
+        //           </div>
+        //         </div>
+        //         `
+
+
+        //     $("#color_button").text(`#033f1f`)
+        //     $("#nom_button").text(`Enregistrer le traitement`)
+        //     $("#afficheuse").html(notif)
+        //     $("#optionTraitement").html(bouton_valider)
+        // }
+
         function getMenuValider() {
+            const cible = "<?php echo $_SESSION['cible']; ?>";
+            const idContrat = "<?php echo isset($prestation->idcontrat) ? $prestation->idcontrat : ''; ?>";
+
+            let valueType = (cible === "administratif") ? "AVT-Administratif" : "TECH-Technique";
 
             let notif = `
-    
-                    <!-- Le reste de ton contenu ici -->
-                    <h4 class="text-center p-2" style="color:#033f1f;  font-weight:bold; "> Verification pour migration NSIL </h4>
-                                                <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
-                                
-                            <div class="row">
-                                <div class="form-group col-md-2 col-sm-12">
-                                    <label for="tel" class="col-form-label">id contrat :</label>
-                                    <input type="text" class="form-control" id="actionType" name="actionType" value="valider" hidden>
-                                    <input type="text" class="form-control" id="idcontrat" name="idcontrat" value="<?php echo $prestation->idcontrat; ?>" disabled>
-                                    </div>
-                                <div class="form-group col-md-3 col-sm-12">
-                                    <label for="validationTextarea" class="form-label" style="font-size:16px; font-weight:bold;">Type d\'opération (<span style="color:red;">*</span>)</label>
-                                        <select name="typeOpe" id="typeOpe" class="form-control " required>
-                                            <option value="">...</option>
-                                            <option value="TECH-Technique">Technique</option>
-                                            <option value="AVT-Administratif">Administratif</option>
-                                        </select>
-                                </div>
-                                <div class="form-group col-md-5 col-sm-12">
-                                    <label for="validationTextarea" class="form-label" style="font-size:16px; font-weight:bold;" >Liste d\'opération <span id="opeType"></span> (<span style="color:red;">*</span>)</label>
-                                        <select name="ListeOpe" id="ListeOpe" class="form-control " required>
-                                            
-                                        </select>
-                                </div>
-                                <div class="form-group col-md-2 col-sm-12">
-                                    <label for="tel" class="col-form-label">Délai de traitement :</label>
-                                    <input type="text" class="form-control" id="delaiTrait" name="delaiTrait" value="" disabled>
-                                </div>
-                            </div>`;
+            <h4 class="text-center p-2" style="color:#033f1f; font-weight:bold;">Vérification pour migration NSIL</h4>
+            <div style="border-top: 4px solid #033f1f;width:100%;text-align:center;"></div>
 
-            let bouton_valider = `<button type="submit" name="valider" id="valider" class="btn btn-success" style="background:#033f1f;font-weight:bold; color:white"> Accepter la prestation</button> 
-                <div id="spinner" style="display: none; margin-top: 10px;">
-                  <div class="spinner-border" style="color: #076633;" role="status">
-                    <span class="visually-hidden"></span>
-                  </div>
+            <div class="row">
+                <div class="form-group col-md-2 col-sm-12">
+                    <label for="tel" class="col-form-label">ID contrat :</label>
+                    <input type="hidden" id="actionType" name="actionType" value="valider">
+                    <input type="text" class="form-control" id="idcontrat" name="idcontrat" value="${idContrat}" disabled>
                 </div>
-                `
 
+                <div class="form-group col-md-3 col-sm-12">
+                    <label class="form-label" style="font-size:16px; font-weight:bold;">Type d’opération (<span style="color:red;">*</span>)</label>
+                    <select name="typeOpe" id="typeOpe" class="form-control" required>
+                        <option value="" disabled>...</option>
+                        <option value="TECH-Technique" ${valueType === "TECH-Technique" ? "selected" : "disabled"}>Technique</option>
+                        <option value="AVT-Administratif" ${valueType === "AVT-Administratif" ? "selected" : "disabled"}>Administratif</option>
+                    </select>
+                </div>
 
-            $("#color_button").text(`#033f1f`)
-            $("#nom_button").text(`Enregistrer le traitement`)
-            $("#afficheuse").html(notif)
-            $("#optionTraitement").html(bouton_valider)
+                <div class="form-group col-md-5 col-sm-12">
+                    <label class="form-label" style="font-size:16px; font-weight:bold;">Liste d’opérations <span id="opeType"></span> (<span style="color:red;">*</span>)</label>
+                    <select name="ListeOpe" id="ListeOpe" class="form-control" required></select>
+                </div>
+
+                <div class="form-group col-md-2 col-sm-12">
+                    <label class="col-form-label">Délai de traitement :</label>
+                    <input type="text" class="form-control" id="delaiTrait" name="delaiTrait" value="" disabled>
+                </div>
+            </div>`;
+
+            let bouton_valider = `
+            <button type="submit" name="valider" id="valider" class="btn btn-success" style="background:#033f1f;font-weight:bold; color:white">
+                Accepter la prestation
+            </button>
+            <div id="spinner" style="display:none; margin-top:10px;">
+                <div class="spinner-border" style="color:#076633;" role="status"></div>
+            </div>`;
+
+            $("#color_button").text("#033f1f");
+            $("#nom_button").text("Enregistrer le traitement");
+            $("#afficheuse").html(notif);
+            $("#optionTraitement").html(bouton_valider);
         }
 
         function getMenuRejeter() {
@@ -1187,7 +1337,11 @@ if (isset($_COOKIE["id"])) {
 
             return parts.join(dec_point);
         }
+
     </script>
+
+
+
 
 </body>
 
