@@ -38,6 +38,9 @@ else $effectue = 0;
 
 ?>
 
+
+
+
 <!DOCTYPE html>
 <html>
 
