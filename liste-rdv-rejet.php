@@ -17,9 +17,10 @@ if (isset($_REQUEST['filtreliste'])) {
 	$filtre = '';
 }
 
-$sqlSelect = "SELECT  tblrdv.*,   CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, users.telephone as telgest , users.adresse as localisation , users.email as mailgest,     TRIM(tblvillebureau.libelleVilleBureau) AS villes   FROM     tblrdv LEFT JOIN      users ON tblrdv.gestionnaire = users.id LEFT JOIN   tblvillebureau ON tblrdv.`idTblBureau` = tblvillebureau.idVilleBureau WHERE      tblrdv.etat IN ('0', '-1') ORDER BY  RAND() DESC ";
+// $sqlSelect = "SELECT  tblrdv.*,   CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, users.telephone as telgest , users.adresse as localisation , users.email as mailgest,     TRIM(tblvillebureau.libelleVilleBureau) AS villes   FROM     tblrdv LEFT JOIN      users ON tblrdv.gestionnaire = users.id LEFT JOIN   tblvillebureau ON tblrdv.`idTblBureau` = tblvillebureau.idVilleBureau WHERE  tblrdv.etat IN ('0', '-1') ORDER BY  RAND() DESC ";
+// $liste_rdvs = $fonction->_getSelectDatabases($sqlSelect);
 
-$liste_rdvs = $fonction->_getSelectDatabases($sqlSelect);
+$liste_rdvs = $fonction->getSelectRDVAfficher("0");
 if ($liste_rdvs != null) $effectue = count($liste_rdvs);
 else $effectue = 0;
 
@@ -73,11 +74,11 @@ else $effectue = 0;
 					</div>
 
 					<div class="pb-20">
-						<table class="table hover  data-table-export nowrap">
+						<table class="table hover data-table-export nowrap" id="liste-rdv-rejet" style="width:100%; font-size:10px;">
 							<thead>
 								<tr>
 									<th class="table-plus datatable-nosort">#Ref</th>
-									<th hidden>Id</th>
+									<th>Id</th>
 									<th>Date</th>
 									<th>Nom & prénom(s)</th>
 									<th>Id contrat</th>
@@ -98,7 +99,7 @@ else $effectue = 0;
 										$rdv = $liste_rdvs[$i];
 										$idTblBureau = $rdv->idTblBureau;
 										if ($rdv->villes != null) $villes = $rdv->villes;
-										else $villes = "NAN";
+										else $villes = "Non mentionné";
 										if (isset($rdv->etat) && $rdv->etat !== null && in_array($rdv->etat, array_keys(Config::tablo_statut_rdv)))  $etat = $rdv->etat;
 										else $etat = 1;
 										$retourEtat = Config::tablo_statut_rdv[$etat];
@@ -106,7 +107,7 @@ else $effectue = 0;
 								?>
 										<tr>
 											<td class="table-plus" id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
-											<td id="id-<?= $i ?>" hidden><?php echo $rdv->idrdv; ?></td>
+											<td id="id-<?= $i ?>"><?php echo $rdv->idrdv; ?></td>
 											<td><?php echo $rdv->updatedAt; ?></td>
 											<td class="text-wrap"><?php echo $rdv->nomclient; ?>
 												<p class="mb-0 text-dark" style="font-size: 0.7em;">
@@ -117,21 +118,15 @@ else $effectue = 0;
 											<td class="text-wrap" id="idcontrat-<?= $i ?>"><?php echo $rdv->police; ?></td>
 											<td class="text-wrap"><?php echo $rdv->motifrdv; ?> </td>
 											<td class="text-wrap" style="font-weight:bold; color:#F9B233!important;">
-												<?php echo $villes; ?></td>
+												<?php echo $villes ?? "Non mentionné"; ?></td>
 
 											<td>
 												<span
 													class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span>
 											</td>
+
 											<td class="table-plus text-wrap">
-												<label class="btn btn-secondary" style="background-color:#F9B233 ;"
-													for="click-<?= $i ?>"><i class="fa  fa-eye" id="click-<?= $i ?>"> Détail
-													</i></label>
-												<?php if ($rdv->etat == "1") { ?>
-													<label class="btn btn-secondary" style="background-color: #033f1f ;"
-														for="click-<?= $i ?>"><i class="fa  fa-mouse-pointer" id="click-<?= $i ?>">
-															Traiter le rdv </i></label>
-												<?php  } ?>
+												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail</button>
 											</td>
 
 										</tr>
@@ -208,46 +203,16 @@ else $effectue = 0;
 		$(document).ready(function() {
 
 
-			$(".fa-mouse-pointer").click(function(evt) {
-
-
-				var data = evt.target.id
-
-				var result = data.split('-');
-				var ind = result[1]
-
-				if (ind != undefined) {
-					var idrdv = $("#id-" + ind).html()
-					var idcontrat = $("#idcontrat-" + ind).html()
-
-					alert(idrdv + " " + idcontrat);
-					document.cookie = "idrdv=" + idrdv;
-					document.cookie = "idcontrat=" + idcontrat;
-					document.cookie = "action=traiter";
-					location.href = "fiche-rdv";
-				}
-			})
-
-
-			$(".fa-eye").click(function(evt) {
-				var data = evt.target.id
-
-				var result = data.split('-');
-				var ind = result[1]
-				if (ind != undefined) {
-					var idrdv = $("#id-" + ind).html()
-					var idcontrat = $("#idcontrat-" + ind).html()
-
-					alert(idrdv + " " + idcontrat);
-
-					document.cookie = "idrdv=" + idrdv;
-					document.cookie = "idcontrat=" + idcontrat;
-					document.cookie = "action=traiter";
-					location.href = "detail-rdv";
-				}
-
-			})
-
+			// Voir detail
+			$(document).on('click', '.view', function() {
+				const index = this.id.split('-')[1];
+				const idrdv = $("#id-" + index).html();
+				const idcontrat = $("#idcontrat-" + index).html();
+				document.cookie = "idrdv=" + idrdv;
+				document.cookie = "idcontrat=" + idcontrat;
+				document.cookie = "action=detail";
+				location.href = "detail-rdv";
+			});
 
 
 		})

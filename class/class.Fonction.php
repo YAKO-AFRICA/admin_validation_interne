@@ -225,6 +225,37 @@ class Fonction
 	}
 
 
+	function getSelectTypeCompteUtilisateur()
+	{
+		global $connect;
+
+		$ind1 = '';
+		$ind2 = '';
+		$ind = '<select name="typePrestation" id="typePrestation" class="form-control" data-msg="Objet" data-rule="required" >
+													<option value="">...</option>';
+
+		$sqlQuery = "SELECT distinct(typeCompte) as libelle FROM " . Config::TABLE_USER . "  ";
+
+		$tab = $this->_Database->Select($sqlQuery);
+		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
+			$this->Logger->Handler(__function__, 'echec recuperation de la liste des details ');
+			return NULL;
+		} else {
+			for ($i = 0, $maxI = count($tab); $i < $maxI; $i++) {
+
+				$donnees = $tab[$i];
+				$libelle = $donnees->libelle;
+				$values = $i . ";" . $libelle;
+				$ind1 .= '<option value="' . $values . '">' . trim($libelle) . '</option>';
+			}
+		}
+		$ind3 = '</select>';
+		return $ind . $ind1 . $ind3;
+	}
+
+
+
+
 	function getFiltreuse()
 	{
 
@@ -361,7 +392,7 @@ class Fonction
 		$prenoms = (isset($_REQUEST["prenoms"]) ? trim($_REQUEST["prenoms"]) : null);
 		$IdProposition = (isset($_REQUEST["IdProposition"]) ? trim($_REQUEST["IdProposition"]) : null);
 		$typerdv = (isset($_REQUEST["typerdv"]) ? trim($_REQUEST["typerdv"]) : null);
-		$etapeRdv = (isset($_REQUEST["etapePrestation"]) ? trim($_REQUEST["etapePrestation"]) : null);
+		$etapeRdv = (isset($_REQUEST["etaperdv"]) ? trim($_REQUEST["etaperdv"]) : null);
 		$villesRDV = (isset($_REQUEST["villesRDV"]) ? trim($_REQUEST["villesRDV"]) : null);
 		$etatRDV = (isset($_REQUEST["etat"]) ? trim($_REQUEST["etat"]) : null);
 
@@ -373,11 +404,11 @@ class Fonction
 		}
 
 		if ($nom != NULL) {
-			$par2 = "AND  TRIM(" . Config::TABLE_RDV . ".nom) LIKE '%" . addslashes($nom) . "%' ";
+			$par2 = "AND  TRIM(" . Config::TABLE_RDV . ".nomclient) LIKE '%" . addslashes($nom) . "%' ";
 			$libelle2 = "nom : " . $nom . '</br>';
 		}
 		if ($prenoms != NULL) {
-			$par3 = "AND  TRIM(" . Config::TABLE_RDV . ".prenom) LIKE '%" . addslashes($prenoms) . "%' ";
+			$par3 = "AND  TRIM(" . Config::TABLE_RDV . ".nomclient) LIKE '%" . addslashes($prenoms) . "%' ";
 			$libelle3 = "prenoms : " . $prenoms . '</br>';
 		}
 
@@ -1167,9 +1198,9 @@ class Fonction
 		$rang_etat = array();
 		$val = 0;
 
+		$plus = "  YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
 
-
-		$sqlQuery = " SELECT count(idrdv) as resultat FROM " . Config::TABLE_RDV . " ORDER BY idrdv  DESC  ";
+		$sqlQuery = " SELECT count(idrdv) as resultat FROM " . Config::TABLE_RDV . " WHERE $plus ORDER BY idrdv  DESC  ";
 
 		$nb_ligne_total = $this->_getValeursFormuleForSearch($sqlQuery);
 		if ($nb_ligne_total <= 0) $nb_ligne_total = 1;
@@ -1189,7 +1220,7 @@ class Fonction
 			$url = $record["url"];
 			$etat = 'actif';
 
-			$sqlQuery = " SELECT count(idrdv) as resultat FROM " . Config::TABLE_RDV . " WHERE etat='" . trim($code) . "' $critereRecherche  ORDER BY idrdv DESC  ";
+			$sqlQuery = " SELECT count(idrdv) as resultat FROM " . Config::TABLE_RDV . " WHERE etat='" . trim($code) . "' $critereRecherche and $plus  ORDER BY idrdv DESC  ";
 			$nb_ligne_element = $this->_getValeursFormuleForSearch($sqlQuery);
 
 			$pourcentage_etat[$code]['etat'] = $etat;
@@ -1414,8 +1445,7 @@ class Fonction
 		$resultat = $this->_getSelectDatabases($sqlSelect);
 		if ($resultat != NULL) {
 			return $resultat;
-		}
-		else return null;
+		} else return null;
 	}
 
 
@@ -1587,7 +1617,7 @@ class Fonction
 				} else {
 					$values = $statut["statut"] . ";" . $statut["libelle"];
 					$affiche_2 .= '<div class="col-xl-3 mb-30">
-							<a href="liste-rdv-nissa?etat=' . strtolower($values) . '">
+							<a href="' . $statut["url"] . '">
 							<div class="card-box height-100-p widget-style1 text-white"
 								style="background-color:' . trim($statut["color"]) . '; font-weight:bold; ">
 								<div class="d-flex flex-wrap align-items-center">
@@ -1695,5 +1725,23 @@ class Fonction
 		} else {
 			return $tab;
 		}
+	}
+
+	public function getSelectRDVAfficher($etat)
+	{
+		$plus = " AND YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
+		$sqlSelect = "
+			SELECT 
+				tblrdv.*,
+				CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
+				TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv
+			LEFT JOIN users ON tblrdv.gestionnaire = users.id
+			LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+			WHERE tblrdv.etat = '$etat' 
+			$plus
+			ORDER BY tblrdv.idrdv DESC	";
+
+		return  $this->_getSelectDatabases($sqlSelect);
 	}
 }

@@ -25,18 +25,18 @@ if (isset($_REQUEST['filtreliste']) || isset($_REQUEST['etat'])) {
 	$plus = '';
 }
 
-
-
-//$plus = $filtre;
-
-$sqlSelect = "SELECT tblrdv.* ,  concat (users.nom,' ',users.prenom) as nomgestionnaire  FROM tblrdv LEFT JOIN users on tblrdv.gestionnaire = users.id  $plus ORDER BY idrdv DESC";
-//echo $sqlSelect; exit;
-
-/*
-$sqlSelect = "SELECT tblrdv.*,  CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id 
-WHERE tblrdv.etat = '1' AND STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') ASC ";
-*/
-//echo $sqlSelect; exit;
+$plus = " AND YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
+$sqlSelect = "
+			SELECT 
+				tblrdv.*,
+				CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
+				TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv
+			LEFT JOIN users ON tblrdv.gestionnaire = users.id
+			LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+			WHERE tblrdv.etat != '-1' 
+			$plus
+			ORDER BY tblrdv.idrdv DESC	";
 $liste_rdvs = $fonction->_getSelectDatabases($sqlSelect);
 if ($liste_rdvs != null) $effectue = count($liste_rdvs);
 else $effectue = 0;
@@ -125,13 +125,8 @@ else $effectue = 0;
 									for ($i = 0; $i <= ($effectue - 1); $i++) {
 
 										$rdv = $liste_rdvs[$i];
-										$idTblBureau = $rdv->idTblBureau;
-
-										$sqlQuery = "SELECT TRIM(libelleVilleBureau) as villes FROM tblvillebureau where idVilleBureau = '" . $idTblBureau . "'";
-										$retourVilles = $fonction->_getSelectDatabases($sqlQuery);
-										if ($retourVilles != null) $villes = trim($retourVilles[0]->villes);
-										else $villes = "NAN";
-
+										if (isset($rdv->etat)  && $rdv->villes != null) $villes = strtoupper($rdv->villes);
+										else $villes = "Non mentionné";
 
 										if (isset($rdv->etat) && $rdv->etat !== null && in_array($rdv->etat, array_keys(Config::tablo_statut_rdv)))  $etat = $rdv->etat;
 										else $etat = 1;
@@ -159,19 +154,11 @@ else $effectue = 0;
 													class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span>
 											</td>
 
-
-											<td class="table-plus">
-												<label class="btn btn-secondary" style="background-color:#F9B233 ;"
-													for="click-<?= $i ?>"><i class="fa fa-eye" id="click-<?= $i ?>"> Détail
-													</i></label>
-												<?php if ($rdv->etat == "1") { ?>
-													<label class="btn btn-secondary" style="background-color: #033f1f ;"
-														for="click-<?= $i ?>"><i class="fa fa-mouse-pointer" id="click-<?= $i ?>">
-															Traiter</i></label>
-												<?php  } ?>
-												<!-- <label class="btn btn-secondary" style="background-color: #e74c3c ;"
-													for="click-<?= $i ?>"><i class="fa fa-trash" id="click-<?= $i ?>"> Rejeter
-													</i></label> -->
+											<td>
+												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail</button>
+												<?php if ($rdv->etat == "1"): ?>
+													<button class="btn btn-success btn-sm traiter" id="traiter-<?= $i ?> " style="background-color:#033f1f; color:white"><i class="fa fa-mouse-pointer"></i> Traiter</button>
+												<?php endif; ?>
 
 											</td>
 
@@ -194,86 +181,11 @@ else $effectue = 0;
 			<?php include "include/footer.php";    ?>
 		</div>
 	</div>
-	</div>
 
 
-	<div class="modal fade" id="confirmation-modal22" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-body text-center font-18">
-					<h4 class="padding-top-30 mb-30 weight-500">Voulez vous supprimer la demande n° : <span
-							id="a_afficher3" style="color: #F9B233;"> </span>?</h4>
-					<input type="text" hidden class="form-control" name="idobjet" id="idobjet">
 
-					<div class="padding-bottom-30 row" style="max-width: 170px; margin: 0 auto;">
-						<div class="col-6">
-							<button type="button" id="validerSuprime"
-								class="btn btn-danger border-radius-100 btn-block confirmation-btn"
-								data-dismiss="modal"><i class="fa fa-check"></i></button>
-							OUI
-						</div>
-						<div class="col-6">
-							<button type="button" id="annulerSuprime"
-								class="btn btn-secondary border-radius-100 btn-block confirmation-btn"
-								data-dismiss="modal"><i class="fa fa-times"></i></button>
-							NON
-						</div>
 
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 
-	<div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-body text-center font-18">
-					<h4 class="padding-top-30 mb-30 weight-500">
-						Voulez vous rejeter la demande de rdv <span id="a_afficher_1" name="a_afficher_1"
-							style="color:#033f1f!important; font-weight:bold;"> </span> ?
-					</h4>
-					<span style='color:red;'>Attention cette action est irreversible !!</span><br>
-					<span style='color:seagreen'>le client sera notifier du rejet de la demande de rdv</span>
-					</hr>
-					<input type="text" id="idprestation" name="idprestation" hidden>
-					<input type="text" id="observations" name="observations" hidden>
-
-					<div class="padding-bottom-30 row" style="max-width: 170px; margin: 0 auto;">
-						<div class="col-6">
-							<button type="button" id="annulerRejet" name="annulerRejet"
-								class="btn btn-secondary border-radius-100 btn-block confirmation-btn"
-								data-dismiss="modal"><i class="fa fa-times"></i></button>
-							NON
-						</div>
-						<div class="col-6">
-							<button type="button" id="validerRejet" name="validerRejet"
-								class="btn btn-danger border-radius-100 btn-block confirmation-btn"
-								data-dismiss="modal"><i class="fa fa-check"></i></button>
-							OUI
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="modal fade" id="notificationValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-		aria-hidden="true">
-		<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
-			<div class="modal-content ">
-				<div class="modal-body text-center">
-					<div class="card-body" id="msgEchec">
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" id="retourNotification" name="retourNotification" class="btn btn-success"
-						style="background: #033f1f !important;">OK</button>
-					<button type="button" id="closeEchec" class="btn btn-secondary" data-dismiss="modal">FERMER</button>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<!-- js -->
 	<script src="vendors/scripts/core.js"></script>
@@ -299,83 +211,30 @@ else $effectue = 0;
 		$(document).ready(function() {
 
 
-			$(".fa-eye, .fa-mouse-pointer").click(function(evt) {
-				const ind = extraireIndex(evt.target.id);
-				if (!ind) return;
-				const {
-					idrdv,
-					idcontrat
-				} = extraireInfosRdv(ind);
+			// Voir detail
+			$(document).on('click', '.view', function() {
+				const index = this.id.split('-')[1];
+				const idrdv = $("#id-" + index).html();
+				const idcontrat = $("#idcontrat-" + index).html();
+				document.cookie = "idrdv=" + idrdv;
+				document.cookie = "idcontrat=" + idcontrat;
+				document.cookie = "action=detail";
+				location.href = "detail-rdv";
+			});
+
+			// Traiter
+			$(document).on('click', '.traiter', function() {
+				const index = this.id.split('-')[1];
+				const idrdv = $("#id-" + index).html();
+				const idcontrat = $("#idcontrat-" + index).html();
 				document.cookie = "idrdv=" + idrdv;
 				document.cookie = "idcontrat=" + idcontrat;
 				document.cookie = "action=traiter";
-				location.href = evt.target.classList.contains('fa-eye') ? "detail-rdv" : "fiche-rdv";
-			});
-
-
-
-			$(".fa-trash").click(function(evt) {
-				const ind = extraireIndex(evt.target.id);
-				if (!ind) return;
-				const {
-					idrdv,
-					daterdv
-				} = extraireInfosRdv(ind);
-				$("#idprestation").val(idrdv);
-				$("#a_afficher_1").text(`n° ${idrdv} du ${daterdv}`);
-				$('#confirmation-modal').modal('show');
+				location.href = "fiche-rdv";
 			});
 
 
 		})
-
-		$("#validerRejet").click(function() {
-			const idrdv = $("#idprestation").val();
-			const valideur = "<?= $_SESSION['id'] ?>";
-			$.ajax({
-				url: "config/routes.php",
-				method: "POST",
-				dataType: "json",
-				data: {
-					idrdv,
-					motif: "",
-					traiterpar: valideur,
-					observation: "Aucune observation",
-					etat: "confirmerRejetRDV"
-				},
-				success: function(response) {
-					const msg = response !== '-1' && response !== '0' ?
-						`<div class="alert alert-success" role="alert"><h2>Le RDV <span class="text-success">${idrdv}</span> a bien été rejetée !</h2></div>` :
-						`<div class="alert alert-danger" role="alert"><h2>Erreur lors du rejet de la RDV <span class="text-danger">${idrdv}</span>.</h2></div>`;
-					$("#msgEchec").html(msg);
-					$('#notificationValidation').modal("show");
-				},
-				error: function(err) {
-					console.error("Erreur AJAX rejet RDV", err);
-				}
-			});
-		});
-
-
-		$("#retourNotification").click(function() {
-			$('#notificationValidation').modal('hide');
-			location.reload(); // recharge la page au lieu de forcer vers detail-rdv
-		});
-
-
-
-		function extraireIndex(id) {
-			let result = id.split('-');
-			return result[1];
-		}
-
-		function extraireInfosRdv(index) {
-			return {
-				idrdv: $("#id-" + index).html(),
-				idcontrat: $("#idcontrat-" + index).html(),
-				daterdv: $("#daterdv-" + index).html()
-			};
-		}
 	</script>
 
 

@@ -94,7 +94,7 @@ if (!isset($_SESSION['typeCompte'])) {
                         <div class="sidebar-small-cap"><?= strtoupper($_SESSION['typeCompte'] . "s") ?></div>
                     </li>
 
-                    
+
                     <li class="dropdown">
                         <a href="liste-rdv-attente" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon dw dw-edit"></span><span class="mtext">rdv<br>En attente</span>
@@ -107,7 +107,7 @@ if (!isset($_SESSION['typeCompte'])) {
                         </a>
                     </li>
                     <li class="dropdown">
-                        <a href="liste-rdv-nissa" class="dropdown-toggle no-arrow" style="font-size:14px">
+                        <a href="liste-rdv-traite" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-check"></span><span class="mtext">rdv<br>traite(s)</span>
                         </a>
                     </li>
@@ -129,18 +129,15 @@ if (!isset($_SESSION['typeCompte'])) {
                             <span class="micon dw dw-search"></span><span class="mtext">rechercher<br>un rdv</span>
                         </a>
                     </li>
-                    <li class="dropdown">
-                        <a href="liste-gestionnaires" class="dropdown-toggle no-arrow" style="font-size:14px">
-                            <span class="micon fa fa-users"></span><span class="mtext">Listes<br>gestionnaires</span>
+                    <?php if ($_SESSION['profil'] != "agent") { ?>
+                        <li class="dropdown">
+                            <a href="liste-gestionnaires" class="dropdown-toggle no-arrow" style="font-size:14px">
+                                <span class="micon fa fa-users"></span><span class="mtext">Listes<br>utilisateurs</span>
 
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="liste-calendrierJourReceptionVilles" class="dropdown-toggle no-arrow" style="font-size:14px">
-                            <span class="micon fa fa-calendar"></span><span class="mtext">Jour/Villes<br>Reception</span>
-
-                        </a>
-                    </li>
+                            </a>
+                        </li>
+                    <?php } ?>
+                    
                     <li class="dropdown">
                         <a href="liste-bordereau-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-file"></span><span class="mtext">BORDEREAU RDV</span>
@@ -182,6 +179,12 @@ if (!isset($_SESSION['typeCompte'])) {
 
                     <li>
                         <div class="dropdown-divider"></div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="liste-calendrierJourReceptionVilles" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <span class="micon fa fa-calendar"></span><span class="mtext">Jour/Villes<br>Reception</span>
+
+                        </a>
                     </li>
             <?php
                     break;

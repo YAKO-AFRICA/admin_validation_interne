@@ -1,0 +1,91 @@
+2025-11-13 09:11:59|Database._Connect|action =receptionJourRdv: trying to connect to the database
+2025-11-13 09:11:59|Database.Select|action =receptionJourRdv: executing query[SELECT * FROM tbloptionrdv WHERE codelieu = '2' ORDER BY codejour ASC ], boundParameters[null]
+2025-11-13 09:11:59|Database._Connect|action =compteurRdv: trying to connect to the database
+2025-11-13 09:12:00|Database.Select|action =compteurRdv: executing query[SELECT * FROM tbloptionrdv WHERE codelieu = '2' ORDER BY codejour ASC ], boundParameters[null]
+2025-11-13 09:12:00|Database.Select|action =compteurRdv: executing query[SELECT  COUNT(*) AS totalrdv, tblrdv.villeEffective,  tblrdv.daterdveff,  MIN(tblrdv.daterdv) AS daterdv_min FROM tblrdv WHERE tblrdv.villeEffective = '2'   AND DATE(tblrdv.daterdveff) = '2025-11-25' GROUP BY tblrdv.villeEffective, tblrdv.daterdveff ORDER BY totalrdv DESC], boundParameters[null]
+2025-11-13 09:12:07|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 09:12:08|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='2'  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 09:12:08|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 09:12:08|Database._Connect|action =ListCompteurGestionnaireByNISSA: trying to connect to the database
+2025-11-13 09:12:08|Database.Select|action =ListCompteurGestionnaireByNISSA: executing query[SELECT 
+                            u.id,  u.email,  u.codeagent,  TRIM(CONCAT(u.nom, ' ', u.prenom)) AS gestionnairenom,
+                            v.libelleVilleBureau AS villeEffect,    COUNT(r.idrdv) AS totalrdv FROM users u
+                        INNER JOIN tblvillebureau v ON v.idVilleBureau = u.ville LEFT JOIN tblrdv r 
+                            ON r.gestionnaire = u.id     AND DATE(r.daterdveff) = '2025-11-25'      AND r.villeEffective = '2'
+                        WHERE     u.etat = '1'   AND v.idVilleBureau = '2' GROUP BY u.id, u.email, u.codeagent, u.nom, u.prenom, v.libelleVilleBureau ORDER BY u.id ASC ], boundParameters[null]
+2025-11-13 09:12:08|_getSelectDatabases|action =ListCompteurGestionnaireByNISSA: echec recuperation de la liste des details 
+2025-11-13 09:47:14|Database._Connect|action =receptionJourRdv: trying to connect to the database
+2025-11-13 09:47:15|Database.Select|action =receptionJourRdv: executing query[SELECT * FROM tbloptionrdv WHERE codelieu = '5' ORDER BY codejour ASC ], boundParameters[null]
+2025-11-13 09:47:15|Database._Connect|action =compteurRdv: trying to connect to the database
+2025-11-13 09:47:15|Database.Select|action =compteurRdv: executing query[SELECT * FROM tbloptionrdv WHERE codelieu = '5' ORDER BY codejour ASC ], boundParameters[null]
+2025-11-13 09:47:15|Database.Select|action =compteurRdv: executing query[SELECT  COUNT(*) AS totalrdv, tblrdv.villeEffective,  tblrdv.daterdveff,  MIN(tblrdv.daterdv) AS daterdv_min FROM tblrdv WHERE tblrdv.villeEffective = '5'   AND DATE(tblrdv.daterdveff) = '2025-11-18' GROUP BY tblrdv.villeEffective, tblrdv.daterdveff ORDER BY totalrdv DESC], boundParameters[null]
+2025-11-13 10:11:38|Database._Connect|action =exporterExcel: trying to connect to the database
+2025-11-13 10:11:38|Database.Select|action =exporterExcel: executing query[SELECT *  FROM tbl_prestations  WHERE etape ='2' ORDER BY id DESC  ], boundParameters[null]
+2025-11-13 10:43:26|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:43:27|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:43:27|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:43:40|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:43:40|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='17'  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:43:41|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:43:47|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:43:47|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='2'  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:43:47|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:44:00|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:44:00|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='12'  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:45:33|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:45:34|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:45:34|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:45:50|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:45:50|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='15'  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:45:50|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:46:13|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:46:14|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:46:14|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:47:03|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:47:04|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:47:04|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:50:23|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:50:24|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:50:24|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:50:59|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:50:59|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:51:00|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:53:23|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:53:24|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:53:24|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:55:24|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:55:24|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:55:25|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:55:57|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:55:57|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:55:57|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:56:38|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:56:39|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:56:39|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:57:54|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:57:54|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:57:55|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:58:57|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:58:57|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:58:57|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 10:59:09|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 10:59:10|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 10:59:10|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 11:00:09|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 11:00:10|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 11:00:10|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 11:00:14|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 11:00:16|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 11:00:16|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 11:01:13|Database._Connect|action =afficherGestionnaire: trying to connect to the database
+2025-11-13 11:01:14|Database.Select|action =afficherGestionnaire: executing query[SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau=''  ORDER BY users.id ASC], boundParameters[null]
+2025-11-13 11:01:14|_getSelectDatabases|action =afficherGestionnaire: echec recuperation de la liste des details 
+2025-11-13 11:15:10|Database._Connect|action =connexion: trying to connect to the database
+2025-11-13 11:15:11|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'mama.fofana' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-13 11:16:11|Database._Connect|action =connexion: trying to connect to the database
+2025-11-13 11:16:11|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'alain.the' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-13 11:16:48|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-13 11:17:22|Database._Connect|action =connexion: trying to connect to the database
+2025-11-13 11:17:23|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'mama.fofana' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-13 11:17:30|Database._Connect|action =getJourReception: trying to connect to the database
+2025-11-13 11:17:58|Database._Connect|action =getJourReception: trying to connect to the database

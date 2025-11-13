@@ -18,6 +18,19 @@ if (isset($_REQUEST['filtreliste'])) {
 }
 
 
+
+switch ($_SESSION['typeCompte']) {
+	case 'rdv':
+		$plus = " AND typeCompte IN ('gestionnaire', 'rdv')";
+		break;
+	case 'prestation':
+		$plus = " AND typeCompte IN ('prestation')";
+		break;
+	default:
+		$plus = '';
+		break;
+}
+
 $sqlSelect = "
    SELECT 
     users.*, 
@@ -30,7 +43,7 @@ LEFT JOIN
 LEFT JOIN 
     tblvillebureau ON users.ville = tblvillebureau.idVilleBureau
 WHERE 
-    users.etat = '1' AND typeCompte IN ('gestionnaire', 'rdv')
+    users.etat = '1' $plus
 GROUP BY 
     users.id, tblvillebureau.libelleVilleBureau
 ORDER BY 
@@ -65,12 +78,12 @@ else $effectue = 0;
 					<div class="row">
 						<div class="col-md-12 col-sm-12">
 							<div class="title">
-								<h4>Liste des Gestionnaires</h4>
+								<h4>Liste des Utilisateurs</h4>
 							</div>
 							<nav aria-label="breadcrumb" role="navigation">
 								<ol class="breadcrumb">
 									<li class="breadcrumb-item"><a href="accueil-operateur.php"><?= Config::lib_pageAccueil ?></a></li>
-									<li class="breadcrumb-item active" aria-current="page"> Liste des Gestionnaires</li>
+									<li class="breadcrumb-item active" aria-current="page"> Liste des Utilisateurs</li>
 								</ol>
 							</nav>
 						</div>
@@ -79,11 +92,11 @@ else $effectue = 0;
 				<hr>
 
 				<div class="card-box mb-30">
-					<!-- <div class="pd-20">
-						<button class="btn btn-secondary p-2 m-2" name="addRDV" id="addRDV" style="background: #033f1f!important;float:right"><i class="icon-copy fa fa-user-plus" aria-hidden="true"></i></button>
-					</div> -->
 					<div class="pd-20">
-						<h4 class="text-center" style="color:#033f1f; "> Liste des Gestionnaires (<span style="color:#F9B233;"><?= $effectue ?></span>) </h4>
+						<button class="btn btn-secondary p-2 m-2" name="addRDV" id="addRDV" style="background: #033f1f!important;float:right"><i class="icon-copy fa fa-user-plus" aria-hidden="true"> AJOUTER UTILISATEUR</i></button>
+					</div>
+					<div class="pd-20">
+						<h4 class="text-center" style="color:#033f1f; "> Liste des Utilisateurs (<span style="color:#F9B233;"><?= $effectue ?></span>) </h4>
 					</div>
 
 					<div class="pb-20">
@@ -97,6 +110,8 @@ else $effectue = 0;
 									<th>Code agent</th>
 									<th>lieu Reception</th>
 									<th>type compte</th>
+									<th>profil</th>
+
 									<th class="table-plus datatable-nosort">Etat</th>
 									<th class="table-plus datatable-nosort">Action</th>
 								</tr>
@@ -139,7 +154,7 @@ else $effectue = 0;
 													echo "<p class=\"mb-0 text-dark\" style=\"font-size: 0.7em; color:#F9B233;\">Compteur rdv : <span style=\"font-weight:bold;\">" . $rdv->nb_rdv . "</span></p>";
 												} ?>
 											</td>
-
+											<td><?php echo $rdv->profil; ?></td>
 											<td>
 												<?php if (isset($rdv->etat) && $rdv->etat !== null && $rdv->etat == "1") {
 													echo "<span class=\"badge badge-success\">Actif</span>";
@@ -215,27 +230,59 @@ else $effectue = 0;
 								<div class="row" id="formOperateur">
 
 									<div class="form-group col-sm-12 col-md-12">
-										<h4 style="color:#033f1f; font-size:16px; font-weight:bold;"> Veuillez renseigner les informations de l'operateur a ajouter svp !!</h4>
+										<h4 style="color:#033f1f; font-size:16px; font-weight:bold;"> Veuillez renseigner les informations de l'utilisateur a ajouter svp !!</h4>
 									</div>
 									<input type="text" class="form-control" name="agent_id" id="agent_id" hidden>
 									<input type="text" class="form-control" name="action" id="action" hidden>
 									<hr>
-									<div class="form-group col-sm-12 col-md-12">
-										<label for="nomRdv" style="color: #000000;">libelle <bold style="color: #F9B233;"> *</bold></label>
-										<input type="text" id="libelle" name="libelle" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le libelle" value="" class="form-control">
+									<div class="form-group col-sm-12 col-md-4">
+										<label for="nomRdv" style="color: #000000;">Nom <bold style="color: #F9B233;"> *</bold></label>
+										<input type="text" id="nom" name="nom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le nom" value="" class="form-control">
 										<div class="validation" id="validNom" style="color:#F9B233"></div>
 									</div>
 
-									<div class="form-group col-sm-12 col-md-12">
-										<label for="email" style="color: #000000;"> Procedures <bold style="color: #F9B233;"> * </label>
+									<div class="form-group col-sm-12 col-md-8">
+										<label for="nomRdv" style="color: #000000;">Prenom <bold style="color: #F9B233;"> *</bold></label>
+										<input type="text" id="prenom" name="prenom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le prenom" value="" class="form-control">
+										<div class="validation" id="validNom" style="color:#F9B233"></div>
+									</div>
 
-										<textarea type="text" id="procedures" name="procedures" placeholder="Entrez la procedures" value="" class="form-control" cols="10" rows="4" maxlength="250"></textarea>
-									</div>
 									<div class="form-group col-sm-12 col-md-6">
-										<label for="prenom" style="color: #000000;"> Action(s) <bold style="color: #F9B233;">*</bold></label>
-										<input type="text" id="actions" name="actions" data-rule="required" required placeholder="Entrez votre numéro de telephone mobile" value="" class="form-control">
-										<div class="validation" id="validPrenom" style="color:#F9B233"></div>
+										<label for="nomRdv" style="color: #000000;">Telephone <bold style="color: #F9B233;"> *</bold></label>
+										<input type="number" id="telephone" name="telephone" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le telephone" value="" class="form-control">
+										<div class="validation" id="validNom" style="color:#F9B233"></div>
 									</div>
+
+									<div class="form-group col-sm-12 col-md-6">
+										<label for="nomRdv" style="color: #000000;">email <bold style="color: #F9B233;"> *</bold></label>
+										<input type="email" id="email" name="email" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le email" value="" class="form-control">
+										<div class="validation" id="validNom" style="color:#F9B233"></div>
+									</div>
+
+									<div class="form-group col-sm-12 col-md-6">
+										<label for="nomRdv" style="color: #000000;">Type de compte <bold style="color: #F9B233;"> *</bold></label>
+										<select id="typeCompte" name="typeCompte" class="form-control" required>
+											<option value="" selected disabled>Veuillez selectionner</option>
+											<option value="rdv">RDV</option>
+											<option value="prestation">gestionnaire Prestation</option>
+											<option value="sinistre">gestionnaire Sinistre</option>
+											<option value="gestionnaire">gestionnaire RDV</option>
+											<option value="compte-ynov">compte-ynov</option>
+										</select>
+									</div>
+
+									<div class="form-group col-sm-12 col-md-6">
+										<label for="nomRdv" style="color: #000000;">profil <bold style="color: #F9B233;"> *</bold></label>
+										<select id="typeCompte" name="typeCompte" class="form-control" required>
+											<option value="" selected disabled>Veuillez selectionner</option>
+											<option value="agent">agent</option>
+											<option value="supervisseur">supervisseur</option>
+											<option value="admin">administrateur</option>
+
+										</select>
+									</div>
+									<div class="form-group col-sm-12 col-md-12" id="divCible"></div>
+
 									<div class="form-group col-sm-12 col-md-6">
 										<label for="mobile" style="color: #000000;"> Statut traitement <bold style="color:   #F9B233;"> * </label>
 										<?php
@@ -280,6 +327,29 @@ else $effectue = 0;
 		$(document).ready(function() {
 
 
+
+			$("#AjouterRDV").on("change", "#typeCompte", function(evt) {
+
+				if (evt.target.value == "prestation") {
+
+					let notif = `
+                		<label for="nomRdv" style="color: #000000;">cible <bold style="color: #F9B233;"> *</bold></label>
+										<select id="ciblePrestation" name="ciblePrestation" class="form-control" required>
+										<option value="" selected disabled>Veuillez selectionner</option>
+											<option value="administratif">administratif</option>
+											<option value="technique">technique</option>
+											
+										</select>`;
+
+					$("#divCible").html(notif);
+
+				} else {
+					$("#divCible").html("");
+				}
+			})
+
+
+
 			$(".fa-mouse-pointer").click(function(evt) {
 
 
@@ -292,7 +362,7 @@ else $effectue = 0;
 					var idrdv = $("#id-" + ind).html()
 					var codeagent = $("#codeagent-" + ind).html()
 
-					alert(idrdv + " " + codeagent);
+					//alert(idrdv + " " + codeagent);
 					document.cookie = "idusers=" + idrdv;
 					document.cookie = "codeagent=" + codeagent;
 					document.cookie = "action=traiter";
@@ -314,7 +384,7 @@ else $effectue = 0;
 					var idrdv = $("#id-" + ind).html()
 					var codeagent = $("#codeagent-" + ind).html()
 
-					alert(idrdv + " " + codeagent);
+					//alert(idrdv + " " + codeagent);
 				}
 			})
 
@@ -328,7 +398,7 @@ else $effectue = 0;
 					var idrdv = $("#id-" + ind).html()
 					var codeagent = $("#codeagent-" + ind).html()
 
-					alert(idrdv + " " + codeagent);
+					//alert(idrdv + " " + codeagent);
 					document.cookie = "idusers=" + idrdv;
 					document.cookie = "codeagent=" + codeagent;
 					document.cookie = "action=traiter";
@@ -344,7 +414,7 @@ else $effectue = 0;
 				var agent_id = null
 
 
-				$("#titreModale").text("Ajouter un motif")
+				$("#titreModale").text("Ajouter un utilisateur")
 				$("#titreAction").text("Ajouter")
 
 				$("#action").val(action)
