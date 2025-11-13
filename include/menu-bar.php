@@ -78,7 +78,7 @@ if (!isset($_SESSION['typeCompte'])) {
                     </li>
                     <li class="dropdown">
                         <a href="liste-gestionnaires" class="dropdown-toggle no-arrow" style="font-size:14px">
-                            <span class="micon fa fa-users"></span><span class="mtext">Listes<br>gestionnaires<br>de prestations</span>
+                            <span class="micon fa fa-users"></span><span class="mtext">Listes<br>utilisateurs</span>
 
                         </a>
                     </li>
@@ -144,12 +144,12 @@ if (!isset($_SESSION['typeCompte'])) {
 
                         </a>
                     </li>
-                    <li class="dropdown">
+                    <!-- <li class="dropdown">
                         <a href="ajout-bordereau" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-file"></span><span class="mtext">AJOUTER BORDEREAU RDV</span>
 
                         </a>
-                    </li>
+                    </li> -->
                 <?php
                     break;
                 case "gestionnaire":

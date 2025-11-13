@@ -1442,6 +1442,7 @@ class Fonction
 	function getRetourJourReception($idVilleEff)
 	{
 		$sqlSelect = "SELECT * FROM tbloptionrdv WHERE codelieu = '" . $idVilleEff . "' ORDER BY codejour ASC ";
+		//echo $sqlSelect; exit;
 		$resultat = $this->_getSelectDatabases($sqlSelect);
 		if ($resultat != NULL) {
 			return $resultat;

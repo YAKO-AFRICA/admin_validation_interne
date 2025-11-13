@@ -553,9 +553,9 @@ if ($request->action != null) {
             $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
 
             $params = "";
-            if ($idVilleEff != null) {
-                $params = " AND idVilleBureau != '$idVilleEff' ";
-            }
+            // if ($idVilleEff != null) {
+            //     $params = " AND idVilleBureau != '$idVilleEff' ";
+            // }
 
             $sqlQuery = "SELECT * FROM laloyale_bdweb.tblvillebureau WHERE idVilleBureau NOT IN ('6','7')  $params ORDER BY idVilleBureau ";
             $resultat = $fonction->_getSelectDatabases($sqlQuery);
@@ -775,12 +775,195 @@ if ($request->action != null) {
             } else echo json_encode("-1");
 
             break;
+
+        case "getTraitementAjoutUtilisateur":
+
+            $typeaction = GetParameter::FromArray($_REQUEST, 'typeaction');
+            $agent_id = GetParameter::FromArray($_REQUEST, 'agent_id');
+            $nom = GetParameter::FromArray($_REQUEST, 'nom');
+            $prenom = GetParameter::FromArray($_REQUEST, 'prenom');
+            $email = GetParameter::FromArray($_REQUEST, 'email');
+            $telephone = GetParameter::FromArray($_REQUEST, 'telephone');
+            $typeCompte = GetParameter::FromArray($_REQUEST, 'typeCompte');
+            $profil = GetParameter::FromArray($_REQUEST, 'profil');
+            $etatCompte = GetParameter::FromArray($_REQUEST, 'statut');
+            $ciblePrestation = GetParameter::FromArray($_REQUEST, 'ciblePrestation');
+            $codeagent = GetParameter::FromArray($_REQUEST, 'codeagent');
+            $villesRDV = GetParameter::FromArray($_REQUEST, 'villesRDV');
+
+            $existe = false;
+            if ($agent_id != null) {
+                $sqlSelect = " SELECT * FROM " . Config::TABLE_USER . " WHERE id = '$agent_id' ";
+                $result = $fonction->_getSelectDatabases($sqlSelect);
+                if ($result != NULL) {
+                    $existe = true;
+                }
+            }
+
+            $retour = traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id);
+            echo json_encode($retour);
+            break;
+            
+        case "importBordereau":
+            $etat = 1;
+
+            $rdvLe = GetParameter::FromArray($_COOKIE, 'rdvLe');
+            $rdvAu = GetParameter::FromArray($_COOKIE, 'rdvAu');
+            $ListeGest = GetParameter::FromArray($_COOKIE, 'ListeGest');
+
+            if (isset($_COOKIE["rdvLe"]) && isset($_COOKIE["rdvAu"]) && isset($_COOKIE["ListeGest"])) {
+
+                // Gestion de la période
+                if (!empty($rdvLe) && !empty($rdvAu)) {
+                    $periode = date('d/m/Y', strtotime($rdvLe)) . " - " . date('d/m/Y', strtotime($rdvAu));
+                    $lib_periode = date('Ymd', strtotime($rdvLe)) . " - " . date('Ymd', strtotime($rdvAu));
+                } elseif (!empty($rdvLe)) {
+                    $periode = date('d/m/Y', strtotime($rdvLe));
+                    $lib_periode = date('Ymd', strtotime($rdvLe));
+                } elseif (!empty($rdvAu)) {
+                    $periode = date('d/m/Y', strtotime($rdvAu));
+                    $lib_periode = date('Ymd', strtotime($rdvAu));
+                }
+                // Gestionnaire
+                if (!empty($ListeGest)) {
+                    [$idGest, $nomGest, $idVilleGest, $VilleGest] = explode('|', $ListeGest, 4);
+                }
+            } else {
+                $idGest = null;
+                $nomGest = null;
+                $idVilleGest = null;
+                $VilleGest = null;
+                $lib_periode = date('Ymd');
+            }
+
+            $prefixe_ref = strtolower("yaav-rdv-" . $VilleGest . "-" . $idGest . "-");
+            $reference = uniqid($prefixe_ref);
+
+
+            $result = $fonction->_insertInfosBordereauRDV($idVilleGest, $VilleGest, $idGest, $nomGest, $rdvLe, $rdvAu, $reference, $etat);
+
+            if ($result) {
+
+                $dataATraiter = GetParameter::FromArray($_REQUEST, 'params');
+                $data = json_decode($dataATraiter, true);
+                if (!is_array($data)) {
+                    http_response_code(400);
+                    echo json_encode(["error" => "Données JSON invalides"]);
+                    exit;
+                } else {
+
+                    $inserted = 0;
+
+                    for ($i = 0; $i <= count($data) - 1; $i++) {
+                        if ($i == 0) continue;
+
+                        // print_r($data[$i]);
+
+                        $ligneBordereau = new BordereauRDV($data[$i]);
+
+                        if (isset($ligneBordereau->NumeroRdv) && $ligneBordereau->NumeroRdv != null) {
+
+                            $sqlQuery = "SELECT * FROM laloyale_bdweb.tblrdv WHERE idrdv = '" . $ligneBordereau->NumeroRdv . "' ORDER BY idrdv ";
+                            $result_rdv = $fonction->_getSelectDatabases($sqlQuery);
+                            if ($result_rdv != null) {
+                                $fonction->_insertBordereauRDV($ligneBordereau, $result_rdv[0]->idrdv, $reference);
+                            }
+                        } else {
+                            $fonction->_insertBordereauRDV($ligneBordereau, null, $reference);
+                        }
+                    }
+
+                    $response = ["success" => true, "inserted" => $i, "reference" => $reference];
+                    echo json_encode($response);
+                }
+            } else {
+                echo json_encode("-1");
+            }
+
+            break;
         default:
             echo json_encode("0");
             break;
     }
 }
 
+
+
+function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id)
+{
+
+    global $fonction;
+
+
+    $retour = "0";
+
+    if (($typeCompte == "rdv" || $typeCompte == "gestionnaire") && $profil == "agent") {
+        $login = $codeagent;
+        $libelleTraitement = "RDVs";
+    } else {
+        $login = $email;
+        $libelleTraitement = strtoupper($typeCompte) . 'S';
+    }
+    $motdepasse = "1234567";
+
+
+    if ($existe) {
+
+        $sqlUpdatePrestation = "UPDATE " . Config::TABLE_USER . " SET etat= ?, nom=?, prenom=?, email=?, telephone =? , typeCompte =? , profil=? ,cible=?, codeagent=?, ville=? WHERE id = ?";
+        $queryOptions = array(
+            $etatCompte,
+            addslashes(htmlspecialchars(trim(ucfirst(strtoupper($nom))))),
+            addslashes(htmlspecialchars(trim(ucfirst(strtoupper($prenom))))),
+            $email,
+            $telephone,
+            $typeCompte,
+            $profil,
+            $ciblePrestation,
+            $codeagent,
+            $villesRDV,
+            intval($agent_id)
+        );
+        $result = $fonction->_Database->Update($sqlUpdatePrestation, $queryOptions);
+        $retour = "le compte de l'utilisateur $nom $prenom a bien été mis à jour ";
+    } else {
+
+        $sqlInsertUtilisateur = "INSERT INTO " . Config::TABLE_USER . " (nom,prenom,email,telephone,typeCompte,profil,etat,cible,codeagent,ville,login,password,date,modifiele) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,now(),now())";
+        $queryOptions = array(
+            addslashes(htmlspecialchars(trim(ucfirst(strtoupper($nom))))),
+            addslashes(htmlspecialchars(trim(ucfirst(strtoupper($prenom))))),
+            $email,
+            $telephone,
+            $typeCompte,
+            $profil,
+            $etatCompte,
+            $ciblePrestation,
+            $codeagent,
+            $villesRDV,
+            $login,
+            $motdepasse
+
+        );
+        $result = $fonction->_Database->Update($sqlInsertUtilisateur, $queryOptions);
+        if ($result != null) {
+
+            $agent_id = $result['LastInsertId'];
+            $retour = "le compte de l'utilisateur $nom $prenom a bien été créer ";
+
+            $numero = "225" . substr($telephone, -10);
+            $numero = "2250758407197";
+            $ref_sms = "COMPTE-" . $agent_id;
+
+            //$dateeffective = date('d/m/Y', strtotime($rdv->daterdv));
+            $message = "Cher $profil , votre compte pour la gestion des $libelleTraitement a bien été créer ." . PHP_EOL . "Login : $login" . PHP_EOL . "mot de passe : $motdepasse.";
+            $sms_envoi = new SMSService();
+            if (strlen($message) > 160) $message = substr($message, 0, 160);
+            //$sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
+
+        }
+    }
+
+    return $retour;
+}
 
 function traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe)
 {

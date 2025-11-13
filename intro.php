@@ -52,10 +52,9 @@ include("autoload.php");
 
                             <div class="col-md-8">
                                 <h4 class="font-20 weight-500 mb-10 ">
-                                    Bienvenue <?php echo $_SESSION['utilisateur'];  ?> sur la plateforme de gestion des <?= strtolower($_SESSION['typeCompte']) ?>s ,</h4><br>
-                                <p class="font-18 max-width-600">Vous trouverez ci-dessous un récapitulatif des différentes demandes de <?= strtolower($_SESSION['typeCompte']) ?>s.</p>
+                                    Bienvenue <?php echo $_SESSION['utilisateur'];  ?> sur la plateforme de gestion des <?= strtolower($_SESSION['typeCompte']) == "gestionnaire" || strtolower($_SESSION['typeCompte']) == "rdv" ? "rendez-vous" : strtolower($_SESSION['typeCompte'] . 's') ?>,</h4><br>
+                                <p class="font-18 max-width-600">Vous trouverez ci-dessous un récapitulatif des différentes demandes de <?= strtolower($_SESSION['typeCompte']) == "gestionnaire" || strtolower($_SESSION['typeCompte']) == "rdv" ? "rendez-vous" : strtolower($_SESSION['typeCompte'] . 's') ?>.</p>
                             </div>
-                            </h4>
                         </div>
                     </div>
                 </div>
@@ -97,11 +96,12 @@ include("autoload.php");
 
 
         </div>
+        <div class="footer-wrap pd-20 mb-20">
+            <?php include "include/footer.php";    ?>
+        </div>
     </div>
 
-    <div class="footer-wrap pd-20 mb-20">
-        <?php include "include/footer.php";    ?>
-    </div>
+
 
 
 

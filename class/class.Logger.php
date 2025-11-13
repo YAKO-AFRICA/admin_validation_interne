@@ -13,6 +13,6 @@ class Logger
 	public function Handler($type, $message) 
 	{
 		//print $message.PHP_EOL;
-		@file_put_contents(Config::LogDirectory.'star-kids-afrique.log', date('Y-m-d H:i:s').'|'.$type.'|'.$this->_Details.': '.$message.PHP_EOL, FILE_APPEND);
+		//@file_put_contents(Config::LogDirectory.'star-kids-afrique.log', date('Y-m-d H:i:s').'|'.$type.'|'.$this->_Details.': '.$message.PHP_EOL, FILE_APPEND);
 	}
 }

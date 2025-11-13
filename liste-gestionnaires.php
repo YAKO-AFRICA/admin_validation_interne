@@ -105,6 +105,13 @@ else $effectue = 0;
 								<tr>
 									<th class="table-plus datatable-nosort">#Ref</th>
 									<th hidden>Id</th>
+									<th hidden>nom</th>
+									<th hidden>prenom</th>
+									<th hidden>email</th>
+									<th hidden>telephone</th>
+									<th hidden>typeCompte</th>
+									<th hidden>etat</th>
+									<th hidden>ville</th>
 									<th>Nom & prénom(s)</th>
 									<th>Contact</th>
 									<th>Code agent</th>
@@ -138,6 +145,13 @@ else $effectue = 0;
 										<tr>
 											<td class="table-plus" id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
 											<td id="id-<?= $i ?>" hidden><?php echo $rdv->id; ?></td>
+											<td id="nom-<?= $i ?>" hidden><?php echo $rdv->nom; ?></td>
+											<td id="prenom-<?= $i ?>" hidden><?php echo $rdv->prenom; ?></td>
+											<td id="email-<?= $i ?>" hidden><?php echo $rdv->email; ?></td>
+											<td id="telephone-<?= $i ?>" hidden><?php echo $rdv->telephone; ?></td>
+											<td id="typeCompte-<?= $i ?>" hidden><?php echo $rdv->typeCompte; ?></td>
+											<td id="etat-<?= $i ?>" hidden><?php echo $rdv->etat; ?></td>
+											<td id="villes-<?= $i ?>" hidden><?php echo $rdv->ville; ?></td>
 											<td><?php echo $rdv->nom . " " . $rdv->prenom; ?></td>
 											<td class="text-wrap"><?= $rdv->email ? $rdv->email : $rdv->login; ?>
 												<p class="mb-0 text-dark" style="font-size: 0.7em;">
@@ -149,12 +163,12 @@ else $effectue = 0;
 
 											<td class="text-wrap" id="codeagent-<?= $i ?>"><?php echo $rdv->codeagent; ?></td>
 											<td class="text-wrap" style="font-weight:bold; color:#F9B233!important;"><?php echo $rdv->ville_nom; ?></td>
-											<td class="text-wrap"><?= $rdv->typeCompte == "gestionnaire" ? "Gestionnaire" : "admin RDV"; ?>
+											<td class="text-wrap"><?= $rdv->typeCompte; ?>
 												<?php if ($rdv->typeCompte == "gestionnaire") {
 													echo "<p class=\"mb-0 text-dark\" style=\"font-size: 0.7em; color:#F9B233;\">Compteur rdv : <span style=\"font-weight:bold;\">" . $rdv->nb_rdv . "</span></p>";
 												} ?>
 											</td>
-											<td><?php echo $rdv->profil; ?></td>
+											<td id="profil-<?= $i ?>"><?php echo $rdv->profil; ?></td>
 											<td>
 												<?php if (isset($rdv->etat) && $rdv->etat !== null && $rdv->etat == "1") {
 													echo "<span class=\"badge badge-success\">Actif</span>";
@@ -165,11 +179,11 @@ else $effectue = 0;
 											</td>
 											<td class="table-plus text-wrap">
 												<label class="btn btn-secondary" style="background-color:#F9B233 ;" for="click-<?= $i ?>"><i class="fa  fa-eye" id="click-<?= $i ?>"> Détail </i></label>
-												<!-- <?php if ($rdv->etat == "1") { ?>
+												<?php if ($rdv->etat == "1") { ?>
 													<label class="btn btn-secondary" style="background-color:blue ;" for="click-<?= $i ?>"><i class="fa  fa-edit" id="click-<?= $i ?>"> modifier</i></label>
-													<label class="btn btn-secondary" style="background-color:red ;" for="click-<?= $i ?>"><i class="fa  fa-trash" id="click-<?= $i ?>"> supprimer</i></label>
+													<!-- <label class="btn btn-secondary" style="background-color:red ;" for="click-<?= $i ?>"><i class="fa  fa-trash" id="click-<?= $i ?>"> supprimer</i></label> -->
 
-												<?php  } ?> -->
+												<?php  } ?>
 											</td>
 
 										</tr>
@@ -226,78 +240,88 @@ else $effectue = 0;
 				<div class="modal-body">
 					<div class="col-12 col-lg-12 col-xl-12 d-flex">
 						<div class="card">
-							<div class="card-body radius-12 w-100">
-								<div class="row" id="formOperateur">
+							<form id="formOperateur" name="formOperateur">
+								<div class="card-body radius-12 w-100">
+									<div class="row" id="formOperateur">
 
-									<div class="form-group col-sm-12 col-md-12">
-										<h4 style="color:#033f1f; font-size:16px; font-weight:bold;"> Veuillez renseigner les informations de l'utilisateur a ajouter svp !!</h4>
+										<div class="form-group col-sm-12 col-md-12">
+											<h4 style="color:#033f1f; font-size:16px; font-weight:bold;"> Veuillez renseigner les informations de l'utilisateur a ajouter svp !!</h4>
+										</div>
+										<input type="text" class="form-control" name="agent_id" id="agent_id" hidden>
+										<input type="text" class="form-control" name="action" id="action" hidden>
+										<hr>
+										<div class="form-group col-sm-12 col-md-4">
+											<label for="nomRdv" style="color: #000000;">Nom <bold style="color: #F9B233;"> *</bold></label>
+											<input type="text" id="nom" name="nom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le nom" value="" class="form-control">
+											<div class="validation" id="validNom" style="color:#F9B233"></div>
+										</div>
+
+										<div class="form-group col-sm-12 col-md-8">
+											<label for="nomRdv" style="color: #000000;">Prenom <bold style="color: #F9B233;"> *</bold></label>
+											<input type="text" id="prenom" name="prenom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le prenom" value="" class="form-control">
+											<div class="validation" id="validNom" style="color:#F9B233"></div>
+										</div>
+
+										<div class="form-group col-sm-12 col-md-6">
+											<label for="nomRdv" style="color: #000000;">Telephone <bold style="color: #F9B233;"> *</bold></label>
+											<input type="number" id="telephone" name="telephone" data-rule="required" required placeholder="Entrez le telephone" value="" class="form-control">
+											<div class="validation" id="validNom" style="color:#F9B233"></div>
+										</div>
+
+										<div class="form-group col-sm-12 col-md-6">
+											<label for="nomRdv" style="color: #000000;">email <bold style="color: #F9B233;"> *</bold></label>
+											<input type="email" id="email" name="email" data-rule="required" required placeholder="Entrez le email" value="" class="form-control">
+											<div class="validation" id="validNom" style="color:#F9B233"></div>
+										</div>
+
+										<div class="form-group col-sm-12 col-md-6">
+											<label for="nomRdv" style="color: #000000;">Type de compte <bold style="color: #F9B233;"> *</bold></label>
+											<select id="typeCompte" name="typeCompte" class="form-control" required>
+												<option value="" selected disabled>Veuillez selectionner</option>
+												<option value="rdv">admin RDV</option>
+												<option value="prestation">gestionnaire Prestation</option>
+												<option value="sinistre">gestionnaire Sinistre</option>
+												<option value="gestionnaire">gestionnaire RDV</option>
+												<option value="compte-ynov">compte-ynov</option>
+											</select>
+										</div>
+
+										<div class="form-group col-sm-12 col-md-6" id="divProfil">
+
+										</div>
+										<div class="form-group col-sm-12 col-md-12" id="divCible"></div>
+										<div class="form-group col-sm-12 col-md-12" id="ListeVilles"></div>
+
+										<div class="form-group col-sm-12 d-flex align-items-center justify-content-end col-md-12" id="divEtat">
+
+										</div>
+
+
 									</div>
-									<input type="text" class="form-control" name="agent_id" id="agent_id" hidden>
-									<input type="text" class="form-control" name="action" id="action" hidden>
-									<hr>
-									<div class="form-group col-sm-12 col-md-4">
-										<label for="nomRdv" style="color: #000000;">Nom <bold style="color: #F9B233;"> *</bold></label>
-										<input type="text" id="nom" name="nom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le nom" value="" class="form-control">
-										<div class="validation" id="validNom" style="color:#F9B233"></div>
+									<div class="modal-footer" id="footer">
+										<button type="submit" name="traitAll" id="traitAll" class="btn btn-warning" onclick="getTraitementAjoutUtilisateur()"><span id="titreAction" style="color:white"></span></button>
+										<button type="button" id="closeModaleUser" name="closeModaleUser" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
 									</div>
-
-									<div class="form-group col-sm-12 col-md-8">
-										<label for="nomRdv" style="color: #000000;">Prenom <bold style="color: #F9B233;"> *</bold></label>
-										<input type="text" id="prenom" name="prenom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le prenom" value="" class="form-control">
-										<div class="validation" id="validNom" style="color:#F9B233"></div>
-									</div>
-
-									<div class="form-group col-sm-12 col-md-6">
-										<label for="nomRdv" style="color: #000000;">Telephone <bold style="color: #F9B233;"> *</bold></label>
-										<input type="number" id="telephone" name="telephone" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le telephone" value="" class="form-control">
-										<div class="validation" id="validNom" style="color:#F9B233"></div>
-									</div>
-
-									<div class="form-group col-sm-12 col-md-6">
-										<label for="nomRdv" style="color: #000000;">email <bold style="color: #F9B233;"> *</bold></label>
-										<input type="email" id="email" name="email" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le email" value="" class="form-control">
-										<div class="validation" id="validNom" style="color:#F9B233"></div>
-									</div>
-
-									<div class="form-group col-sm-12 col-md-6">
-										<label for="nomRdv" style="color: #000000;">Type de compte <bold style="color: #F9B233;"> *</bold></label>
-										<select id="typeCompte" name="typeCompte" class="form-control" required>
-											<option value="" selected disabled>Veuillez selectionner</option>
-											<option value="rdv">RDV</option>
-											<option value="prestation">gestionnaire Prestation</option>
-											<option value="sinistre">gestionnaire Sinistre</option>
-											<option value="gestionnaire">gestionnaire RDV</option>
-											<option value="compte-ynov">compte-ynov</option>
-										</select>
-									</div>
-
-									<div class="form-group col-sm-12 col-md-6">
-										<label for="nomRdv" style="color: #000000;">profil <bold style="color: #F9B233;"> *</bold></label>
-										<select id="typeCompte" name="typeCompte" class="form-control" required>
-											<option value="" selected disabled>Veuillez selectionner</option>
-											<option value="agent">agent</option>
-											<option value="supervisseur">supervisseur</option>
-											<option value="admin">administrateur</option>
-
-										</select>
-									</div>
-									<div class="form-group col-sm-12 col-md-12" id="divCible"></div>
-
-									<div class="form-group col-sm-12 col-md-6">
-										<label for="mobile" style="color: #000000;"> Statut traitement <bold style="color:   #F9B233;"> * </label>
-										<?php
-										//echo $fonction->getSelectStatutTicket();
-										?>
-									</div>
-
 								</div>
-								<div class="modal-footer" id="footer">
-									<button type="submit" name="traitAll" id="traitAll" class="btn btn-warning" onclick="getTraitementAjoutOperateur()"><span id="titreAction" style="color:white"></span></button>
-									<button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-								</div>
-							</div>
+							</form>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="notificationValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+			<div class="modal-content ">
+				<div class="modal-body text-center">
+					<div class="card-body" id="msgEchec">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" id="retourNotification" name="retourNotification" class="btn btn-success" style="background: #033f1f !important;">OK</button>
+					<button type="button" id="closeModaleNotification" class="btn btn-secondary" data-dismiss="modal">FERMER</button>
 				</div>
 			</div>
 		</div>
@@ -328,27 +352,132 @@ else $effectue = 0;
 
 
 
-			$("#AjouterRDV").on("change", "#typeCompte", function(evt) {
 
-				if (evt.target.value == "prestation") {
+			function updateFormFields() {
+				const typeCompte = $("#typeCompte").val();
+				const profil = $("#profil").val();
+				const idville = $("#villeRDV").val();
+				//alert(idville);
 
-					let notif = `
-                		<label for="nomRdv" style="color: #000000;">cible <bold style="color: #F9B233;"> *</bold></label>
-										<select id="ciblePrestation" name="ciblePrestation" class="form-control" required>
-										<option value="" selected disabled>Veuillez selectionner</option>
-											<option value="administratif">administratif</option>
-											<option value="technique">technique</option>
-											
-										</select>`;
 
-					$("#divCible").html(notif);
+				$("#ListeVilles").html('');
+				// -- PROFIL --
+				let profilSelect = `
+					<label for="profil" style="color: #000000;">
+						profil <strong style="color: #F9B233;">*</strong>
+					</label>
+					<select id="profil" name="profil" class="form-control" required>
+						<option value="" disabled ${!profil ? "selected" : ""}>Veuillez sélectionner</option>
+						<option value="agent" ${profil === "agent" ? "selected" : ""}>agent</option>
+						<option value="supervisseur" ${profil === "supervisseur" ? "selected" : ""}>superviseur</option>
+						<option value="admin" ${profil === "admin" ? "selected" : ""}>administrateur</option>
+					</select>
+				`;
+				$("#divProfil").html(profilSelect);
 
-				} else {
-					$("#divCible").html("");
+				// -- CIBLE / CODE AGENT --
+				let cibleHtml = "";
+
+				if (typeCompte === "prestation" && profil === "agent") {
+					cibleHtml = `
+						<label for="ciblePrestation" style="color: #000000;">
+						cible <strong style="color: #F9B233;">*</strong>
+						</label>
+						<select id="ciblePrestation" name="ciblePrestation" class="form-control" required>
+						<option value="" selected disabled>Veuillez sélectionner</option>
+						<option value="administratif">administratif</option>
+						<option value="technique">technique</option>
+						</select>
+					`;
+				} else if ((typeCompte === "rdv" || typeCompte === "gestionnaire") && profil === "agent") {
+					cibleHtml = `
+						<label for="codeagent" style="color: #000000;">
+						code agent <strong style="color: #F9B233;">*</strong>
+						</label>
+						<input type="text" id="codeagent" name="codeagent" required placeholder="Entrez le code agent" class="form-control">
+					`;
+					//console.log(" 2 : idville", idville);
+					getListeVillesRDV(null);
 				}
+
+
+				$("#divCible").html(cibleHtml);
+			}
+
+			// --- Insérer la case à cocher (état) une seule fois ---
+
+			const divEtat = `
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" value="1" name="etat" id="etat" checked>
+					<label class="form-check-label" for="etat">
+					Activer le compte de l'utilisateur ?
+					</label>
+				</div>
+			`;
+			$("#divEtat").html(divEtat);
+
+			// --- Gérer les changements ---
+			$("#AjouterRDV").on("change", "#typeCompte", updateFormFields);
+			$("#AjouterRDV").on("change", "#profil", updateFormFields);
+
+			// --- Gérer le clic sur modification ---
+			$(".fa-edit").click(function(evt) {
+
+				const data = evt.target.id;
+				const ind = data.split('-')[1];
+
+				if (ind) {
+					// Remplissage du modal
+					$("#titreModale").text("Modifier un utilisateur");
+					$("#titreAction").text("Modifier");
+					$("#action").val("modifier");
+
+					$("#agent_id").val($("#id-" + ind).html());
+					$("#nom").val($("#nom-" + ind).html());
+					$("#prenom").val($("#prenom-" + ind).html());
+					$("#email").val($("#email-" + ind).html());
+					$("#telephone").val($("#telephone-" + ind).html());
+					$("#typeCompte").val($("#typeCompte-" + ind).html());
+					$("#profil").val($("#profil-" + ind).html());
+					$("#villesRDV").val($("#villes-" + ind).html());
+					const villeid = $("#villes-" + ind).html();
+
+					// Met à jour les champs dynamiques selon les valeurs remplies
+					updateFormFields();
+					if (($("#typeCompte-" + ind).html() === "rdv" || $("#typeCompte-" + ind).html() === "gestionnaire") && $("#profil-" + ind).html() === "agent") {
+
+						getListeVillesRDV(villeid);
+					}
+
+					// Gérer le code agent si présent
+					const codeagent = $("#codeagent-" + ind).html();
+					$("#codeagent").val(codeagent || "");
+
+					// ✅ Gérer l'état (1 = actif, 0 = inactif)
+					const etat = $("#etat-" + ind).html()?.trim();
+					if (etat === "1" || etat === "oui" || etat.toLowerCase() === "actif") {
+						$("#etat").prop("checked", true);
+					} else {
+						$("#etat").prop("checked", false);
+					}
+
+					// Afficher le modal
+					$("#AjouterRDV").modal("show");
+				}
+			});
+
+			// --- Cas initial (ajout d’un utilisateur) ---
+			updateFormFields();
+			$("#etat").prop("checked", true); // ✅ par défaut, activé
+
+
+
+
+			$("#closeModaleUser").click(function(evt) {
+				$('#AjouterRDV').modal('hide')
+				location.reload();
+
 			})
-
-
 
 			$(".fa-mouse-pointer").click(function(evt) {
 
@@ -370,24 +499,6 @@ else $effectue = 0;
 				}
 			})
 
-
-
-			$(".fa-edit").click(function(evt) {
-
-
-				var data = evt.target.id
-
-				var result = data.split('-');
-				var ind = result[1]
-
-				if (ind != undefined) {
-					var idrdv = $("#id-" + ind).html()
-					var codeagent = $("#codeagent-" + ind).html()
-
-					//alert(idrdv + " " + codeagent);
-				}
-			})
-
 			$(".fa-eye").click(function(evt) {
 				var data = evt.target.id
 
@@ -403,6 +514,8 @@ else $effectue = 0;
 					document.cookie = "codeagent=" + codeagent;
 					document.cookie = "action=traiter";
 					location.href = "fiche-users";
+
+
 				}
 
 			})
@@ -423,8 +536,21 @@ else $effectue = 0;
 
 			})
 
-		})
 
+			$("#retourNotification").click(function() {
+
+				$('#notificationValidation').modal('hide')
+				location.reload();
+
+			})
+
+			$("#closeModaleNotification").click(function(evt) {
+				$('#notificationValidation').modal('hide')
+				location.reload();
+
+			})
+
+		})
 
 		function myFunction() {
 			var x = document.getElementById("myDIV");
@@ -433,6 +559,207 @@ else $effectue = 0;
 			} else {
 				x.style.display = "none";
 			}
+		}
+
+		function getListeVillesRDV(idVilleEff = "") {
+			console.log("Chargement des villes de réception, sélection :", idVilleEff);
+
+			$.ajax({
+				url: "config/routes.php",
+				method: "POST",
+				dataType: "json",
+				data: {
+					idVilleEff: idVilleEff,
+					etat: "getListeVillesTransformations"
+				},
+				success: function(response) {
+					let optionsHtml = `<option value="" disabled ${!idVilleEff ? "selected" : ""}>[Villes de réception des RDV]</option>`;
+
+					console.log("Villes de réception des RDV :", response);
+					if (response && response.length > 0) {
+						$.each(response, function(index, ville) {
+
+							const id = ville.idVilleBureau;
+							const libelle = ville.libelleVilleBureau;
+							const selected = idVilleEff == id ? "selected" : "";
+							console.log(id, libelle, idVilleEff);
+							optionsHtml += `<option value="${id}" ${selected}>${libelle}</option>`;
+						});
+					} else {
+						optionsHtml += `<option value="" disabled>Aucune ville disponible</option>`;
+					}
+
+					const selectHtml = `
+						<label for="villesRDV" style="color: #000000;">
+						Ville de réception du RDV <strong style="color: #F9B233;">*</strong>
+						</label>
+						<select id="villesRDV" name="villesRDV" class="form-control" required>
+						${optionsHtml}
+						</select>
+					`;
+
+					$("#ListeVilles").html(selectHtml);
+				},
+				error: function(xhr, status, error) {
+					console.error("Erreur AJAX :", status, error);
+					$("#ListeVilles").html(
+						`<p style="color:red;">Erreur lors du chargement des villes.</p>`
+					);
+				}
+			});
+		}
+
+
+		function getListeVillesRDV222(idVilleEff) {
+
+
+			console.log("selection de la ville", idVilleEff)
+			$.ajax({
+				url: "config/routes.php",
+				data: {
+					idVilleEff: idVilleEff,
+					etat: "getListeVillesTransformations"
+				},
+				dataType: "json",
+				method: "post",
+				success: function(response, status) {
+					let html = `<option value="" selected>[Villes de reception des RDV]</option>`;
+
+					$.each(response, function(indx, data) {
+						let idVilleBureau = data.idVilleBureau;
+						let libelleVilleBureau = data.libelleVilleBureau;
+						//html += `<option value="${idVilleBureau}|${libelleVilleBureau}" id="ob-${indx}">${libelleVilleBureau}</option>`;
+						html += `<option value="${idVilleBureau}" id="ob-${indx}" ${idVilleEff == idVilleBureau ? 'selected' : ''}>${libelleVilleBureau}</option>`;
+					});
+
+					$("#ListeVilles").html('<select id="villesRDV" name="villesRDV" class="form-control" required >' + html + '</select>');
+					// //verifierActivationBouton(); // Vérifie après chargement
+				},
+				error: function(response, status, etat) {
+					console.log(response, status, etat);
+				}
+			});
+		}
+
+
+		function getTraitementAjoutUtilisateur() {
+
+			let agent_id = document.getElementById("agent_id").value;
+			let action = document.getElementById("action").value;
+			let nom = document.getElementById("nom").value;
+			let prenom = document.getElementById("prenom").value;
+			let email = document.getElementById("email").value;
+			let telephone = document.getElementById("telephone").value;
+			let typeCompte = document.getElementById("typeCompte").value;
+			let profil = document.getElementById("profil").value;
+			let etatCompte = document.getElementById("etat").checked;
+
+			let ciblePrestation = null;
+			let codeagent = null;
+			let villesRDV = null;
+
+			// verifier que tous les champs requis sont remplis
+
+
+			if (verifierChampsRequis("#formOperateur")) {
+				// Tous les champs sont remplis
+				console.log("Formulaire valide, on peut envoyer !");
+				// … ton code AJAX ou ta soumission ici …
+			} else {
+				console.log("Formulaire incomplet !");
+			}
+
+
+			if (etatCompte == true) {
+				etatCompte = 1;
+			} else {
+				etatCompte = 0;
+			}
+
+			if (typeCompte == "prestation" && profil == "agent") {
+				ciblePrestation = document.getElementById("ciblePrestation").value;
+			}
+
+			if ((typeCompte == "rdv" || typeCompte == "gestionnaire") && profil == "agent") {
+				codeagent = document.getElementById("codeagent").value;
+				villesRDV = document.getElementById("villesRDV").value;
+			}
+
+			//alert(action + " " + agent_id + " " + nom + " " + prenom + " " + email + " " + telephone + " " + typeCompte + " " + profil + " " + codeagent + " " + villesRDV + " " + etatCompte + " " + ciblePrestation);
+
+			$.ajax({
+				url: "config/routes.php",
+				data: {
+					typeaction: action,
+					agent_id: agent_id,
+					nom: nom,
+					prenom: prenom,
+					email: email,
+					telephone: telephone,
+					typeCompte: typeCompte,
+					profil: profil,
+					ciblePrestation: ciblePrestation,
+					codeagent: codeagent,
+					villesRDV: villesRDV,
+					statut: etatCompte,
+					etat: "getTraitementAjoutUtilisateur"
+				},
+				dataType: "json",
+				method: "post",
+				success: function(response, status) {
+
+					console.log(response);
+					if (response != "0") {
+
+						let a_afficher = `<div class="alert alert-success" role="alert" style="text-align: center; font-size: 18px ; color: #033f1f; font-weight: bold">
+                            ${response}
+                        </div>`;
+						$("#msgEchec").html(a_afficher)
+						$('#notificationValidation').modal("show")
+					} else {
+						let a_afficher = `
+						<div class="alert alert-danger" role="alert"> desole une erreur est survenue lors de ${action}  </div>`;
+						$("#msgEchec").html(a_afficher)
+						$('#notificationValidation').modal("show")
+					}
+
+
+				},
+				error: function(response, status, etat) {
+					console.log(response, status, etat);
+				}
+			});
+
+		};
+
+		function verifierChampsRequis(formSelector) {
+			let formulaire = document.querySelector(formSelector);
+			let champs = formulaire.querySelectorAll("[required]");
+			let tousRemplis = true;
+			let premierManquant = null;
+
+			champs.forEach((champ) => {
+				// Supprime la mise en évidence précédente
+				champ.classList.remove("is-invalid");
+				champ.classList.add("is-valid");
+
+
+				if (
+					champ.type === "checkbox" && !champ.checked ||
+					champ.value.trim() === ""
+				) {
+					tousRemplis = false;
+					champ.classList.add("is-invalid"); // Pour visuel Bootstrap par ex.
+					if (!premierManquant) premierManquant = champ;
+				}
+			});
+
+			if (!tousRemplis) {
+				alert("Veuillez remplir tous les champs requis avant de continuer.");
+				if (premierManquant) premierManquant.focus();
+			}
+
+			return tousRemplis;
 		}
 	</script>
 

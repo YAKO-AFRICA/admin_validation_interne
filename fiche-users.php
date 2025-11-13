@@ -14,7 +14,7 @@ $idusers = GetParameter::FromArray($_COOKIE, 'idusers');
 if ($idusers == null) header("Location:deconnexion.php");
 else {
 
-	echo $sqlSelect = "
+	$sqlSelect = "
    SELECT 
     users.*, 
     COUNT(tblrdv.idrdv) AS nb_rdv,
@@ -44,7 +44,8 @@ ORDER BY
 		$user = $getUser[0];
 	}
 
-	$option_rdv = $fonction->getRetourneOptionRDV($user);
+
+	$option_rdv = $fonction->getRetourJourReception($user->ville);
 	if ($option_rdv != null) $effectueoptordv = count($option_rdv);
 	else $effectueoptordv = 0;
 }
@@ -132,177 +133,284 @@ ORDER BY
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-30">
-						<div class="pd-20 card-box height-100-p">
-							<div class="profile-photo">
-								<img src="vendors/images/avatar-2.png" alt="" class="avatar-photo">
-							</div>
-							<h5 class="text-center h5 mb-0"><?= strtoupper($user->nom . " " . $user->prenom) ?></h5>
-							<p class="text-center text-muted font-14">
-								<?= $user->typeCompte == "gestionnaire" ? "Gestionnaire" : "admin RDV"; ?></p>
-							<div class="profile-info">
-								<h5 class="text-center h5 mb-0">Contact</h5>
-								<p class="text-center text-muted font-14"> email : <span style="font-bold"><?= $user->email ? $user->email : $user->login; ?></span></p>
-								<p class="text-center text-muted font-14"> telephone : <span style="font-bold"><?= $user->telephone ? $user->telephone : "--"; ?></span></p>
-								<p class="text-center text-muted font-14"> adresse : <span style="font-bold"><?= $user->adresse ? $user->adresse : "--"; ?></span></p>
-								
-							</div>
-							<div class="profile-social">
-								<h5 class="mb-20 h5 text-blue">Information Reception Rendez-vous</h5>
-								<?php
 
-								$jourReception = "";
-								$nbreParReception = 0;
-								if ($_SESSION["typeCompte"] == "rdv") {
+				<?php if (($user->typeCompte == "gestionnaire" || $user->typeCompte == "rdv") && $user->profil == "agent") { ?>
+					<div class="row">
+						<div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-30">
+							<div class="card user-profile shadow-sm border-0 mb-4">
+								<div class="card-body text-center py-4">
+									<div class="profile-photo mb-3">
+										<img src="vendors/images/avatar-2.png" alt="" class="avatar-photo">
+									</div>
 
-									if ($option_rdv != null) {
-										foreach ($option_rdv as $optionJour) {
+									<h5 class="card-title mb-1 text-uppercase">
+										<?= strtoupper($user->nom . " " . $user->prenom) ?>
+									</h5>
 
-											$jourReception .= $optionJour->jour . " , ";
-											$nbreParReception = $optionJour->nbmax;
-								?>
+									<p class="text-muted mb-2">
+										<i class="bi bi-person-badge"></i>
+										<strong>Profil :</strong> <?= ucfirst($user->profil) ?>
+									</p>
+
+									<p class="text-muted mb-4">
+										<i class="bi bi-gear"></i>
+										<strong>Type de compte :</strong> <?= ucfirst($user->typeCompte) ?>
+										<?= $user->cible ? " - " . ucfirst($user->cible) : "" ?>
+									</p>
+
+									<!-- ✅ Statut du compte -->
+									<?php
+									$actif = isset($user->etat) && $user->etat == 1;
+									?>
+									<p class="mb-4">
+										<span class="badge <?= $actif ? 'bg-success' : 'bg-danger' ?> px-3 py-2 text-white">
+											<i class="bi <?= $actif ? 'bi-check-circle' : 'bi-x-circle' ?> me-1"></i>
+											<?= $actif ? '✅ Compte actif' : ' ❌ Compte désactivé' ?>
+										</span>
+									</p>
+									<hr class="my-3">
+
+									<h6 class="text-uppercase text-secondary mb-3">Contact</h6>
+
+									<ul class="list-unstyled mb-0">
+										<li class="mb-2">
+											<i class="bi bi-envelope text-primary me-2"></i>
+											<strong>Email :</strong>
+											<?= $user->email ? htmlspecialchars($user->email) : htmlspecialchars($user->login) ?>
+										</li>
+										<li class="mb-2">
+											<i class="bi bi-telephone text-success me-2"></i>
+											<strong>Téléphone :</strong>
+											<?= $user->telephone ? htmlspecialchars($user->telephone) : "--" ?>
+										</li>
+										<li>
+											<i class="bi bi-geo-alt text-danger me-2"></i>
+											<strong>Adresse :</strong>
+											<?= $user->adresse ? htmlspecialchars($user->adresse) : "--" ?>
+										</li>
+									</ul>
+									
+									<!-- ======================= -->
+									<!-- SECTION RECEPTION RDV -->
+									<!-- ======================= -->
+									<?php if ($_SESSION["typeCompte"] == "rdv" && !empty($option_rdv)) : ?>
+										<hr class="my-4">
+										<h5 class="mb-3 h5 text-blue">
+											<i class="bi bi-calendar-week me-1"></i> Informations Réception Rendez-vous
+										</h5>
 
 										<?php
+										$jourReception = "";
+										$nbreParReception = 0;
+
+										foreach ($option_rdv as $optionJour) {
+											$jourReception .= $optionJour->jour . ", ";
+											$nbreParReception = $optionJour->nbmax;
 										}
-										$jourReception = substr($jourReception, 0, -2);
+										$jourReception = rtrim($jourReception, ", ");
 										?>
-										<div class="date">Villes : <span
-										class="badge badge-info"><?= $user->ville_nom ? $user->ville_nom : "--"; ?></span> </div>
-										<div class="date">Jour reception : <span
-												class="badge badge-success"><?= $jourReception; ?></span> </div>
-										<div class="date">Heure reception : <span style="color:black ; font-weight:bold">08:00 - 16:00</span> </div>
-										<div class="date">Max par jour : <span
-												style="color:black ; font-weight:bold"><?= $nbreParReception; ?></span>
+
+										<div class="text-start d-inline-block">
+											<p><strong>Villes :</strong>
+												<span class="badge bg-info text-white"><?= $user->ville_nom ?: "--"; ?></span>
+											</p>
+											<p><strong>Jour(s) de réception :</strong>
+												<span class="badge bg-success text-white"><?= $jourReception ?: "--"; ?></span>
+											</p>
+											<p><strong>Heure de réception :</strong>
+												<span class="text-dark fw-bold">08:00 - 14:00</span>
+											</p>
+											<p><strong>Nombre max. par jour :</strong>
+												<span class="text-dark fw-bold"><?= $nbreParReception ?: "--"; ?></span>
+											</p>
+											<p><strong>Lieu de réception :</strong>
+												<span class="text-dark fw-bold"><?= $user->localisation ?: "--"; ?></span>
+											</p>
 										</div>
-										<div class="date">Lieu reception : <span
-												style="color:black ; font-weight:bold"><?= $user->localisation ? $user->localisation : "--"; ?></span>
-										</div>
-								<?php
-									}
-								}
-								?>
+									<?php endif; ?>
+								</div>
 							</div>
+
+
 						</div>
-					</div>
-					<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mb-30">
-						<div class="pd-20 card-box height-100-p">
-							<h4 class="text-center p-2" style="color:#033f1f !important; font-weight:bold;"> Liste des rendez-vous transmis </h4>
-							<div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
-							<hr>
+						<div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mb-30">
+							<div class="pd-20 card-box height-100-p">
+								<h4 class="text-center p-2" style="color:#033f1f !important; font-weight:bold;"> Liste des rendez-vous transmis </h4>
+								<div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
+								<hr>
 
 
-							<?php
-							$retourStatut = $fonction->pourcentageRDV(" and gestionnaire = '" . $user->id . "'");
-							if (isset($retourStatut) && $retourStatut != null) {
+								<?php
+								$retourStatut = $fonction->pourcentageRDV(" and gestionnaire = '" . $user->id . "'");
+								if (isset($retourStatut) && $retourStatut != null) {
 
-							?>
+								?>
 
-								<div class="row">
-									<?php
-									foreach ($retourStatut as $etat => $statut) {
-										if ($statut["nb_ligne_element"] == 0) {
-											continue;
-										}
+									<div class="row">
+										<?php
+										foreach ($retourStatut as $etat => $statut) {
+											if ($statut["nb_ligne_element"] == 0) {
+												continue;
+											}
 
-									?>
-										<div class="col-xl-3 mb-30">
-											<div class="card-box height-100-p widget-style1 text-white"
-												style="background-color:<?= trim($statut["color"]) ?>; font-weight:bold; ">
-												<div class="d-flex flex-wrap align-items-center">
-													<div class="progress-data">
+										?>
+											<div class="col-xl-3 mb-30">
+												<div class="card-box height-100-p widget-style1 text-white"
+													style="background-color:<?= trim($statut["color"]) ?>; font-weight:bold; ">
+													<div class="d-flex flex-wrap align-items-center">
+														<div class="progress-data">
 
-													</div>
-													<div class="widget-data">
-														<div class="h4 mb-0 text-white"><?= trim($statut["nb_ligne_element"]) ?></div>
-														<div class="weight-600 font-14">RDV <?= trim(strtoupper($statut["libelle"])) ?>
+														</div>
+														<div class="widget-data">
+															<div class="h4 mb-0 text-white"><?= trim($statut["nb_ligne_element"]) ?></div>
+															<div class="weight-600 font-14">RDV <?= trim(strtoupper($statut["libelle"])) ?>
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-									<?php
-									}
-									?>
-								</div>
-							<?php
-							}
-							?>
-							<hr>
-							<div class="card-body" style="background-color: whitesmoke;">
-								<?php
-								$sqlSelect = "SELECT  tblrdv.*,   CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, users.telephone as telgest , users.adresse as localisation , users.email as mailgest,     TRIM(tblvillebureau.libelleVilleBureau) AS villes   FROM     tblrdv LEFT JOIN      users ON tblrdv.gestionnaire = users.id LEFT JOIN   tblvillebureau ON tblrdv.`idTblBureau` = tblvillebureau.idVilleBureau WHERE  tblrdv.gestionnaire = '" . $user->id . "'  ORDER BY  tblrdv.idrdv DESC ";
-
-								$liste_rdvs = $fonction->_getSelectDatabases($sqlSelect);
-								if ($liste_rdvs != null) $effectue = count($liste_rdvs);
-								else $effectue = 0;
-
-								?>
-								<table class="table hover  data-table-export nowrap"
-									style="font-size:8pt;">
-									<thead>
-										<tr>
-											<th class="table-plus datatable-nosort">#Ref</th>
-											<th hidden>Id</th>
-											<th>Date</th>
-											<th>Nom & prénom(s)</th>
-											<th hidden>Id contrat</th>
-											<th>Motif</th>
-											<th>Detail RDV</th>
-											<th>Etat</th>
-											<th class="table-plus datatable-nosort">Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										<?php
-										for ($i = 0; $i <= ($effectue - 1); $i++) {
-											$rdv = $liste_rdvs[$i];
-											if (isset($rdv->etat) && $rdv->etat !== null && in_array($rdv->etat, array_keys(Config::tablo_statut_rdv)))  $etat = $rdv->etat;
-											else $etat = 1;
-											$retourEtat = Config::tablo_statut_rdv[$etat];
-										?>
-											<tr>
-												<td id="id-<?= $i ?>" hidden><?= $rdv->idrdv; ?></td>
-												<td id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
-												<td><?= $rdv->dateajou; ?></td>
-												<td class="text-wrap"><?= $rdv->nomclient; ?></td>
-												<td class="text-wrap" id="idcontrat-<?= $i ?>" hidden>
-													<?php echo $rdv->police; ?></td>
-												<td class="text-wrap"><?= $rdv->motifrdv; ?>
-													<br>
-													<small>ref contrat :
-														<?php echo $rdv->police; ?></small>
-												</td>
-												<td class="text-wrap" id="daterdv-<?= $i ?>">
-													<?php echo $rdv->daterdv; ?>
-													<br>
-													<small
-														style="font-weight:bold; color:#F9B233!important;">Ville
-														rdv : <?php echo $rdv->villes; ?></small>
-												</td>
-
-												<td>
-													<span
-														class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span>
-												</td>
-												<td class="table-plus text-wrap">
-													<label class="btn btn-secondary"
-														style="background-color:#F9B233 ;"
-														for="click-<?= $i ?>"><i class="fa fa-eye"
-															id="click-<?= $i ?>"> Voir </i></label>
-												</td>
-
-											</tr>
 										<?php
 										}
 										?>
-									</tbody>
-								</table>
+									</div>
+								<?php
+								}
+								?>
+								<hr>
+								<div class="card-body" style="background-color: whitesmoke;">
+									<?php
+									$sqlSelect = "SELECT  tblrdv.*,   CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, users.telephone as telgest , users.adresse as localisation , users.email as mailgest,     TRIM(tblvillebureau.libelleVilleBureau) AS villes   FROM     tblrdv LEFT JOIN      users ON tblrdv.gestionnaire = users.id LEFT JOIN   tblvillebureau ON tblrdv.`idTblBureau` = tblvillebureau.idVilleBureau WHERE  tblrdv.gestionnaire = '" . $user->id . "'  ORDER BY  tblrdv.idrdv DESC ";
+
+									$liste_rdvs = $fonction->_getSelectDatabases($sqlSelect);
+									if ($liste_rdvs != null) $effectue = count($liste_rdvs);
+									else $effectue = 0;
+
+									?>
+									<table class="table hover  data-table-export nowrap"
+										style="font-size:8pt;">
+										<thead>
+											<tr>
+												<th class="table-plus datatable-nosort">#Ref</th>
+												<th hidden>Id</th>
+												<th>Date</th>
+												<th>Nom & prénom(s)</th>
+												<th hidden>Id contrat</th>
+												<th>Motif</th>
+												<th>Detail RDV</th>
+												<th>Etat</th>
+												<th class="table-plus datatable-nosort">Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php
+											for ($i = 0; $i <= ($effectue - 1); $i++) {
+												$rdv = $liste_rdvs[$i];
+												if (isset($rdv->etat) && $rdv->etat !== null && in_array($rdv->etat, array_keys(Config::tablo_statut_rdv)))  $etat = $rdv->etat;
+												else $etat = 1;
+												$retourEtat = Config::tablo_statut_rdv[$etat];
+											?>
+												<tr>
+													<td id="id-<?= $i ?>" hidden><?= $rdv->idrdv; ?></td>
+													<td id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
+													<td><?= $rdv->dateajou; ?></td>
+													<td class="text-wrap"><?= $rdv->nomclient; ?></td>
+													<td class="text-wrap" id="idcontrat-<?= $i ?>" hidden>
+														<?php echo $rdv->police; ?></td>
+													<td class="text-wrap"><?= $rdv->motifrdv; ?>
+														<br>
+														<small>ref contrat :
+															<?php echo $rdv->police; ?></small>
+													</td>
+													<td class="text-wrap" id="daterdv-<?= $i ?>">
+														<?php echo $rdv->daterdv; ?>
+														<br>
+														<small
+															style="font-weight:bold; color:#F9B233!important;">Ville
+															rdv : <?php echo $rdv->villes; ?></small>
+													</td>
+
+													<td>
+														<span
+															class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span>
+													</td>
+													<td class="table-plus text-wrap">
+														<label class="btn btn-secondary"
+															style="background-color:#F9B233 ;"
+															for="click-<?= $i ?>"><i class="fa fa-eye"
+																id="click-<?= $i ?>"> Voir </i></label>
+													</td>
+
+												</tr>
+											<?php
+											}
+											?>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				
+				<?php } else {
+				?>
+
+					<div class="card user-profile shadow-sm border-0 mb-4">
+						<div class="card-body text-center py-4">
+							<div class="profile-photo mb-3">
+								<img src="vendors/images/avatar-2.png" alt="" class="avatar-photo">
+							</div>
+
+							<h5 class="card-title mb-1 text-uppercase">
+								<?= strtoupper($user->nom . " " . $user->prenom) ?>
+							</h5>
+
+							<p class="text-muted mb-2">
+								<i class="bi bi-person-badge"></i>
+								<strong>Profil :</strong> <?= ucfirst($user->profil) ?>
+							</p>
+
+							<p class="text-muted mb-4">
+								<i class="bi bi-gear"></i>
+								<strong>Type de compte :</strong> <?= ucfirst($user->typeCompte) ?>
+								<?= $user->cible ? " - " . ucfirst($user->cible) : "" ?>
+							</p>
+
+							<!-- ✅ Statut du compte -->
+							<?php
+							$actif = isset($user->etat) && $user->etat == 1;
+							?>
+							<p class="mb-4">
+								<span class="badge <?= $actif ? 'bg-success' : 'bg-danger' ?> px-3 py-2 text-white">
+									<i class="bi <?= $actif ? 'bi-check-circle' : 'bi-x-circle' ?> me-1"></i>
+									<?= $actif ? '✅ Compte actif' : ' ❌ Compte désactivé' ?>
+								</span>
+							</p>
+							<hr class="my-3">
+
+							<h6 class="text-uppercase text-secondary mb-3">Contact</h6>
+
+							<ul class="list-unstyled mb-0">
+								<li class="mb-2">
+									<i class="bi bi-envelope text-primary me-2"></i>
+									<strong>Email :</strong>
+									<?= $user->email ? htmlspecialchars($user->email) : htmlspecialchars($user->login) ?>
+								</li>
+								<li class="mb-2">
+									<i class="bi bi-telephone text-success me-2"></i>
+									<strong>Téléphone :</strong>
+									<?= $user->telephone ? htmlspecialchars($user->telephone) : "--" ?>
+								</li>
+								<li>
+									<i class="bi bi-geo-alt text-danger me-2"></i>
+									<strong>Adresse :</strong>
+									<?= $user->adresse ? htmlspecialchars($user->adresse) : "--" ?>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+				<?php
+				} ?>
+
 			</div>
 			<!-- js -->
 			<script src="vendors/scripts/core.js"></script>
