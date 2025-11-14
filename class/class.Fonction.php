@@ -1745,4 +1745,156 @@ class Fonction
 
 		return  $this->_getSelectDatabases($sqlSelect);
 	}
+
+	public function pourcentageRDVBy($type = "statut", $critereRecherche = null, $formatGraph = false)
+	{
+		$pourcentage_etat = [];
+		$rang_candidates = [];
+		$val = 0;
+
+		// Couleurs par défaut pour graph
+		$barColorsType = ["red", "green", "blue", "orange", "brown", "gold", "violet", "cyan", "magenta", "gray"];
+		$badgeColorsType = ["badge-danger", "badge-success", "badge-primary", "badge-warning", "badge-info", "badge-light", "badge-dark", "badge-primary", "badge-secondary"];
+		//$pourcentage_etat[$code]['badge'] = $color_statut;
+
+		// Total RDV
+		$sqlTotal = "SELECT COUNT(idrdv) as resultat FROM " . Config::TABLE_RDV;
+		$nb_ligne_total = $this->_getValeursFormuleForSearch($sqlTotal);
+		if ($nb_ligne_total <= 0) $nb_ligne_total = 1;
+
+		switch ($type) {
+			case "statut":
+				$categories = Config::tablo_statut_rdv;
+				foreach ($categories as $k => $record) {
+					$code = $record["statut_traitement"];
+					$sql = "SELECT COUNT(idrdv) as resultat 
+                        FROM " . Config::TABLE_RDV . " 
+                        WHERE etat='" . trim($code) . "' $critereRecherche";
+					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
+
+					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
+					$pourcentage_etat[$code] = [
+						"etat"            => "actif",
+						"statut"          => $code,
+						"keyword"      => $record["libelle"],
+						"libelle"         => $record["libelle"],
+						"lib_statut"      => $record["lib_statut"],
+						"nb_ligne_element" => $nb_ligne_element,
+						"nb_ligne_total"  => $nb_ligne_total,
+						"color"           => $record["color"] ?? $barColorsType[$k % count($barColorsType)],
+						"badge"           => $record["color_statut"],
+						"url"             => $record["url"],
+						"pourcentage"     => $pct,
+						"lib_pourcentage" => $pct . "%"
+					];
+					$rang_candidates[] = $pct;
+				}
+				break;
+
+			case "ville":
+				$categories = $this->_Database->Select("SELECT * FROM " . Config::TABLE_VILLE . " WHERE idVilleBureau NOT IN ('6', '7')  ORDER BY idVilleBureau DESC");
+				foreach ($categories as $k => $record) {
+					$code = $record->idVilleBureau;
+					$sql = "SELECT COUNT(idrdv) as resultat 
+                        FROM " . Config::TABLE_RDV . " 
+                        WHERE idTblBureau = '" . $code . "'";
+					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
+
+					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
+					$pourcentage_etat[$code] = [
+						"etat"            => "actif",
+						"libelle"         => $record->libelleVilleBureau,
+						"keyword"      => $record->libelleVilleBureau,
+						"localisation"    => $record->localisation,
+						"nb_ligne_element" => $nb_ligne_element,
+						"nb_ligne_total"  => $nb_ligne_total,
+						"color"           => $barColorsType[$k % count($barColorsType)],
+						"pourcentage"     => $pct,
+						"lib_pourcentage" => $pct . "%"
+					];
+					$rang_candidates[] = $pct;
+				}
+				break;
+
+			case "user":
+				$categories = $this->_Database->Select("SELECT * FROM " . Config::TABLE_USER . " WHERE etat='1' and typeCompte='gestionnaire' ORDER BY id DESC");
+				foreach ($categories as $k => $record) {
+					$code = $record->id;
+					$sql = "SELECT COUNT(idrdv) as resultat 
+                        FROM " . Config::TABLE_RDV . " 
+                        WHERE idTblBureau = '" . $record->ville . "' 
+                        AND gestionnaire='" . $code . "'";
+					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
+
+					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
+					$pourcentage_etat[$code] = [
+						"etat"            => "actif",
+						"nomuser"         => $record->nom . " " . $record->prenom,
+						"genre"           => $record->genre,
+						"telephone"       => $record->telephone,
+						"typeCompte"      => $record->typeCompte,
+						"codeagent"       => $record->codeagent,
+						"ville"           => $record->ville,
+						"localisation"    => $record->adresse . " " . $record->ville . " " . $record->pays,
+						"nb_ligne_element" => $nb_ligne_element,
+						"nb_ligne_total"  => $nb_ligne_total,
+						"color"           => $barColorsType[$k % count($barColorsType)],
+						"pourcentage"     => $pct,
+						"lib_pourcentage" => $pct . "%"
+					];
+					$rang_candidates[] = $pct;
+				}
+				break;
+
+			default:
+				$categories = $this->_Database->Select("SELECT DISTINCT(motifrdv) FROM " . Config::TABLE_RDV . " ORDER BY motifrdv");
+				foreach ($categories as $k => $record) {
+					$code = $record->motifrdv;
+					$sql = "SELECT COUNT(idrdv) as resultat 
+						FROM " . Config::TABLE_RDV . " 
+						WHERE motifrdv='" . $code . "'";
+					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
+
+					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
+					$pourcentage_etat[$code] = [
+						"etat"            => "actif",
+						"libelle"         => $record->motifrdv,
+						"nb_ligne_element" => $nb_ligne_element,
+						"nb_ligne_total"  => $nb_ligne_total,
+						"color"           => $barColorsType[$k % count($barColorsType)],
+						"pourcentage"     => $pct,
+						"lib_pourcentage" => $pct . "%"
+					];
+					$rang_candidates[] = $pct;
+				}
+				break;
+		}
+
+		// Ajout rang et classement
+		foreach ($pourcentage_etat as $key => $infos) {
+			$rang = $this->rangCandidate($rang_candidates, $infos["pourcentage"]);
+			$pourcentage_etat[$key]["rang"] = $rang;
+			$pourcentage_etat[$key]["classement"] = $rang . $this->indexRang($rang);
+		}
+
+		// Option format Graph (labels + valeurs + couleurs)
+		if ($formatGraph) {
+			$labels = [];
+			$values = [];
+			$colors = [];
+			foreach ($pourcentage_etat as $infos) {
+				$labels[] = $infos["libelle"] ?? $infos["nomuser"] ?? "N/A";
+				$values[] = $infos["pourcentage"];
+				$colors[] = $infos["color"] ?? "gray";
+			}
+			return [
+				"labels" => $labels,
+				"values" => $values,
+				"colors" => $colors,
+				"raw"    => $pourcentage_etat
+			];
+		}
+
+		return $pourcentage_etat;
+	}
 }

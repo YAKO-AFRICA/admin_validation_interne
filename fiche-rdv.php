@@ -399,13 +399,8 @@ if (isset($_COOKIE["idrdv"])) {
                     getMenuValider();
                 }
             });
-
-
-
         });
-
-
-
+        
         $("#afficheuse").on("change", "#ListeGest", function(evt) {
 
         })

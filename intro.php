@@ -91,8 +91,46 @@ include("autoload.php");
                     </div>
                 </div>
             <?php
+            } elseif ($_SESSION['typeCompte'] == Config::TYPE_SERVICE_RDV) {
+
+                $retourStatut = $fonction->afficheuseGlobalStatistiqueRDV();
+                echo $retourStatut;
+            ?>
+
+                <div class="row p-2">
+                    <div class="col-md-5">
+                        <div class="card-box height-100-p pd-20">
+                            <h2 class="h4 mb-20 p-2 card-body" style="background-color:#033f1f; font-weight:bold;color:white"> proportion par statut de traitement des demandes de prestation</h2>
+                            <!-- <table class="table hover  data-table-export nowrap">
+                                <thead>
+                                    <tr>
+                                        <th class="table-plus datatable-nosort">Ville</th>
+                                        <th class="table-plus datatable-nosort">Nombre de RDV</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="afficheuseRDV_Ville">
+                                </tbody>
+                            </table> -->
+                            <div id="afficheuseRDV_Ville" style="width: 100%; height: 300px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-box height-100-p pd-20">
+                            <h2 class="h4 mb-20 p-2 card-body" style="background-color:#033f1f; font-weight:bold;color:white"> proportion par type de demande de prestation</h2>
+
+                            <div class="card-body">
+                                <canvas id="myChartTypeRDV" class="chartjs-render-monitor " style="width:100%;max-width:750px; height:250px; ">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php
             }
             ?>
+
+
+
 
 
         </div>
@@ -139,62 +177,135 @@ include("autoload.php");
 
             if (typeCompte == "prestation") {
                 introPretations()
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    const categories = [];
+                    const data = [];
+
+                    for (let key in prestationsData) {
+                        if (prestationsData.hasOwnProperty(key)) {
+                            let prestation = prestationsData[key];
+                            categories.push(prestation.libelle + " ( " + prestation.nb_ligne_element + " ) ");
+                            data.push({
+                                y: parseFloat(prestation.pourcentage),
+                                color: prestation.color
+                            });
+                        }
+                    }
+
+                    Highcharts.chart('container', {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Répartition par étape de prestation (%)'
+                        },
+                        xAxis: {
+                            categories,
+                            title: {
+                                text: 'Étape de prestation'
+                            }
+                        },
+                        yAxis: {
+                            min: 0,
+                            max: 100,
+                            title: {
+                                text: 'Pourcentage (%)'
+                            }
+                        },
+                        series: [{
+                            name: 'Pourcentage',
+                            data
+                        }],
+                        tooltip: {
+                            pointFormat: '<b>{point.y:.1f}%</b>'
+                        },
+                        legend: {
+                            enabled: false
+                        }
+                    });
+
+                });
+
+            }
+
+            if (typeCompte == "rdv") {
+                introRDV()
+
             }
 
 
         })
 
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const categories = [];
-            const data = [];
 
-            for (let key in prestationsData) {
-                if (prestationsData.hasOwnProperty(key)) {
-                    let prestation = prestationsData[key];
-                    categories.push(prestation.libelle + " ( " + prestation.nb_ligne_element + " ) ");
-                    data.push({
-                        y: parseFloat(prestation.pourcentage),
-                        color: prestation.color
-                    });
+
+
+        function introRDV() {
+
+            let tabloRDV_Statut = [];
+            let tabloStatRDV_Statut = [];
+            let tabloValRDV_Statut = [];
+            let barColorsRDV_Statut = [];
+
+            let tabloRDV_Ville = [];
+            let tabloStatRDV_Ville = [];
+            let tabloValRDV_Ville = [];
+            let barColorsRDV_Ville = [];
+
+            let tabloRDV_user = [];
+            let tabloStatRDV_user = [];
+            let tabloValRDV_user = [];
+            let barColorsRDV_user = [];
+
+            let tabloRDV_Type = [];
+            let tabloStatRDV_Type = [];
+            let tabloValRDV_Type = [];
+            let barColorsRDV_Type = [];
+
+
+            $.ajax({
+                url: "config/routes.php",
+                data: {
+                    type: "rdv",
+                    etat: "intro"
+                },
+                dataType: "json",
+                method: "post",
+
+                success: function(response, status) {
+
+                    let retourStatut = response['retourStatut']
+                    let retourStatVille = response['retourStatVille']
+                    let retourStatuser = response['retourStatuser']
+                    let retourStatutType = response['retourStatutType']
+
+                    console.log(response);
+
+                    $.each(retourStatVille, function(indxVille, elementVille) {
+
+                        if (elementVille.etat == "1") aTraiter = elementVille.nb_ligne_element;
+                        //tabloRDV_Ville.push(elementVille.keyword);
+                        tabloValRDV_Ville.push(elementVille.nb_ligne_element);
+                        barColorsRDV_Ville.push(elementVille.color);
+
+                        tabloRDV_Ville += `<tr>
+                            <td style="font-size:14px"><i class="bx bxs-circle me-2"  ></i>${elementVille.keyword}</td>
+                            <td style="font-size:14px"><span class="badge ${elementVille.bagde} badge-pill">${elementVille.nb_ligne_element}</span></td>
+                            <td style="font-size:14px"><span class="badge ${elementVille.bagde} badge-pill">${elementVille.pourcentage} %</span></td>
+                            </tr>`
+                    })
+
+                     $("#afficheuseRDV_Ville").html(tabloRDV_Ville);
+
+                },
+                error: function(response, status, etat) {
+                    //var a_afficher = "traitement enregistrer avec succes !!"
+                    // $("#a_afficher2").text(a_afficher)
+                    // $('#notification').modal("show")
                 }
-            }
-
-            Highcharts.chart('container', {
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: 'Répartition par étape de prestation (%)'
-                },
-                xAxis: {
-                    categories,
-                    title: {
-                        text: 'Étape de prestation'
-                    }
-                },
-                yAxis: {
-                    min: 0,
-                    max: 100,
-                    title: {
-                        text: 'Pourcentage (%)'
-                    }
-                },
-                series: [{
-                    name: 'Pourcentage',
-                    data
-                }],
-                tooltip: {
-                    pointFormat: '<b>{point.y:.1f}%</b>'
-                },
-                legend: {
-                    enabled: false
-                }
-            });
-
-        });
-
-
+            })
+        }
 
         function introPretations() {
             let tablo = [];

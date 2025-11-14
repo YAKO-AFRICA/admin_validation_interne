@@ -93,17 +93,17 @@ if ($request->action != null) {
                 echo json_encode($result);
             } elseif ($type == Config::TYPE_SERVICE_RDV) {
 
-                // $retourStatut = $fonction->pourcentageRDVBy("statut");
-                // $retourStatutVille = $fonction->pourcentageRDVBy("ville");
-                // $retourStatutuser = $fonction->pourcentageRDVBy("user");
-                // $retourStatutType = $fonction->pourcentageRDVBy("type");
-                //  $result = array(
-                //     "retourStatut" => $retourStatut,
-                //     "retourStatVille" => $retourStatutVille,
-                //     "retourStatuser" => $retourStatutuser,
-                //     "retourStatutType" => $retourStatutType
-                // );
-                // echo json_encode($result);
+                $retourStatut = $fonction->pourcentageRDVBy("statut");
+                $retourStatutVille = $fonction->pourcentageRDVBy("ville");
+                $retourStatutuser = $fonction->pourcentageRDVBy("user");
+                $retourStatutType = $fonction->pourcentageRDVBy("type");
+                $result = array(
+                    "retourStatut" => $retourStatut,
+                    "retourStatVille" => $retourStatutVille,
+                    "retourStatuser" => $retourStatutuser,
+                    "retourStatutType" => $retourStatutType
+                );
+                echo json_encode($result);
                 //$global = $fonction->pourcentageAllTypeRDV();
             } else {
 
@@ -803,7 +803,7 @@ if ($request->action != null) {
             $retour = traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id);
             echo json_encode($retour);
             break;
-            
+
         case "importBordereau":
             $etat = 1;
 
