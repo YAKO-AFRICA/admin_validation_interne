@@ -11,12 +11,13 @@ class Config
 
     const LogDirectory = 'log/';
     const DatabaseHost = '51.255.64.8';
-    const DatabaseName = 'laloyale_bdwebdev';
+    //const DatabaseName = 'laloyale_bdwebdev';
     const DatabaseUser = 'laloyale_llvweb';
     const DatabasePass = 'j2y1YgwwIQ6u';
+
     // const LogDirectory = 'log/';
     // const DatabaseHost = 'localhost';
-    // const DatabaseName = 'laloyale_bdweb';
+    const DatabaseName = 'laloyale_bdweb';
     // const DatabaseUser = 'root';
     // const DatabasePass = '';
 
@@ -106,26 +107,26 @@ class Config
     const color_SAISIE_INACHEVEE = "badge badge-danger";
 
     const tablo_statut_prestation = array(
-        "1" => array("lib_statut" => self::EN_ATTENTE, "libelle" => self::LIB_EN_ATTENTE, "statut_traitement" => "1", "color_statut" => self::color_NOUVEAU, "color" => "gray", "url" => "liste-prestation-attente" ,"icone"=>"micon dw dw-edit"),
-        "2" => array("lib_statut" => self::VALIDER, "libelle" => self::LIB_VALIDER, "statut_traitement" => "2", "color_statut" => self::color_SUCCESS, "color" => "#033f1f", "url" => "liste-prestation-traite" ,"icone"=>"micon fa fa-check"),
-        "3" => array("lib_statut" => self::REJETE, "libelle" => self::LIB_REJETE, "statut_traitement" => "3", "color_statut" => self::color_REJETE, "color" => "#F9B233", "url" => "liste-prestation-rejet" ,"icone"=>"micon fa fa-close")
+        "1" => array("lib_statut" => self::EN_ATTENTE, "libelle" => self::LIB_EN_ATTENTE, "statut_traitement" => "1", "color_statut" => self::color_NOUVEAU, "color" => "gray", "url" => "liste-prestation-attente", "icone" => "micon dw dw-edit"),
+        "2" => array("lib_statut" => self::VALIDER, "libelle" => self::LIB_VALIDER, "statut_traitement" => "2", "color_statut" => self::color_SUCCESS, "color" => "#033f1f", "url" => "liste-prestation-traite", "icone" => "micon fa fa-check"),
+        "3" => array("lib_statut" => self::REJETE, "libelle" => self::LIB_REJETE, "statut_traitement" => "3", "color_statut" => self::color_REJETE, "color" => "#F9B233", "url" => "liste-prestation-rejet", "icone" => "micon fa fa-close")
     );
-    
+
     const tablo_statut_rdv = array(
-        "1" => array("lib_statut" => self::EN_ATTENTE, "libelle" => self::LIB_EN_ATTENTE, "statut_traitement" => "1", "color_statut" => self::color_NOUVEAU, "color" => "gray", "url" => "liste-rdv-attente","icone"=>"micon dw dw-edit"),
-        "2" => array("lib_statut" => self::TRANSMIS, "libelle" => self::LIB_TRANSMIS, "statut_traitement" => "2", "color_statut" => self::color_SUCCESS, "color" => "#033f1f", "url" => "liste-rdv-transmis","icone"=>"micon fa fa-forward fa-2x"),
-        "0" => array("lib_statut" => self::REJETE, "libelle" => self::LIB_REJETE, "statut_traitement" => "0", "color_statut" => self::color_SAISIE_INACHEVEE, "color" => "red", "url" => "","icone"=>"micon fa fa-close"),
-        "3" => array("lib_statut" => self::TRAITER, "libelle" => self::LIB_TRAITER, "statut_traitement" => "3", "color_statut" => self::color_REJETE, "color" => "#F9B233", "url" => "liste-rdv-traite","icone"=>"micon fa fa-check"),
-        "-1" => array("lib_statut" => self::SAISIE_INACHEVEE, "libelle" => self::LIB_SAISIE_INACHEVEE, "statut_traitement" => "-1", "color_statut" => self::color_DARK, "color" => "black", "url" => "liste-rdv-rejet","icone"=>"micon fa fa-close")
+        "1" => array("lib_statut" => self::EN_ATTENTE, "libelle" => self::LIB_EN_ATTENTE, "statut_traitement" => "1", "color_statut" => self::color_NOUVEAU, "color" => "gray", "url" => "liste-rdv-attente", "icone" => "micon dw dw-edit"),
+        "2" => array("lib_statut" => self::TRANSMIS, "libelle" => self::LIB_TRANSMIS, "statut_traitement" => "2", "color_statut" => self::color_SUCCESS, "color" => "#033f1f", "url" => "liste-rdv-transmis", "icone" => "micon fa fa-forward fa-2x"),
+        "0" => array("lib_statut" => self::REJETE, "libelle" => self::LIB_REJETE, "statut_traitement" => "0", "color_statut" => self::color_SAISIE_INACHEVEE, "color" => "red", "url" => "", "icone" => "micon fa fa-close"),
+        "3" => array("lib_statut" => self::TRAITER, "libelle" => self::LIB_TRAITER, "statut_traitement" => "3", "color_statut" => self::color_REJETE, "color" => "#F9B233", "url" => "liste-rdv-traite", "icone" => "micon fa fa-check"),
+        "-1" => array("lib_statut" => self::SAISIE_INACHEVEE, "libelle" => self::LIB_SAISIE_INACHEVEE, "statut_traitement" => "-1", "color_statut" => self::color_DARK, "color" => "black", "url" => "liste-rdv-rejet", "icone" => "micon fa fa-close")
 
     );
 
     const TABLE_USER = "users";
     const TABLE_PRESTATION = "tbl_prestations";
-     const TABLE_RDV = "tblrdv";
+    const TABLE_RDV = "tblrdv";
     const TABLE_DETAIL_COURRIER = "tbldetailcourrier";
     const TABLE_TYPE_PRESTATION = "tbl_type_prestations";
-    Const TABLE_VILLE = "tblvillebureau";
+    const TABLE_VILLE = "tblvillebureau";
 
     //const TABLE_PRESTATION = "laloyale_bdwebdev.tbl_prestations";
     //const TABLE_RDV = "laloyale_bdwebdev.tblrdv";
@@ -157,5 +158,4 @@ class Config
     const URL_PRESTATION_RACINE = "https://testsite.yakoafricassur.com/";
     const URL_DOC_PRESTATION = "https://testsite.yakoafricassur.com/api/getPrestationsDoc/";
     const URL_API_OTP_PAYS = "https://apiotp.yakoafricassur.com/api/getAllCountries/";
-    
 }

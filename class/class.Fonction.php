@@ -1746,6 +1746,7 @@ class Fonction
 		return  $this->_getSelectDatabases($sqlSelect);
 	}
 
+
 	public function pourcentageRDVBy($type = "statut", $critereRecherche = null, $formatGraph = false)
 	{
 		$pourcentage_etat = [];
@@ -1757,8 +1758,9 @@ class Fonction
 		$badgeColorsType = ["badge-danger", "badge-success", "badge-primary", "badge-warning", "badge-info", "badge-light", "badge-dark", "badge-primary", "badge-secondary"];
 		//$pourcentage_etat[$code]['badge'] = $color_statut;
 
+		$plus = "  YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
 		// Total RDV
-		$sqlTotal = "SELECT COUNT(idrdv) as resultat FROM " . Config::TABLE_RDV;
+		$sqlTotal = "SELECT COUNT(idrdv) as resultat FROM " . Config::TABLE_RDV . " WHERE $plus  $critereRecherche ORDER BY idrdv  DESC  ";
 		$nb_ligne_total = $this->_getValeursFormuleForSearch($sqlTotal);
 		if ($nb_ligne_total <= 0) $nb_ligne_total = 1;
 
@@ -1767,9 +1769,9 @@ class Fonction
 				$categories = Config::tablo_statut_rdv;
 				foreach ($categories as $k => $record) {
 					$code = $record["statut_traitement"];
-					$sql = "SELECT COUNT(idrdv) as resultat 
+					 $sql = "SELECT COUNT(idrdv) as resultat 
                         FROM " . Config::TABLE_RDV . " 
-                        WHERE etat='" . trim($code) . "' $critereRecherche";
+                        WHERE etat='" . trim($code) . "' AND $plus $critereRecherche";
 					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
 
 					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
@@ -1797,18 +1799,19 @@ class Fonction
 					$code = $record->idVilleBureau;
 					$sql = "SELECT COUNT(idrdv) as resultat 
                         FROM " . Config::TABLE_RDV . " 
-                        WHERE idTblBureau = '" . $code . "'";
+                        WHERE idTblBureau = '" . $code . "' AND $plus";
 					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
 
 					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
 					$pourcentage_etat[$code] = [
 						"etat"            => "actif",
 						"libelle"         => $record->libelleVilleBureau,
-						"keyword"      => $record->libelleVilleBureau,
+						"keyword"      => $record->idVilleBureau,
 						"localisation"    => $record->localisation,
 						"nb_ligne_element" => $nb_ligne_element,
 						"nb_ligne_total"  => $nb_ligne_total,
 						"color"           => $barColorsType[$k % count($barColorsType)],
+						"badge"           => $badgeColorsType[$k % count($badgeColorsType)],
 						"pourcentage"     => $pct,
 						"lib_pourcentage" => $pct . "%"
 					];
@@ -1817,13 +1820,14 @@ class Fonction
 				break;
 
 			case "user":
-				$categories = $this->_Database->Select("SELECT * FROM " . Config::TABLE_USER . " WHERE etat='1' and typeCompte='gestionnaire' ORDER BY id DESC");
+				$categories = $this->_Database->Select("SELECT * FROM " . Config::TABLE_USER . " WHERE etat='1' and typeCompte='gestionnaire' $critereRecherche ORDER BY id DESC");
 				foreach ($categories as $k => $record) {
 					$code = $record->id;
-					$sql = "SELECT COUNT(idrdv) as resultat 
+					 $sql = "SELECT COUNT(idrdv) as resultat 
                         FROM " . Config::TABLE_RDV . " 
                         WHERE idTblBureau = '" . $record->ville . "' 
-                        AND gestionnaire='" . $code . "'";
+                        AND gestionnaire='" . $code . "' AND $plus ";
+						
 					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
 
 					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
@@ -1852,7 +1856,7 @@ class Fonction
 					$code = $record->motifrdv;
 					$sql = "SELECT COUNT(idrdv) as resultat 
 						FROM " . Config::TABLE_RDV . " 
-						WHERE motifrdv='" . $code . "'";
+						WHERE motifrdv='" . $code . "' AND $plus";
 					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
 
 					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);

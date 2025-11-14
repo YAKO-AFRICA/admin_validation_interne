@@ -137,10 +137,6 @@ else $effectue = 0;
 										else $etat = 1;
 										$retourEtat = Config::tablo_statut_rdv[$etat];
 
-										//Array ( [0] => stdClass Object ( [id] => 38 [nom] => AKPOUE [prenom] => GERMAIN [login] => germain.akoue@laloyalevie.com [password] => fcea920f7412b5da7be0cf42b8c93759 
-										//[genre] => M [date] => [telephone] => 0546264979 [adresse] => [ville] => 13 [pays] => COTE D'IVOIRE [modifiele] => 
-										//[image] => [typeCompte] => gestionnaire [email] => [codeagent] => [etat] => 1 [nb_rdv] => 2038 [ville_nom] => DALOA ) 
-
 								?>
 										<tr>
 											<td class="table-plus" id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
@@ -178,12 +174,12 @@ else $effectue = 0;
 												?>
 											</td>
 											<td class="table-plus text-wrap">
-												<label class="btn btn-secondary" style="background-color:#F9B233 ;" for="click-<?= $i ?>"><i class="fa  fa-eye" id="click-<?= $i ?>"> Détail </i></label>
-												<?php if ($rdv->etat == "1") { ?>
-													<label class="btn btn-secondary" style="background-color:blue ;" for="click-<?= $i ?>"><i class="fa  fa-edit" id="click-<?= $i ?>"> modifier</i></label>
-													<!-- <label class="btn btn-secondary" style="background-color:red ;" for="click-<?= $i ?>"><i class="fa  fa-trash" id="click-<?= $i ?>"> supprimer</i></label> -->
+												
+												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail</button>
+												<?php if ($rdv->etat == "1"): ?>
+													<button class="btn btn-primary btn-sm traiter" id="traiter-<?= $i ?> " style="background-color:blue; color:white"><i class="fa fa-edit"></i> modifier</button>
+												<?php endif; ?>
 
-												<?php  } ?>
 											</td>
 
 										</tr>
@@ -421,50 +417,92 @@ else $effectue = 0;
 			$("#AjouterRDV").on("change", "#profil", updateFormFields);
 
 			// --- Gérer le clic sur modification ---
-			$(".fa-edit").click(function(evt) {
+			$(document).on('click', '.traiter', function() {
+				const ind = this.id.split('-')[1];
 
-				const data = evt.target.id;
-				const ind = data.split('-')[1];
+				// Remplissage du modal
+				$("#titreModale").text("Modifier un utilisateur");
+				$("#titreAction").text("Modifier");
+				$("#action").val("modifier");
 
-				if (ind) {
-					// Remplissage du modal
-					$("#titreModale").text("Modifier un utilisateur");
-					$("#titreAction").text("Modifier");
-					$("#action").val("modifier");
+				$("#agent_id").val($("#id-" + ind).html());
+				$("#nom").val($("#nom-" + ind).html());
+				$("#prenom").val($("#prenom-" + ind).html());
+				$("#email").val($("#email-" + ind).html());
+				$("#telephone").val($("#telephone-" + ind).html());
+				$("#typeCompte").val($("#typeCompte-" + ind).html());
+				$("#profil").val($("#profil-" + ind).html());
+				$("#villesRDV").val($("#villes-" + ind).html());
+				const villeid = $("#villes-" + ind).html();
 
-					$("#agent_id").val($("#id-" + ind).html());
-					$("#nom").val($("#nom-" + ind).html());
-					$("#prenom").val($("#prenom-" + ind).html());
-					$("#email").val($("#email-" + ind).html());
-					$("#telephone").val($("#telephone-" + ind).html());
-					$("#typeCompte").val($("#typeCompte-" + ind).html());
-					$("#profil").val($("#profil-" + ind).html());
-					$("#villesRDV").val($("#villes-" + ind).html());
-					const villeid = $("#villes-" + ind).html();
+				// Met à jour les champs dynamiques selon les valeurs remplies
+				updateFormFields();
+				if (($("#typeCompte-" + ind).html() === "rdv" || $("#typeCompte-" + ind).html() === "gestionnaire") && $("#profil-" + ind).html() === "agent") {
 
-					// Met à jour les champs dynamiques selon les valeurs remplies
-					updateFormFields();
-					if (($("#typeCompte-" + ind).html() === "rdv" || $("#typeCompte-" + ind).html() === "gestionnaire") && $("#profil-" + ind).html() === "agent") {
-
-						getListeVillesRDV(villeid);
-					}
-
-					// Gérer le code agent si présent
-					const codeagent = $("#codeagent-" + ind).html();
-					$("#codeagent").val(codeagent || "");
-
-					// ✅ Gérer l'état (1 = actif, 0 = inactif)
-					const etat = $("#etat-" + ind).html()?.trim();
-					if (etat === "1" || etat === "oui" || etat.toLowerCase() === "actif") {
-						$("#etat").prop("checked", true);
-					} else {
-						$("#etat").prop("checked", false);
-					}
-
-					// Afficher le modal
-					$("#AjouterRDV").modal("show");
+					getListeVillesRDV(villeid);
 				}
+
+				// Gérer le code agent si présent
+				const codeagent = $("#codeagent-" + ind).html();
+				$("#codeagent").val(codeagent || "");
+
+				// ✅ Gérer l'état (1 = actif, 0 = inactif)
+				const etat = $("#etat-" + ind).html()?.trim();
+				if (etat === "1" || etat === "oui" || etat.toLowerCase() === "actif") {
+					$("#etat").prop("checked", true);
+				} else {
+					$("#etat").prop("checked", false);
+				}
+
+				// Afficher le modal
+				$("#AjouterRDV").modal("show");
+
 			});
+
+			// $(".fa-edit").click(function(evt) {
+
+			// 	const data = evt.target.id;
+			// 	const ind = data.split('-')[1];
+
+			// 	if (ind) {
+			// 		// Remplissage du modal
+			// 		$("#titreModale").text("Modifier un utilisateur");
+			// 		$("#titreAction").text("Modifier");
+			// 		$("#action").val("modifier");
+
+			// 		$("#agent_id").val($("#id-" + ind).html());
+			// 		$("#nom").val($("#nom-" + ind).html());
+			// 		$("#prenom").val($("#prenom-" + ind).html());
+			// 		$("#email").val($("#email-" + ind).html());
+			// 		$("#telephone").val($("#telephone-" + ind).html());
+			// 		$("#typeCompte").val($("#typeCompte-" + ind).html());
+			// 		$("#profil").val($("#profil-" + ind).html());
+			// 		$("#villesRDV").val($("#villes-" + ind).html());
+			// 		const villeid = $("#villes-" + ind).html();
+
+			// 		// Met à jour les champs dynamiques selon les valeurs remplies
+			// 		updateFormFields();
+			// 		if (($("#typeCompte-" + ind).html() === "rdv" || $("#typeCompte-" + ind).html() === "gestionnaire") && $("#profil-" + ind).html() === "agent") {
+
+			// 			getListeVillesRDV(villeid);
+			// 		}
+
+			// 		// Gérer le code agent si présent
+			// 		const codeagent = $("#codeagent-" + ind).html();
+			// 		$("#codeagent").val(codeagent || "");
+
+			// 		// ✅ Gérer l'état (1 = actif, 0 = inactif)
+			// 		const etat = $("#etat-" + ind).html()?.trim();
+			// 		if (etat === "1" || etat === "oui" || etat.toLowerCase() === "actif") {
+			// 			$("#etat").prop("checked", true);
+			// 		} else {
+			// 			$("#etat").prop("checked", false);
+			// 		}
+
+			// 		// Afficher le modal
+			// 		$("#AjouterRDV").modal("show");
+			// 	}
+			// });
 
 			// --- Cas initial (ajout d’un utilisateur) ---
 			updateFormFields();
@@ -479,46 +517,20 @@ else $effectue = 0;
 
 			})
 
-			$(".fa-mouse-pointer").click(function(evt) {
+			// Voir detail
+			$(document).on('click', '.view', function() {
+				const index = this.id.split('-')[1];
+
+				const idrdv = $("#id-" + index).html();
+				const codeagent = $("#codeagent-" + index).html();
+				document.cookie = "idusers=" + idrdv;
+				document.cookie = "codeagent=" + codeagent;
+				document.cookie = "action=traiter";
+				location.href = "fiche-users";
+			});
 
 
-				var data = evt.target.id
 
-				var result = data.split('-');
-				var ind = result[1]
-
-				if (ind != undefined) {
-					var idrdv = $("#id-" + ind).html()
-					var codeagent = $("#codeagent-" + ind).html()
-
-					//alert(idrdv + " " + codeagent);
-					document.cookie = "idusers=" + idrdv;
-					document.cookie = "codeagent=" + codeagent;
-					document.cookie = "action=traiter";
-					location.href = "fiche-users";
-				}
-			})
-
-			$(".fa-eye").click(function(evt) {
-				var data = evt.target.id
-
-				var result = data.split('-');
-				var ind = result[1]
-				if (ind != undefined) {
-
-					var idrdv = $("#id-" + ind).html()
-					var codeagent = $("#codeagent-" + ind).html()
-
-					//alert(idrdv + " " + codeagent);
-					document.cookie = "idusers=" + idrdv;
-					document.cookie = "codeagent=" + codeagent;
-					document.cookie = "action=traiter";
-					location.href = "fiche-users";
-
-
-				}
-
-			})
 
 
 			$("#addRDV").click(function(evt) {

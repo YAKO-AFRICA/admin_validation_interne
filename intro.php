@@ -41,101 +41,94 @@ include("autoload.php");
 
     <div class="main-container">
         <div class="pd-ltr-20 xs-pd-20-10">
-            <div class="min-height-200px">
-                <div class="page-header">
-
-                    <div class="pd-10 height-50-p mb-30">
-                        <div class="row align-items-center">
-                            <div class="col-md-4">
-                                <img src="vendors/images/banner-img.png" alt="">
-                            </div>
-
-                            <div class="col-md-8">
-                                <h4 class="font-20 weight-500 mb-10 ">
-                                    Bienvenue <?php echo $_SESSION['utilisateur'];  ?> sur la plateforme de gestion des <?= strtolower($_SESSION['typeCompte']) == "gestionnaire" || strtolower($_SESSION['typeCompte']) == "rdv" ? "rendez-vous" : strtolower($_SESSION['typeCompte'] . 's') ?>,</h4><br>
-                                <p class="font-18 max-width-600">Vous trouverez ci-dessous un récapitulatif des différentes demandes de <?= strtolower($_SESSION['typeCompte']) == "gestionnaire" || strtolower($_SESSION['typeCompte']) == "rdv" ? "rendez-vous" : strtolower($_SESSION['typeCompte'] . 's') ?>.</p>
-                            </div>
-                        </div>
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-md-4"><img src="vendors/images/banner-img.png" alt=""></div>
+                    <div class="col-md-8">
+                        <h4 class="font-20 weight-500 mb-10">
+                            Bienvenue <?= $_SESSION['utilisateur']; ?> sur la plateforme de gestion des <?= strtolower($_SESSION['typeCompte']) == "gestionnaire" || strtolower($_SESSION['typeCompte']) == "rdv" ? "rendez-vous" : strtolower($_SESSION['typeCompte'] . 's') ?>,
+                        </h4>
+                        <p class="font-18 max-width-600">Récapitulatif des demandes de <?= strtolower($_SESSION['typeCompte']) == "gestionnaire" || strtolower($_SESSION['typeCompte']) == "rdv" ? "rendez-vous" : strtolower($_SESSION['typeCompte'] . 's') ?>.</p>
                     </div>
                 </div>
             </div>
 
             <?php
             if ($_SESSION['typeCompte'] == Config::TYPE_SERVICE_PRESTATION) {
-
                 $data = $fonction->_recapGlobalePrestations();
                 echo "<script>let prestationsData = " . json_encode($data) . ";</script>";
             ?>
-
                 <div class="row">
-                    <?php
-                    echo $fonction->getParametreGlobalPrestations();
-                    ?>
+                    <?= $fonction->getParametreGlobalPrestations(); ?>
                 </div>
+
                 <div class="row p-2">
                     <div class="col-md-5">
-                        <div class="card-box height-100-p pd-20">
-                            <h2 class="h4 mb-20 p-2 card-body" style="background-color:#033f1f; font-weight:bold;color:white"> proportion par statut de traitement des demandes de prestation</h2>
-                            <div id="container" style="width: 100%; height: 300px;"></div>
+                        <div class="card-box pd-20">
+                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par statut</h4>
+                            <canvas id="chartStat" style="width:100%; height:300px;"></canvas>
                         </div>
                     </div>
                     <div class="col-md-7">
-                        <div class="card-box height-100-p pd-20">
-                            <h2 class="h4 mb-20 p-2 card-body" style="background-color:#033f1f; font-weight:bold;color:white"> proportion par type de demande de prestation</h2>
-
-                            <div class="card-body">
-                                <canvas id="myChartType" class="chartjs-render-monitor " style="width:100%;max-width:750px; height:250px; ">
-                                </canvas>
-                            </div>
+                        <div class="card-box pd-20">
+                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par type</h4>
+                            <canvas id="chartType" style="width:100%; height:300px;"></canvas>
                         </div>
                     </div>
                 </div>
+
             <?php
             } elseif ($_SESSION['typeCompte'] == Config::TYPE_SERVICE_RDV) {
-
-                $retourStatut = $fonction->afficheuseGlobalStatistiqueRDV();
-                echo $retourStatut;
             ?>
+                <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion Rendez-vous par ville</h4>
 
                 <div class="row p-2">
-                    <div class="col-md-5">
-                        <div class="card-box height-100-p pd-20">
-                            <h2 class="h4 mb-20 p-2 card-body" style="background-color:#033f1f; font-weight:bold;color:white"> proportion par statut de traitement des demandes de prestation</h2>
-                            <!-- <table class="table hover  data-table-export nowrap">
-                                <thead>
-                                    <tr>
-                                        <th class="table-plus datatable-nosort">Ville</th>
-                                        <th class="table-plus datatable-nosort">Nombre de RDV</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="afficheuseRDV_Ville">
-                                </tbody>
-                            </table> -->
-                            <div id="afficheuseRDV_Ville" style="width: 100%; height: 300px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-7">
-                        <div class="card-box height-100-p pd-20">
-                            <h2 class="h4 mb-20 p-2 card-body" style="background-color:#033f1f; font-weight:bold;color:white"> proportion par type de demande de prestation</h2>
+                    <div class="col-md-6">
+                        <!-- <div>Total général: <span id="totalVille">0</span></div> -->
+                        <table id="tableRDV_Ville" class="table table-striped table-bordered" style="width:100% ; font-size:10px;">
+                            <thead>
+                                <tr>
+                                    <th>Ville</th>
+                                    <th>Nombre de RDV</th>
+                                    <th>Taux (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
 
-                            <div class="card-body">
-                                <canvas id="myChartTypeRDV" class="chartjs-render-monitor " style="width:100%;max-width:750px; height:250px; ">
-                                </canvas>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="chartRDV_Ville" height="180"></canvas>
                     </div>
                 </div>
-            <?php
-            }
-            ?>
+                <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par motif de Rendez-vous </h4>
+                <div class="row p-2">
+                    <div class="col-md-6">
 
+                        <!-- <div>Total général: <span id="totalService">0</span></div> -->
+                        <table id="tableRDV_Type" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Nombre de RDV</th>
+                                    <th>Taux (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <hr>
 
-
-
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="chartRDV_Type" height="180"></canvas>
+                    </div>
+                </div>
+            <?php } ?>
 
         </div>
+
         <div class="footer-wrap pd-20 mb-20">
-            <?php include "include/footer.php";    ?>
+            <?php include "include/footer.php"; ?>
         </div>
     </div>
 
@@ -231,9 +224,7 @@ include("autoload.php");
 
             if (typeCompte == "rdv") {
                 introRDV()
-
             }
-
 
         })
 
@@ -248,8 +239,8 @@ include("autoload.php");
             let tabloValRDV_Statut = [];
             let barColorsRDV_Statut = [];
 
+            let labelsRDV_Ville = [];
             let tabloRDV_Ville = [];
-            let tabloStatRDV_Ville = [];
             let tabloValRDV_Ville = [];
             let barColorsRDV_Ville = [];
 
@@ -259,6 +250,7 @@ include("autoload.php");
             let barColorsRDV_user = [];
 
             let tabloRDV_Type = [];
+            let labelsStat_Type = [];
             let tabloStatRDV_Type = [];
             let tabloValRDV_Type = [];
             let barColorsRDV_Type = [];
@@ -282,22 +274,43 @@ include("autoload.php");
 
                     console.log(response);
 
+                    //retourStatVille.sort((a, b) => b.nb_ligne_element - a.nb_ligne_element);
                     $.each(retourStatVille, function(indxVille, elementVille) {
 
                         if (elementVille.etat == "1") aTraiter = elementVille.nb_ligne_element;
-                        //tabloRDV_Ville.push(elementVille.keyword);
+                        if(elementVille.libelle == "") elementVille.libelle = "Non renseigné";
+                        labelsRDV_Ville.push(elementVille.libelle);
                         tabloValRDV_Ville.push(elementVille.nb_ligne_element);
                         barColorsRDV_Ville.push(elementVille.color);
 
                         tabloRDV_Ville += `<tr>
-                            <td style="font-size:14px"><i class="bx bxs-circle me-2"  ></i>${elementVille.keyword}</td>
-                            <td style="font-size:14px"><span class="badge ${elementVille.bagde} badge-pill">${elementVille.nb_ligne_element}</span></td>
+                            <td style="font-size:14px"><a href="synthese-rdv.php?idville=${elementVille.keyword}">${elementVille.libelle}</td>
+                            <td style="font-size:14px"><span class="badge badge-pill" style="background-color:${elementVille.color};color:white">${elementVille.nb_ligne_element}</span></td>
                             <td style="font-size:14px"><span class="badge ${elementVille.bagde} badge-pill">${elementVille.pourcentage} %</span></td>
                             </tr>`
                     })
 
-                     $("#afficheuseRDV_Ville").html(tabloRDV_Ville);
+                    $("#tableRDV_Ville").html(tabloRDV_Ville);
+                    // Affiche le graphe
+                    afficherGraphVille(labelsRDV_Ville, tabloValRDV_Ville, barColorsRDV_Ville);
 
+                    $.each(retourStatutType, function(indxType, elementType) {
+
+                        if(elementType.libelle == "") elementType.libelle = "Non renseigné";
+                        labelsStat_Type.push(elementType.libelle);
+                        tabloValRDV_Type.push(elementType.nb_ligne_element);
+                        barColorsRDV_Type.push(elementType.color);
+
+                        tabloRDV_Type += `<tr>
+                            <td style="font-size:14px"><i class="bx bxs-circle me-2"  ></i>${elementType.libelle}</td>
+                            <td style="font-size:14px"><span class="badge badge-pill" style="background-color:${elementType.color};color:white">${elementType.nb_ligne_element}</span></td>
+                            <td style="font-size:14px"><span class="badge ${elementType.bagde} badge-pill">${elementType.pourcentage} %</span></td>
+                            </tr>`
+                    })
+
+                    $("#tableRDV_Type").html(tabloRDV_Type);
+                    // Affiche le graphe
+                    afficherGraphType(labelsStat_Type, tabloValRDV_Type, barColorsRDV_Type);
                 },
                 error: function(response, status, etat) {
                     //var a_afficher = "traitement enregistrer avec succes !!"
@@ -380,6 +393,78 @@ include("autoload.php");
                     // $('#notification').modal("show")
                 }
             })
+        }
+
+
+
+        function afficherGraphVille(arg1, arg2, arg3 = null, textlegend = "graphique Rendez-vous par ville") {
+            var xValues = arg1;
+            var yValues = arg2;
+            var barColors = "";
+
+
+
+            if (arg3 == null) barColors = ["red", "green", "blue", "orange", "brown", "gold"];
+            barColors = arg3;
+            //var barColors = arg3;
+
+            //console.log(barColors)
+
+            new Chart("chartRDV_Ville", {
+                type: "bar",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+
+                        text: textlegend
+                    }
+                }
+            });
+        }
+
+        function afficherGraphType(arg1, arg2, arg3 = null, textlegend = "graphique par motif de Rendez-vous") {
+            var xValues = arg1;
+            var yValues = arg2;
+            var barColors = "";
+
+
+
+            if (arg3 == null) barColors = ["red", "green", "blue", "orange", "brown", "gold"];
+            barColors = arg3;
+            //var barColors = arg3;
+
+            //console.log(barColors)
+
+            new Chart("chartRDV_Type", {
+                type: "pie",
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: yValues
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: true
+                    },
+                    title: {
+                        display: true,
+
+                        text: textlegend
+                    }
+                }
+            });
         }
 
         function templateDiagrammeBar(arg1, arg2, arg3 = null, textlegend = "Ma production recouvrement") {
