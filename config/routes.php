@@ -596,7 +596,7 @@ if ($request->action != null) {
             $tablo = [];
             if ($retourJourReception != null) {
                 foreach ($retourJourReception as $key => $value) {
-                    $tablo[$key] = $value->codejour;
+                    $tablo[$key] = (int)$value->codejour;
                 }
             }
             echo json_encode($tablo);
