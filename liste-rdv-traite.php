@@ -18,17 +18,8 @@ if (isset($_REQUEST['filtreliste'])) {
 	$filtre = '';
 }
 
-$plus = "  ";
 
-$sqlSelect = "SELECT tblrdv.* ,  concat (users.nom,' ',users.prenom) as nomgestionnaire  FROM tblrdv LEFT JOIN users on tblrdv.gestionnaire = users.id WHERE tblrdv.etat='1' $plus ORDER BY idrdv DESC";
-//echo $sqlSelect; exit;
-
-/*
-$sqlSelect = "SELECT tblrdv.*,  CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id 
-WHERE tblrdv.etat = '1' AND STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') ASC ";
-*/
-//echo $sqlSelect; exit;
-$liste_rdvs = $fonction->_getSelectDatabases($sqlSelect);
+$liste_rdvs = $fonction->getSelectRDVAfficher("3");
 if ($liste_rdvs != null) $effectue = count($liste_rdvs);
 else $effectue = 0;
 
@@ -68,7 +59,7 @@ else $effectue = 0;
 					</div>
 				</div>
 				<hr>
-				
+
 				<?php
 				$retourStatut = $fonction->afficheuseGlobalStatistiqueRDV();
 				echo $retourStatut;
@@ -84,11 +75,11 @@ else $effectue = 0;
 						</div>
 					</div>
 					<div class="pb-20">
-						<table class="table hover  data-table-export nowrap">
+						<table class="table hover  data-table-export nowrap" id="liste-rdv-traite" style="width: 100%; font-size:10px;">
 							<thead>
 								<tr>
 									<th class="table-plus datatable-nosort">#Ref</th>
-									<th hidden>Id</th>
+									<th>Id</th>
 									<th>Date</th>
 									<th>Nom & prénom(s)</th>
 									<th>Id contrat</th>
@@ -108,57 +99,41 @@ else $effectue = 0;
 									for ($i = 0; $i <= ($effectue - 1); $i++) {
 
 										$rdv = $liste_rdvs[$i];
-										$idTblBureau = $rdv->idTblBureau;
+										if (isset($rdv->etat)  && $rdv->villes != null) $villes = strtoupper($rdv->villes);
+										else $villes = "Non mentionné";
 
-										$sqlQuery = "SELECT TRIM(libelleVilleBureau) as villes FROM tblvillebureau where idVilleBureau = '" . $idTblBureau . "'";
-										$retourVilles = $fonction->_getSelectDatabases($sqlQuery);
-										if ($retourVilles != null) $villes = trim($retourVilles[0]->villes);
-										else $villes = "NAN";
 
-										
 										if (isset($rdv->etat) && $rdv->etat !== null && in_array($rdv->etat, array_keys(Config::tablo_statut_rdv)))  $etat = $rdv->etat;
 										else $etat = 1;
 										$retourEtat = Config::tablo_statut_rdv[$etat];
 
 								?>
-								<tr>
-									<td class="table-plus" id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
-									<td id="id-<?= $i ?>" hidden><?php echo $rdv->idrdv; ?></td>
-									<td><?php echo $rdv->dateajou; ?></td>
-									<td class="text-wrap"><?php echo $rdv->nomclient; ?>
-										<p class="mb-0 text-dark" style="font-size: 0.7em;">
-											Téléphone :<span style="font-weight:bold;"><?php echo $rdv->tel; ?></span>
-										</p>
-									</td>
+										<tr>
+											<td class="table-plus" id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
+											<td id="id-<?= $i ?>"><?php echo $rdv->idrdv; ?></td>
+											<td><?php echo $rdv->dateajou; ?></td>
+											<td class="text-wrap"><?php echo $rdv->nomclient; ?>
+												<p class="mb-0 text-dark" style="font-size: 0.7em;">
+													Téléphone :<span style="font-weight:bold;"><?php echo $rdv->tel; ?></span>
+												</p>
+											</td>
 
-									<td class="text-wrap" id="idcontrat-<?= $i ?>"><?php echo $rdv->police; ?></td>
+											<td class="text-wrap" id="idcontrat-<?= $i ?>"><?php echo $rdv->police; ?></td>
 
-									<td class="text-wrap"><?php echo $rdv->motifrdv; ?> </td>
-									<td id="daterdv-<?= $i ?>"><?php echo $rdv->daterdv; ?></td>
-									<td class="text-wrap" style="font-weight:bold; color:#F9B233!important;">
-										<?php echo $villes; ?></td>
-									<td>
-										<span
-											class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span>
-									</td>
+											<td class="text-wrap"><?php echo $rdv->motifrdv; ?> </td>
+											<td id="daterdv-<?= $i ?>"><?php echo $rdv->daterdv; ?></td>
+											<td class="text-wrap" style="font-weight:bold; color:#F9B233!important;">
+												<?php echo $villes; ?></td>
+											<td>
+												<span
+													class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span>
+											</td>
 
+											<td class="table-plus">
+												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail</button>
+											</td>
 
-									<td class="table-plus">
-										<label class="btn btn-secondary" style="background-color:#F9B233 ;"
-											for="click-<?= $i ?>"><i class="fa fa-eye" id="click-<?= $i ?>"> Détail
-											</i></label>
-										<?php if ($rdv->etat == "1") { ?>
-										<label class="btn btn-secondary" style="background-color: #033f1f ;"
-											for="click-<?= $i ?>"><i class="fa fa-mouse-pointer" id="click-<?= $i ?>">
-												Traiter</i></label>
-										<?php  } ?>
-										<!-- <label class="btn btn-secondary" style="background-color: #e74c3c ;"
-											for="click-<?= $i ?>"><i class="fa fa-trash" id="click-<?= $i ?>"> Rejeter
-											</i></label> -->
-
-									</td>
-
-								</tr>
+										</tr>
 								<?php
 									}
 								}
@@ -177,7 +152,7 @@ else $effectue = 0;
 			<?php include "include/footer.php";    ?>
 		</div>
 	</div>
-	</div>
+
 
 
 	<div class="modal fade" id="confirmation-modal22" tabindex="-1" role="dialog" aria-hidden="true">
@@ -279,86 +254,20 @@ else $effectue = 0;
 	<script src="vendors/scripts/datatable-setting.js"></script>
 
 	<script>
-		$(document).ready(function () {
+		$(document).ready(function() {
 
-
-			$(".fa-eye, .fa-mouse-pointer").click(function (evt) {
-				const ind = extraireIndex(evt.target.id);
-				if (!ind) return;
-				const {
-					idrdv,
-					idcontrat
-				} = extraireInfosRdv(ind);
+			// Voir detail
+			$(document).on('click', '.view', function() {
+				const index = this.id.split('-')[1];
+				const idrdv = $("#id-" + index).html();
+				const idcontrat = $("#idcontrat-" + index).html();
 				document.cookie = "idrdv=" + idrdv;
 				document.cookie = "idcontrat=" + idcontrat;
-				document.cookie = "action=traiter";
-				location.href = evt.target.classList.contains('fa-eye') ? "detail-rdv" : "fiche-rdv";
+				document.cookie = "action=detail";
+				location.href = "detail-rdv";
 			});
-
-
-
-			$(".fa-trash").click(function (evt) {
-				const ind = extraireIndex(evt.target.id);
-				if (!ind) return;
-				const {
-					idrdv,
-					daterdv
-				} = extraireInfosRdv(ind);
-				$("#idprestation").val(idrdv);
-				$("#a_afficher_1").text(`n° ${idrdv} du ${daterdv}`);
-				$('#confirmation-modal').modal('show');
-			});
-
 
 		})
-
-		$("#validerRejet").click(function () {
-			const idrdv = $("#idprestation").val();
-			const valideur = "<?= $_SESSION['id'] ?>";
-			$.ajax({
-				url: "config/routes.php",
-				method: "POST",
-				dataType: "json",
-				data: {
-					idrdv,
-					motif: "",
-					traiterpar: valideur,
-					observation: "Aucune observation",
-					etat: "confirmerRejetRDV"
-				},
-				success: function (response) {
-					const msg = response !== '-1' && response !== '0' ?
-						`<div class="alert alert-success" role="alert"><h2>Le RDV <span class="text-success">${idrdv}</span> a bien été rejetée !</h2></div>` :
-						`<div class="alert alert-danger" role="alert"><h2>Erreur lors du rejet de la RDV <span class="text-danger">${idrdv}</span>.</h2></div>`;
-					$("#msgEchec").html(msg);
-					$('#notificationValidation').modal("show");
-				},
-				error: function (err) {
-					console.error("Erreur AJAX rejet RDV", err);
-				}
-			});
-		});
-
-
-		$("#retourNotification").click(function () {
-			$('#notificationValidation').modal('hide');
-			location.reload(); // recharge la page au lieu de forcer vers detail-rdv
-		});
-
-
-
-		function extraireIndex(id) {
-			let result = id.split('-');
-			return result[1];
-		}
-
-		function extraireInfosRdv(index) {
-			return {
-				idrdv: $("#id-" + index).html(),
-				idcontrat: $("#idcontrat-" + index).html(),
-				daterdv: $("#daterdv-" + index).html()
-			};
-		}
 	</script>
 
 

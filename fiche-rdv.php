@@ -399,12 +399,7 @@ if (isset($_COOKIE["idrdv"])) {
                     getMenuValider();
                 }
             });
-
-
-
         });
-
-
 
         $("#afficheuse").on("change", "#ListeGest", function(evt) {
 
@@ -753,9 +748,9 @@ if (isset($_COOKIE["idrdv"])) {
             const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
             const jourNom = jours[dayNumber];
 
-            console.log("Date :", dateStr);
-            console.log("Numéro du jour :", dayNumber);
-            console.log("Jour de la semaine :", jourNom);
+            // console.log("Date :", dateStr);
+            // console.log("Numéro du jour :", dayNumber);
+            // console.log("Jour de la semaine :", jourNom);
 
             // Vérification si la date est un samedi (6) ou un dimanche (0)
             if (dayNumber === 0 || dayNumber === 6) {
@@ -763,6 +758,7 @@ if (isset($_COOKIE["idrdv"])) {
                 optionAffectationGestionnaire.disabled = true;
                 customRadio2Checked.checked = true;
                 $("#afficheuse").html('');
+                $("#errorDate").html("");
                 alert("Les rendez-vous ne peuvent pas être pris le week-end ou les jours fériés. Veuillez sélectionner un jour en semaine.");
                 //$('input[name="daterdveff"]').val('');
                 $("#infos-compteurRDV").text("Les rendez-vous ne peuvent pas être pris le week-end ou les jours fériés. Veuillez sélectionner un jour en semaine.").show();
@@ -771,6 +767,7 @@ if (isset($_COOKIE["idrdv"])) {
                 //$("#infos-compteurRDV").text("").hide();
 
                 getRetourneReceptionJour(idVilleEff, dayNumber, function(existe) {
+
                     if (existe) {
                         //alert("✅ Le jour " + dayNumber + " est autorisé pour la réception !");
                         //$("#errorDate").html("✅ Le jour <span style='color: red; font-weight: bold;'>" + jourNom + "</span> est autorisé pour la reception </span>");
@@ -890,8 +887,9 @@ if (isset($_COOKIE["idrdv"])) {
                 success: function(response) {
                     console.log("Réponse reçue :", response);
 
-                    // Vérifie si dayNumber est dans le tableau
-                    let existe = response.includes(dayNumber);
+                    // Vérifie si dayNumber eXiste dans le tableau
+                    // let existe = response.includes(dayNumber);
+                    let existe = response.map(Number).includes(Number(dayNumber));
 
                     console.log("DayNumber :", dayNumber, "→ existe ?", existe);
 

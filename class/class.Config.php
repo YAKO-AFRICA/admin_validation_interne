@@ -112,11 +112,11 @@ class Config
     );
     
     const tablo_statut_rdv = array(
-        "1" => array("lib_statut" => self::EN_ATTENTE, "libelle" => self::LIB_EN_ATTENTE, "statut_traitement" => "1", "color_statut" => self::color_NOUVEAU, "color" => "gray", "url" => "","icone"=>"micon dw dw-edit"),
-        "2" => array("lib_statut" => self::TRANSMIS, "libelle" => self::LIB_TRANSMIS, "statut_traitement" => "2", "color_statut" => self::color_SUCCESS, "color" => "#033f1f", "url" => "","icone"=>"micon fa fa-forward fa-2x"),
+        "1" => array("lib_statut" => self::EN_ATTENTE, "libelle" => self::LIB_EN_ATTENTE, "statut_traitement" => "1", "color_statut" => self::color_NOUVEAU, "color" => "gray", "url" => "liste-rdv-attente","icone"=>"micon dw dw-edit"),
+        "2" => array("lib_statut" => self::TRANSMIS, "libelle" => self::LIB_TRANSMIS, "statut_traitement" => "2", "color_statut" => self::color_SUCCESS, "color" => "#033f1f", "url" => "liste-rdv-transmis","icone"=>"micon fa fa-forward fa-2x"),
         "0" => array("lib_statut" => self::REJETE, "libelle" => self::LIB_REJETE, "statut_traitement" => "0", "color_statut" => self::color_SAISIE_INACHEVEE, "color" => "red", "url" => "","icone"=>"micon fa fa-close"),
-        "3" => array("lib_statut" => self::TRAITER, "libelle" => self::LIB_TRAITER, "statut_traitement" => "3", "color_statut" => self::color_REJETE, "color" => "#F9B233", "url" => "liste-prestation-traite","icone"=>"micon fa fa-check"),
-        "-1" => array("lib_statut" => self::SAISIE_INACHEVEE, "libelle" => self::LIB_SAISIE_INACHEVEE, "statut_traitement" => "-1", "color_statut" => self::color_DARK, "color" => "black", "url" => "","icone"=>"micon fa fa-close")
+        "3" => array("lib_statut" => self::TRAITER, "libelle" => self::LIB_TRAITER, "statut_traitement" => "3", "color_statut" => self::color_REJETE, "color" => "#F9B233", "url" => "liste-rdv-traite","icone"=>"micon fa fa-check"),
+        "-1" => array("lib_statut" => self::SAISIE_INACHEVEE, "libelle" => self::LIB_SAISIE_INACHEVEE, "statut_traitement" => "-1", "color_statut" => self::color_DARK, "color" => "black", "url" => "liste-rdv-rejet","icone"=>"micon fa fa-close")
 
     );
 

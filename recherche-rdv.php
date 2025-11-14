@@ -18,10 +18,12 @@ if (isset($_REQUEST['filtreliste'])) {
 	$filtre = $retourPlus["filtre"];
 	$libelle = $retourPlus["libelle"];
 
+	//echo $filtre; exit;
 	if ($filtre) {
 		list(, $conditions) = explode('AND', $filtre, 2);
 		$plus = " WHERE $conditions ";
 	}
+	//echo $plus; exit;
 } else {
 	$plus = " WHERE etape != '1' ";
 }
@@ -40,6 +42,8 @@ $sqlSelect = "
     $plus
     ORDER BY tblrdv.idrdv DESC
 ";
+
+
 
 $liste_prestations = $fonction->_getSelectDatabases($sqlSelect);
 $effectue = is_array($liste_prestations) ? count($liste_prestations) : 0;
@@ -101,7 +105,7 @@ $effectue = is_array($liste_prestations) ? count($liste_prestations) : 0;
 						</div>
 
 						<div class="pb-20">
-							<table class="data-table table stripe hover nowrap">
+							<table class="data-table table stripe hover nowrap" id="liste-recherche-rdv" style="width: 100%; font-size:10px;">
 								<thead>
 									<tr>
 										<th class="table-plus datatable-nosort">#Ref</th>
@@ -140,8 +144,8 @@ $effectue = is_array($liste_prestations) ? count($liste_prestations) : 0;
 												<td class="text-wrap"><?= $rdv->police; ?></td>
 												<td class="text-wrap"><?= $rdv->motifrdv ?? "Non renseigné"; ?></td>
 												<td><?= $rdv->daterdv; ?></td>
-												<td class="text-wrap" style="font-weight:bold; color:#F9B233;"><?= $rdv->villes; ?></td>
-												<td class="text-wrap" style="font-weight:bold; color:#F9B233;"><?= $rdv->nomgestionnaire; ?></td>
+												<td class="text-wrap" style="font-weight:bold; color:#F9B233;"><?= $rdv->villes ?? "Non renseigné"; ?></td>
+												<td class="text-wrap" style="font-weight:bold; color:#F9B233;"><?= $rdv->nomgestionnaire ?? "Non renseigné"; ?></td>
 												<td><span class="<?= $retourEtat["color_statut"]; ?>"><?= $retourEtat["libelle"]; ?></span></td>
 												<td>
 													<label class="btn btn-secondary" style="background-color:#F9B233;" for="click-<?= $i ?>">
@@ -232,7 +236,7 @@ $effectue = is_array($liste_prestations) ? count($liste_prestations) : 0;
 												</div>
 												<div class="col-md-6 form-group">
 													<h6 style="color: #033f1f !important;">Etat du rdv</h6>
-													<?php echo $fonction->getSelectTypeEtapePrestation(); ?>
+													<?php echo $fonction->getSelectTypeEtapeRDV(); ?>
 												</div>
 												<div class="col-md-4 form-group">
 													<h6 style="color: #033f1f !important;">Ville RDV</h6>
