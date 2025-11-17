@@ -169,14 +169,10 @@ else $effectue = 0;
 											</td>
 
 											<td class="table-plus">
-												<label class="btn btn-secondary" style="background-color:#F9B233 ;"
-													for="click-<?= $i ?>"><i class="fa  fa-eye" id="click-<?= $i ?>"> Détail
-														prestation </i></label>
-												<?php if ($prestations->etape == "1") { ?>
-													<label class="btn btn-secondary" style="background-color: #033f1f ;"
-														for="click-<?= $i ?>"><i class="fa  fa-mouse-pointer" id="click-<?= $i ?>">
-															Traiter la prestation </i></label>
-												<?php  } ?>
+												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail demande</button>
+												<?php if ($prestations->etape == "1"): ?>
+													<button class="btn btn-success btn-sm traiter" id="traiter-<?= $i ?> " style="background-color:#033f1f; color:white"><i class="fa fa-mouse-pointer"></i> Traiter la demande</button>
+												<?php endif; ?>
 											</td>
 
 										</tr>
@@ -291,24 +287,56 @@ else $effectue = 0;
 			//console.log(document.title);
 
 
-			$(".fa-eye").click(function(evt) {
-				var data = evt.target.id
+			// $(".fa-eye").click(function(evt) {
+			// 	var data = evt.target.id
 
-				var result = data.split('-');
-				var ind = result[1]
-				if (ind != undefined) {
-					var idprestation = $("#id-" + ind).html()
-					var code = $("#code-" + ind).html()
-					var idcontrat = $("#idcontrat-" + ind).html()
+			// 	var result = data.split('-');
+			// 	var ind = result[1]
+			// 	if (ind != undefined) {
+			// 		var idprestation = $("#id-" + ind).html()
+			// 		var code = $("#code-" + ind).html()
+			// 		var idcontrat = $("#idcontrat-" + ind).html()
 
-					document.cookie = "id=" + idprestation;
-					document.cookie = "code=" + code;
-					document.cookie = "idcontrat=" + idcontrat;
-					document.cookie = "action=traiter";
-					location.href = "detail-prestation";
-				}
+			// 		document.cookie = "id=" + idprestation;
+			// 		document.cookie = "code=" + code;
+			// 		document.cookie = "idcontrat=" + idcontrat;
+			// 		document.cookie = "action=traiter";
+			// 		location.href = "detail-prestation";
+			// 	}
 
-			})
+			// })
+
+			// Voir detail
+			$(document).on('click', '.view', function() {
+				const ind = this.id.split('-')[1];
+
+				var idprestation = $("#id-" + ind).html()
+				var code = $("#code-" + ind).html()
+				var idcontrat = $("#idcontrat-" + ind).html()
+
+				document.cookie = "id=" + idprestation;
+				document.cookie = "code=" + code;
+				document.cookie = "idcontrat=" + idcontrat;
+				document.cookie = "action=traiter";
+				location.href = "detail-prestation";
+			});
+
+			// Traiter
+			$(document).on('click', '.traiter', function() {
+				const ind = this.id.split('-')[1];
+				
+				var idprestation = $("#id-" + ind).html()
+				var code = $("#code-" + ind).html()
+				var idcontrat = $("#idcontrat-" + ind).html()
+
+				document.cookie = "id=" + idprestation;
+				document.cookie = "code=" + code;
+				document.cookie = "idcontrat=" + idcontrat;
+				document.cookie = "action=traiter";
+
+				//alert(idprestation)
+				location.href = "fiche-prestation";
+			});
 
 			var search = document.getElementById("search").value;
 
