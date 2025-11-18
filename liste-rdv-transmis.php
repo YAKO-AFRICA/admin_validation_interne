@@ -130,6 +130,8 @@ else $effectue = 0;
 
 											<td class="table-plus text-wrap">
 												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail</button>
+												<button class="btn btn-success btn-sm traiter" id="traiter-<?= $i ?> " style="background-color:#033f1f; color:white"><i class="fa fa-mouse-pointer"></i> Traiter</button>
+
 											</td>
 
 										</tr>
@@ -151,7 +153,7 @@ else $effectue = 0;
 			<?php include "include/footer.php";    ?>
 		</div>
 	</div>
-	
+
 
 
 
@@ -189,7 +191,18 @@ else $effectue = 0;
 				document.cookie = "action=detail";
 				location.href = "detail-rdv";
 			});
+			// Traiter
+			$(document).on('click', '.traiter', function() {
 
+				alert("Traitement en cours");
+				const index = this.id.split('-')[1];
+				const idrdv = $("#id-" + index).html();
+				const idcontrat = $("#idcontrat-" + index).html();
+				document.cookie = "idrdv=" + idrdv;
+				document.cookie = "idcontrat=" + idcontrat;
+				document.cookie = "action=traiter";
+				location.href = "fiche-rdv";
+			});
 		})
 
 

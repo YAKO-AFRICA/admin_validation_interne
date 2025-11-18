@@ -25,7 +25,7 @@ if (isset($_REQUEST['filtreliste'])) {
 
 $plus = " WHERE tbl_prestations.etape ='3' $filtre ";
 //echo $sqlSelect =  "SELECT DISTINCT tbl_prestations.*, tbl_motifrejetprestations.libelle as libellemotif ,tbl_motifrejetprestations.code as codemotif   FROM tbl_prestations INNER JOIN tbl_motifrejetprestations ON tbl_prestations.codemotifrejet = tbl_motifrejetprestations.code $plus ORDER BY `tbl_prestations`.`created_at` DESC ";
-$sqlSelect =  "SELECT DISTINCT *  FROM tbl_prestations  $plus ORDER BY `tbl_prestations`.`created_at` DESC ";
+//$sqlSelect =  "SELECT DISTINCT *  FROM tbl_prestations  $plus ORDER BY `tbl_prestations`.`created_at` DESC ";
 
 //$liste_prestations = $fonction->_getSelectDatabases($sqlSelect);
 $liste_prestations = $fonction->_getRetourneListePrestation("3", $filtre);

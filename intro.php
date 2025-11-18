@@ -65,13 +65,13 @@ include("autoload.php");
                 <div class="row p-2">
                     <div class="col-md-5">
                         <div class="card-box pd-20">
-                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par statut</h4>
+                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par statut de traitement</h4>
                             <canvas id="chartStat" style="width:100%; height:300px;"></canvas>
                         </div>
                     </div>
                     <div class="col-md-7">
                         <div class="card-box pd-20">
-                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par type</h4>
+                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par type de prestation</h4>
                             <canvas id="chartType" style="width:100%; height:300px;"></canvas>
                         </div>
                     </div>
@@ -83,7 +83,7 @@ include("autoload.php");
                 <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion Rendez-vous par ville</h4>
 
                 <div class="row p-2">
-                    <div class="col-md-6">
+                    <div class="col-md-6 table-responsive" style="height:500px;">
                         <!-- <div>Total général: <span id="totalVille">0</span></div> -->
                         <table id="tableRDV_Ville" class="table table-striped table-bordered" style="width:100% ; font-size:10px;">
                             <thead>
@@ -97,13 +97,13 @@ include("autoload.php");
                         </table>
 
                     </div>
-                    <div class="col-md-6">
-                        <canvas id="chartRDV_Ville" height="180"></canvas>
+                    <div class="col-md-6 table-responsive" style="height:500px;">
+                        <canvas id="chartRDV_Ville" height="150"></canvas>
                     </div>
                 </div>
                 <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par motif de Rendez-vous </h4>
                 <div class="row p-2">
-                    <div class="col-md-6">
+                    <div class="col-md-6 table-responsive" style="height:500px;">
 
                         <!-- <div>Total général: <span id="totalService">0</span></div> -->
                         <table id="tableRDV_Type" class="table table-striped table-bordered" style="width:100%">
@@ -119,11 +119,37 @@ include("autoload.php");
                         <hr>
 
                     </div>
-                    <div class="col-md-6">
-                        <canvas id="chartRDV_Type" height="180"></canvas>
+                    <div class="col-md-6 table-responsive" style="height:500px;">
+                        <canvas id="chartRDV_Type" height="120"></canvas>
                     </div>
                 </div>
-            <?php } ?>
+            <?php } elseif ($_SESSION['typeCompte'] == Config::TYPE_SERVICE_GESTIONNAIRE) {
+            ?>
+                <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Proportion par motif de Rendez-vous </h4>
+                <div class="row p-2">
+                    <div class="col-md-6 table-responsive" style="height:500px;">
+
+                        <!-- <div>Total général: <span id="totalService">0</span></div> -->
+                        <table id="tableRDV_Type" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Nombre de RDV</th>
+                                    <th>Taux (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <hr>
+
+                    </div>
+                    <div class="col-md-6 table-responsive" style="height:500px;">
+                        <canvas id="chartRDV_Type" height="120"></canvas>
+                    </div>
+                </div>
+            <?php
+            } ?>
+
 
         </div>
 
@@ -168,7 +194,9 @@ include("autoload.php");
 
             let typeCompte = "<?php echo $_SESSION['typeCompte'] ?>";
 
+
             if (typeCompte == "prestation") {
+
                 introPretations()
 
                 document.addEventListener('DOMContentLoaded', function() {
@@ -222,7 +250,7 @@ include("autoload.php");
 
             }
 
-            if (typeCompte == "rdv") {
+            if (typeCompte == "rdv" || typeCompte == "gestionnaire") {
                 introRDV()
             }
 
@@ -278,7 +306,7 @@ include("autoload.php");
                     $.each(retourStatVille, function(indxVille, elementVille) {
 
                         if (elementVille.etat == "1") aTraiter = elementVille.nb_ligne_element;
-                        if(elementVille.libelle == "") elementVille.libelle = "Non renseigné";
+                        if (elementVille.libelle == "") elementVille.libelle = "Non renseigné";
                         labelsRDV_Ville.push(elementVille.libelle);
                         tabloValRDV_Ville.push(elementVille.nb_ligne_element);
                         barColorsRDV_Ville.push(elementVille.color);
@@ -296,7 +324,7 @@ include("autoload.php");
 
                     $.each(retourStatutType, function(indxType, elementType) {
 
-                        if(elementType.libelle == "") elementType.libelle = "Non renseigné";
+                        if (elementType.libelle == "") elementType.libelle = "Non renseigné";
                         labelsStat_Type.push(elementType.libelle);
                         tabloValRDV_Type.push(elementType.nb_ligne_element);
                         barColorsRDV_Type.push(elementType.color);
@@ -337,6 +365,7 @@ include("autoload.php");
             $.ajax({
                 url: "config/routes.php",
                 data: {
+                    type: "prestation",
                     etat: "intro"
                 },
                 dataType: "json",
@@ -346,7 +375,7 @@ include("autoload.php");
 
                     let retourStatut = response['retourStatut']
                     let retourType = response['global']
-                    //console.log(retourStatut);
+                    console.log(response);
 
 
                     $.each(retourStatut, function(indx, element) {
@@ -480,7 +509,7 @@ include("autoload.php");
 
             //console.log(barColors)
 
-            new Chart("myChart3", {
+            new Chart("chartStat", {
                 type: "bar",
                 data: {
                     labels: xValues,
@@ -511,7 +540,7 @@ include("autoload.php");
             //barColors = arg3;
 
             //console.log(barColors)
-            new Chart("myChartType", {
+            new Chart("chartType", {
                 type: "pie",
                 data: {
                     labels: xValues,

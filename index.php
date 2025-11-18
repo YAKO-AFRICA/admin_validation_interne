@@ -47,6 +47,7 @@
             </div>
         </div>
     </div>
+
     <div class="login-wrap d-flex align-items-center flex-wrap justify-content-center">
         <div class="container" style="background-color: #033f1f;">
 
@@ -67,7 +68,7 @@
                                 placeholder="Entrez votre mot de passe">
 
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="form-group col-sm-12 col-md-12 text-left">
                                 <bold style="color: #F9B233; font-weight: bold;font-size: 9px;"> *</bold>
                                 <span style="color:#033f1f; font-weight: bold;font-size: 12px;"> vous n'avez oublie
@@ -75,7 +76,7 @@
                                 <a class="btn" style="color:#F9B233 !important;font-weight: bold; font-size: 11px;"
                                     type="submit" name="passOublie" id="passOublie">cliquez ici</a>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <div class="input-group mb-0">
@@ -132,7 +133,7 @@
             var passW = document.getElementById("passW").value;
 
 
-           
+
 
             if (login == "") {
                 alert("Veuillez renseigner votre login svp !!");
@@ -143,6 +144,7 @@
                 document.getElementById("passW").focus();
                 return false;
             } else {
+
 
                 $.ajax({
                     url: "config/routes.php",
@@ -180,7 +182,6 @@
 
         $("#passOublie").click(function() {
 
-            //alert("Veuillez contacter votre administrateur")
             $('#PassOublieModale').modal("show")
 
         })
@@ -204,7 +205,6 @@
                 } else {
 
                     if (checkEmail(email)) {
-                        //alert("email valide");
 
                         $.ajax({
                             url: "config/routes.php",
@@ -218,19 +218,20 @@
                             //async: false,
                             success: function(response, status) {
 
-                                console.log(response)
-                                // let a_afficher = ""
-                                // if (response != '-1') {
-                                //     a_afficher = `<div class="alert alert-success" role="alert">
-                                //                         <h2>Cher(e) <span class="text-success">` + login + `</span> votre mot de passe a bien été envoyé par email  !</h2></div>`
-                                //     $("#a_afficher").text(a_afficher)
-                                //     $('#passOublieModale').modal("hide")
-                                // } else {
-                                //     var a_afficher =
-                                //         "DESOLE LOGIN / EMAIL INCORRECT , Merci de ressayer"
-                                //     $("#a_afficher").text(a_afficher)
-                                //     $('#passOublieModale').modal("show")
-                                // }
+                                //console.log(response)
+                                let a_afficher = ""
+                                if (response != '-1') {
+                                    a_afficher = `<div class="alert alert-success" role="alert">
+                                                        <h2>Cher(e) <span class="text-success">` + login + `</span> votre mot de passe a bien été envoyé par email  !</h2></div>`
+                                    $("#a_afficher").text(a_afficher)
+                                    //$('#PassOublieModale').modal("show")
+                                } else {
+                                    a_afficher =
+                                        "DESOLE LOGIN / EMAIL INCORRECT , Merci de ressayer"
+                                        alert(a_afficher)
+                                    $("#a_afficher2").text(a_afficher)
+                                    $('#error').modal("show")
+                                }
                             },
                             error: function(err) {
                                 console.error("Erreur AJAX rejet RDV", err);
@@ -238,7 +239,7 @@
 
                         })
 
-                       
+
 
                     } else {
 
