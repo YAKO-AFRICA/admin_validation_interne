@@ -11,8 +11,8 @@ class Config
 
     const LogDirectory = 'log/';
     const DatabaseHost = '51.255.64.8';
-    const DatabaseName = 'laloyale_bdwebdev';
-    // const DatabaseName = 'laloyale_bdweb';
+    // const DatabaseName = 'laloyale_bdwebdev';
+    const DatabaseName = 'laloyale_bdweb';
     const DatabaseUser = 'laloyale_masterdev';
     const DatabasePass = '1Mot2Passe.DSI';
     // laloyale_masterdev
