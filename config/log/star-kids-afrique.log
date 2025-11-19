@@ -502,3 +502,6 @@
 2025-11-12 11:12:11|Database._Connect|action =connexion: trying to connect to the database
 2025-11-12 11:12:11|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'demo.prestation' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
 2025-11-12 11:12:12|Database._Connect|action =intro: trying to connect to the database
+2025-11-12 18:08:05|Database._Connect|action =connexion: trying to connect to the database
+2025-11-12 18:08:06|Database.Select|action =connexion: executing query[SELECT *  FROM users  WHERE  etat = '1'   AND login = 'demo.prestation' AND password='12345'   ORDER BY id  LIMIT 1 ], boundParameters[null]
+2025-11-12 18:08:07|Database._Connect|action =intro: trying to connect to the database
