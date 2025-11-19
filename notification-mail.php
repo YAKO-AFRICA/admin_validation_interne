@@ -6,55 +6,42 @@ include("autoload.php");
 $services = "YAKO AFRICA ASSURANCES VIE";
 $lienYako = "www.yakoafricassur.com";
 $lienService =  "";
-
-$action = (isset($_REQUEST["action"]) ? trim($_REQUEST["action"]) : NULL);
-$idprestation = (isset($_REQUEST["idprestation"]) ? trim($_REQUEST["idprestation"]) : NULL);
-$idusers = (isset($_REQUEST["idusers"]) ? trim($_REQUEST["idusers"]) : NULL);
-
+$mail = false;
 $subject = "";
 
-$mail = false;
-$lien = "https://yakoafricassur.com/espace-client/login.php";
+$action = (isset($_REQUEST["action"]) ? trim($_REQUEST["action"]) : NULL);
+$data = (isset($_REQUEST["data"]) ? trim($_REQUEST["data"]) : NULL);
 
 
-if ($idprestation != null) {
+if ($data != null) {
+    $data = str_replace("[", "", $data);
+    $data = str_replace("]", "", $data);
 
+    list($champ, $refchamp) = explode(":", $data, 2);
+} else {
+    $champ = null;
+    $refchamp = null;
+}
+
+
+
+if ($refchamp != null && $champ == "idprestation") {
+
+
+    $idprestation = $refchamp;
     $retour = $fonction->_getRetournePrestation(" WHERE id='" . trim($idprestation) . "'");
     if ($retour != null) {
+
         $prestation = new tbl_prestations($retour[0]);
+
         $retour_documents = $fonction->_getListeDocumentPrestation($idprestation);
+        $listes_documents = getRetourneListeDocumentPrestation($retour_documents);
 
-        $i = 0;
-        $docs = "";
-        $docs_etatPrestation = "";
-        if ($retour_documents !== null) {
-            for ($i = 0; $i <= count($retour_documents) - 1; $i++) {
-
-                $tablo = $retour_documents[$i];
-
-                $id_prestation = $tablo["idPrestation"];
-                $path_doc = trim($tablo["path"]);
-                $type_doc = trim($tablo["type"]);
-                $doc_name = trim($tablo["libelle"]);
-                $ref_doc = trim($tablo["id"]);
-                $datecreation_doc = trim($tablo["created_at"]);
-                $documents = Config::URL_PRESTATION_RACINE . $path_doc;
-                $values = $id_prestation . "-" . $documents;
-
-                if ($type_doc == "RIB") $nom_document = "RIB";
-                elseif ($type_doc == "Police") $nom_document = "Police du contrat d'assurance";
-                elseif ($type_doc == "bulletin") $nom_document = "bulletin de souscription";
-                elseif ($type_doc == "AttestationPerteContrat") $nom_document = "Attestation de declaration de perte";
-                elseif ($type_doc == "CNI") $nom_document = "CNI";
-                elseif ($type_doc == "etatPrestation") {
-                    $nom_document = "Fiche de demande de prestation";
-                    $docs_etatPrestation = '<ul> <li>' . $nom_document . ' : <b><a href="' . $documents . '" target="_blank"> ' . $nom_document . ' </a></b></li></ul> ';
-                } else $nom_document = "Fiche d'identification du numero de paiement";
-
-                $docs .= '<ul> <li>' . $nom_document . ' : <b><a href="' . $documents . '" target="_blank"> ' . $nom_document . ' </a></b></li></ul> ';
-            }
-            $listes_documents = '<div class="card-body p-2" style="background-color:bisque ; font-weight:bold;">
-            <h4 class="text-center p-2" style="color:#033f1f ; font-weight:bold;">Documents joints</h4> <hr>' . $docs . ' </div> ';
+        if ($prestation->prestationlibelle == "Autre") {
+            $ajoutOptions = '';
+        } else {
+            $ajoutOptions = `<li>Montant souhaité : <b>" . $prestation->montantSouhaite . " FCFA</b></li>
+                                            <li>Moyen de paiement : <b>" . $prestation->lib_moyenPaiement . "</b></li>`;
         }
 
         switch ($action) {
@@ -62,12 +49,9 @@ if ($idprestation != null) {
             case "confirmerRejet":
 
                 $ListeMotifRejet = $fonction->_GetListeMotifRejetPrestation($prestation->code, null, true);
-
                 $subject = "Prestation -  " . strtoupper($prestation->code);
 
                 $titre = "<label style='color:red'> La demande de prestation <b>" . $prestation->code . "</b>  a été rejetée</label>,</br>";
-
-
                 $text_form = "<div
                                     style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
                                     <div class='content'>
@@ -80,21 +64,15 @@ if ($idprestation != null) {
                                             <li>Type de prestation : <b>" . $prestation->typeprestation . "</b></li>
                                             <li>Code prestation : <b>" . $prestation->code . "</b></li>
                                             <li>Id du contrat : <b>" . $prestation->idcontrat . "</b></li>
-                                            <li>Montant souhaité : <b>" . $prestation->montantSouhaite . " FCFA</b></li>
-                                            <li>Moyen de paiement : <b>" . $prestation->lib_moyenPaiement . "</b></li>
-                                            
+                                            " . $ajoutOptions . "
                                         </ul>
-                                        $docs_etatPrestation
                                         <br>
                                         <div class='card-body p-2' style='background-color:bisque ; font-weight:bold;'>
-            <h4 class='text-center p-4' style='color:#033f1f ; font-weight:bold;'>Motif de rejet</h4> <hr>$ListeMotifRejet</div>                          
+                                        <h4 class='text-center p-4' style='color:#033f1f ; font-weight:bold;'>Motif de rejet</h4> <hr>$ListeMotifRejet</div>                          
                                 </div>
                                 ";
 
                 $message = format_mail_by_NISSA($prestation->souscripteur2, $text_form, $titre);
-
-                //message = format_mail($prestation, $titre, $listes_documents);
-
                 $to = $prestation->email;
                 $mail = true;
 
@@ -118,65 +96,170 @@ if ($idprestation != null) {
                                             <li>Type de prestation : <b>" . $prestation->typeprestation . "</b></li>
                                             <li>Code prestation : <b>" . $prestation->code . "</b></li>
                                             <li>Id du contrat : <b>" . $prestation->idcontrat . "</b></li>
-                                            <li>Montant souhaité : <b>" . $prestation->montantSouhaite . "</b></li>
-                                            <li>Moyen de paiement : <b>" . $prestation->lib_moyenPaiement . "</b></li>
-                                            
+                                             " . $ajoutOptions . "
                                         </ul>
                                         <br>
                                         " . $listes_documents . "                          
                                 </div>";
 
                 $message = format_mail_by_NISSA($prestation->souscripteur2, $text_form, $titre);
-
                 $to = $prestation->email;
                 $mail = true;
-
                 break;
         }
     }
-}
+} elseif ($champ == "idrdv" && $refchamp != null) {
 
+    $idrdv = $refchamp;
+    $sqlSelect = "SELECT tblrdv.* ,  TRIM(libelleVilleBureau) as villes  FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '" . $idrdv . "' ";
+    $sqlSelect = "
+			SELECT 
+				tblrdv.*,
+				CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, users.email AS emailgestionnaire, users.codeagent AS codeagentgestionnaire,
+				TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv
+			LEFT JOIN users ON tblrdv.gestionnaire = users.id
+			LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+			WHERE tblrdv.idrdv = '$idrdv' 
+			
+			ORDER BY tblrdv.idrdv DESC	";
+    $retour_rdv = $fonction->_getSelectDatabases($sqlSelect);
 
-
-if ($idusers != null) {
-
-    $retourUsers = $fonction->_GetUsers(" AND `id` = '$idusers'  ");
-    if ($retourUsers != NULL) {
-
+    if ($retour_rdv != null) {
+        $rdv = $retour_rdv[0];
 
         switch ($action) {
+            case "confirmerRejetRDV":
 
-            case "passeOublie":
+                $subject = "RDV -  " . strtoupper($rdv->codedmd) . " du  " . $rdv->daterdv;
+                $titre = "<label style='color:red'> La demande de Rendez-vous <b>" . $rdv->codedmd . " - n° " . $idrdv . "</b>  a été rejetée</label>,</br>";
+                $text_form = "<div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>" . strtoupper($rdv->nomclient) . "</span> !
+                                    </div>  <br>
+                                               " . $titre . " <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date RDV : <b>" . $rdv->daterdv . "</b></li>
+                                            <li>Motif : <b>" . $rdv->motifrdv . "</b></li>
+                                            <li>Code RDV : <b>" . $rdv->codedmd . "</b></li>
+                                            <li>Id du contrat : <b>" . $rdv->police . "</b></li>
+                                        </ul>
+                                        <br>
+                                        <div class='card-body p-2' style='background-color:bisque ; font-weight:bold;'>
+                                        <h4 class='text-center p-4' style='color:#033f1f ; font-weight:bold;'>Motif de rejet</h4> <hr>" . $rdv->reponse . "</div>                          
+                                </div>
+                                ";
 
-                $userConnect = strtoupper($retourUsers->userConnect);
-                $subject = "Mot de passe oublie -  " . $userConnect;
-
-                $titre = "";
-                $to = $retourUsers->email;
+                $message = format_mail_by_NISSA($rdv->nomclient, $text_form, $titre);
+                $to = $rdv->email;
                 $mail = true;
 
-                $text_form = "
-                <div style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
-                    <div class='content'>
-                        <div class='title'>
-                            Bonjour chèr(e) agent <span class='important'>" . $userConnect . "</span> !
-                        </div>  <br>
-                        
-                        Retrouver vos paramètres d’accès ci-dessous  :<br>
-                        <ul>
-                            <li>Login : <b>" . $retourUsers->email . "</b></li>
-                            <li>Mot de passe : <b>" . $retourUsers->password . "</b></li>
-                            <li>Lien de connexion : <b>" . $lienService . "</b></li>
-                                                                                       
-                        </ul>
-                    </div>
-                </div>";
+                break;
+            case "transmettreRDV":
 
-                $message = format_mail_by_NISSA($userConnect, $text_form, $titre);
+
+                $retour_detail_agent = get_detail_agent($rdv->codeagentgestionnaire);
+
+                $contactGestionnaire = '';
+                $telephone = '';
+                $i = 0;
+                foreach ($retour_detail_agent->mescontacts ?? [] as $contact) {
+                    if (!empty($contact->Contact)) {
+                        $i++;
+                        if (in_array($contact->CodeTypeContact, ['CEL', 'TEL'])) $telephone = $contact->Contact;
+                        $contactGestionnaire .= '<li><strong>' . htmlspecialchars($contact->typeContact) . $i . ' :</strong> ' . htmlspecialchars($contact->Contact) . '</li>';
+                    }
+                    //
+                }
+
+
+                $subject = "RDV -  " . strtoupper($rdv->codedmd) . " du  " . $rdv->daterdv;
+                $titre = "<label style='color:green'> La demande de Rendez-vous <b>" . $rdv->codedmd . " - n° " . $idrdv . "</b>  a ete transmise</label>,</br>";
+                $text_form = "<div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>" . strtoupper($rdv->nomclient) . "</span> !
+                                    </div>  <br>
+                                               " . $titre . " <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date RDV : <b>" . $rdv->daterdveff . "</b></li>
+                                            <li>Motif : <b>" . $rdv->motifrdv . "</b></li>
+                                            <li>Code RDV : <b>" . $rdv->codedmd . "</b></li>
+                                            <li>Id du contrat : <b>" . $rdv->police . "</b></li>
+                                            <li>Ville RDV : <b>" . $rdv->villes . "</b></li>
+                                            
+                                        </ul>
+                                        <br>
+                                        <div class='card-body p-2' style='background-color:bisque ; font-weight:bold;'>
+                                        <h2 class='text-center p-4' style='color:#033f1f ; font-weight:bold;'> Contact du gestionnaire </h2> <hr>
+                                        <ul>
+                                            <li>Gestionnaire : <b>" . $rdv->nomgestionnaire . "</b></li>
+                                            " . $contactGestionnaire . "
+                                            
+                                        </ul>
+                                        </div>                          
+                                </div>
+                                ";
+
+                $message = format_mail_by_NISSA($rdv->nomclient, $text_form, $titre);
+                $to = $rdv->email;
+                $mail = true;
                 break;
         }
     }
+    // $retourRDV = 
+} elseif ($champ == "agent_id" && $refchamp != null) {
+
+
+    //ajouterUtilisateur
+    $agent_id = $refchamp;
+    if ($agent_id != null) {
+        $sqlSelect = " SELECT * FROM " . Config::TABLE_USER . " WHERE id = '$agent_id' ";
+        $result = $fonction->_getSelectDatabases($sqlSelect);
+        if ($result != NULL) {
+
+            $agent = $result[0];
+
+            switch ($action) {
+
+                case "ajouterUtilisateur":
+                    $subject = "utilisateur  -  " . $agent->nom . " " . $agent->prenom;
+
+                    $titre = "<label style='color:green'> Le compte de l'" . $agent->profil . " a bien éte crée </label>,</br>";
+                    $text_form = "<div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>" . strtoupper($agent->nom . " " . $agent->prenom) . "</span> !
+                                    </div>  <br>
+                                               " . $titre . " <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>" . $agent->date . "</b></li>
+                                            <li>Login : <b>" . $agent->login . "</b></li>
+                                            <li>Mot de passe : <b>" . $agent->password . "</b></li>
+                                            <li>Profil : <b>" . $agent->profil . "</b></li>
+                                            <li>Type de compte : <b>" . $agent->typeCompte . "</b></li>
+                                        </ul>                       
+                                </div>
+                                ";
+
+                    $message = format_mail_by_NISSA($agent->nom . " " . $agent->prenom, $text_form, $titre);
+                    $to = $agent->email;
+                    $mail = true;
+
+                    break;
+            }
+        }
+    }
 }
+
+
 
 
 if ($mail && $to != "") {
@@ -210,7 +293,7 @@ if ($mail && $to != "") {
         $to_log = __FUNCTION__ . ' | Message de notification a bien été envoyé à ' . $to . " ( " . $message . " ) ";
         print $to_log;
 
-        $fonction->_UpdateStatutEnvoiMail($prestation, "1", $contenu = "");
+        //$fonction->_UpdateStatutEnvoiMail($prestation, "1", $contenu = "");
         //echo json_encode($resultat);
     } else // Non envoyé
     {
@@ -225,6 +308,86 @@ if ($mail && $to != "") {
     $to_log = "desole le mail a echoue";
 }
 
+
+function get_detail_agent($codeagent)
+{
+
+    if ($codeagent != null) {
+
+        $tabloCritere = [
+            'codeagent' => $codeagent,
+            'myinfo' => 'PERSO'
+            //'typeReseau' => $codInfo
+        ];
+
+        $api_detail_agent = getAPI($tabloCritere, "https://api.laloyalevie.com/enov/fiche-detaille-agent-bis");
+        return $api_detail_agent;
+    }
+    return null;
+}
+
+function getAPI($tabloCritere, $url_api)
+{
+    try {
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url_api);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TCP_KEEPALIVE, 1);
+        curl_setopt($ch, CURLOPT_TCP_KEEPIDLE, 2);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($tabloCritere));
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 60000);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("cache-control: no-cache", "content-type: application/json",));
+        $data = curl_exec($ch);
+        $data = json_decode($data);
+        return $data;
+    } catch (Exception $e) {
+        echo 'Exception reçue : ', $e->getMessage(), "\n";
+        return 0;
+    }
+}
+
+function getRetourneListeDocumentPrestation($retour_documents)
+{
+
+    $i = 0;
+    $docs = "";
+    $docs_etatPrestation = "";
+    if ($retour_documents !== null) {
+        for ($i = 0; $i <= count($retour_documents) - 1; $i++) {
+
+            $tablo = $retour_documents[$i];
+
+            $id_prestation = $tablo["idPrestation"];
+            $path_doc = trim($tablo["path"]);
+            $type_doc = trim($tablo["type"]);
+            $doc_name = trim($tablo["libelle"]);
+            $ref_doc = trim($tablo["id"]);
+            $datecreation_doc = trim($tablo["created_at"]);
+            $documents = Config::URL_PRESTATION_RACINE . $path_doc;
+            $values = $id_prestation . "-" . $documents;
+
+            if ($type_doc == "RIB") $nom_document = "RIB";
+            elseif ($type_doc == "Police") $nom_document = "Police du contrat d'assurance";
+            elseif ($type_doc == "bulletin") $nom_document = "bulletin de souscription";
+            elseif ($type_doc == "AttestationPerteContrat") $nom_document = "Attestation de declaration de perte";
+            elseif ($type_doc == "CNI") $nom_document = "CNI";
+            elseif ($type_doc == "etatPrestation") {
+                $nom_document = "Fiche de demande de prestation";
+                $docs_etatPrestation = '<ul> <li>' . $nom_document . ' : <b><a href="' . $documents . '" target="_blank"> ' . $nom_document . ' </a></b></li></ul> ';
+            } else $nom_document = "Fiche d'identification du numero de paiement";
+
+            $docs .= '<ul> <li>' . $nom_document . ' : <b><a href="' . $documents . '" target="_blank"> ' . $nom_document . ' </a></b></li></ul> ';
+        }
+        $listes_documents = '<div class="card-body p-2" style="background-color:bisque ; font-weight:bold;">
+            <h4 class="text-center p-2" style="color:#033f1f ; font-weight:bold;">Documents joints</h4> <hr>' . $docs . ' </div> ';
+        return $listes_documents;
+    }
+
+    return null;
+}
 
 
 function format_mail_by_NISSA($nom_destinataire, $text_form, $docs = null)

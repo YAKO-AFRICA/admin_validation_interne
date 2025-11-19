@@ -180,7 +180,7 @@ include("autoload.php");
 
 		// When the user clicks outside of the password field, hide the message box
 		n_mdp.onblur = function() {
-			//console.log("viens de sortir")
+			console.log("viens de sortir")
 			pass1 = document.getElementById("n_mdp").value;
 
 			if (pass1 == "" || pass1.length < '5') {
@@ -197,7 +197,7 @@ include("autoload.php");
 		}
 
 		n_mdp_2.onblur = function() {
-			//console.log("viens de sortir")
+			console.log("viens de sortir")
 			pass2 = document.getElementById("n_mdp_2").value;
 
 			if (pass2 == "" || pass2.length < '5') {
@@ -212,6 +212,7 @@ include("autoload.php");
 					alert("Desole les mots de passes renseignés ne sont pas conforment ! veuillez essayer a nouveau SVP !!");
 					document.getElementById("n_mdp").focus();
 				} else {
+					alert("Les mots de passes sont conforment !")
 					validate()
 				}
 			}
@@ -225,51 +226,53 @@ include("autoload.php");
 			var n_mdp = document.getElementById("n_mdp").value;
 			var n_mdp_2 = document.getElementById("n_mdp_2").value;
 
-			$.ajax({
-				url: "config/routes.php",
-				data: {
-					idusers: idusers,
-					pass2: n_mdp_2,
-					pass1: n_mdp,
-					etat: "modifierPasse"
-				},
-				dataType: "json",
-				method: "post",
-				//async: false,
-				success: function(response, status) {
-					//console.log(response)
+			// $.ajax({
+			// 	url: "config/routes.php",
+			// 	data: {
+			// 		idusers: idusers,
+			// 		pass2: n_mdp_2,
+			// 		pass1: n_mdp,
+			// 		etat: "modifierPasse"
+			// 	},
+			// 	dataType: "json",
+			// 	method: "post",
+			// 	//async: false,
+			// 	success: function(response, status) {
+			// 		//console.log(response)
 
-					let a_afficher = ""
-					if (response != '-1') {
+			// 		let a_afficher = ""
+			// 		if (response != '-1') {
 
-						a_afficher = `
-						<div class="alert alert-success" role="alert">
-								<h2>Votre mot de passe  a bien été modifiée  !</h2> 
-								<div style="float:center">
-								 <a class="btn" style="color:#F9B233 !important;" href="index"> <i class='fa fa-arrow-left'> Retour</i> </a>
-									</div>
-						</div>`
-						$("#modifier-mot-de-passe").html(a_afficher)
-					} else {
-						a_afficher = `
-						<div class="alert alert-danger" role="alert">
-								<h2>"Désolé , une erreur est survenue sur lors de la modification de votre mot de passe !</h2><br> Veuillez reessayer plus tard 
-						</div>`
-						$("#msgEchec").html(a_afficher)
-						$('#notificationValidation').modal("show")
-					}
+			// 			a_afficher = `
+			// 			<div class="alert alert-success" role="alert">
+			// 					<h2>Votre mot de passe  a bien été modifiée  !</h2> 
+			// 					<div style="float:center">
+			// 					 <a class="btn" style="color:#F9B233 !important;" href="index"> <i class='fa fa-arrow-left'> Retour</i> </a>
+			// 						</div>
+			// 			</div>`
+			// 			$("#modifier-mot-de-passe").html(a_afficher)
+			// 		} else {
+			// 			a_afficher = `
+			// 			<div class="alert alert-danger" role="alert">
+			// 					<h2>"Désolé , une erreur est survenue sur lors de la modification de votre mot de passe !</h2><br> Veuillez reessayer plus tard 
+			// 			</div>`
+			// 			$("#msgEchec").html(a_afficher)
+			// 			$('#notificationValidation').modal("show")
+			// 		}
 
 
 
-					//
+			// 		//
 
-				},
-				error: function(response, status, etat) {
-					console.log(etat, response)
-				}
-			})
+			// 	},
+			// 	error: function(response, status, etat) {
+			// 		console.log(etat, response)
+			// 	}
+			// })
 
 		})
+
+
 
 		$("#passeOublie").click(function(evt) {
 

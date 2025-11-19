@@ -36,10 +36,10 @@ if (isset($_COOKIE["idrdv"])) {
 
     $rdv = $retour_rdv[0];
 
-    if ($rdv->etat != "1") {
-        header('Location: detail-rdv');
-        exit;
-    }
+    // if ($rdv->etat != "1") {
+    //     header('Location: detail-rdv');
+    //     exit;
+    // }
 
     $daterdv = isset($rdv->daterdv) ? date('Y-m-d', strtotime(str_replace('/', '-', $rdv->daterdv))) : '';
 
@@ -343,7 +343,7 @@ if (isset($_COOKIE["idrdv"])) {
 
 
             if (idcontrat !== "") {
-                //remplirModalEtatComtrat(idcontrat);
+                remplirModalEtatComtrat(idcontrat);
             }
 
 
@@ -374,7 +374,7 @@ if (isset($_COOKIE["idrdv"])) {
                 const dateRDVEffective = $(this).val();
                 const [idvillesRDV, villesRDV] = $(this).val().split(";");
 
-                console.log("Nouvelle ville RDV Effective sélectionnée :", villesRDV + " (" + idvillesRDV + ")  " + dateRDVEffective);
+                //console.log("Nouvelle ville RDV Effective sélectionnée :", villesRDV + " (" + idvillesRDV + ")  " + dateRDVEffective);
 
                 const valeur = $('input[name="customRadio"]:checked').val();
                 if (valeur === '2') {
@@ -393,7 +393,7 @@ if (isset($_COOKIE["idrdv"])) {
 
                 const [idvillesRDV, villesRDV] = objetRDV.split(";");
 
-                console.log("Nouvelle date RDV effective sélectionnée :", villesRDV + " (" + idvillesRDV + ")  " + dateRDVEffective);
+                //console.log("Nouvelle date RDV effective sélectionnée :", villesRDV + " (" + idvillesRDV + ")  " + dateRDVEffective);
                 const valeur = $('input[name="customRadio"]:checked').val();
                 if (valeur === '2') {
                     getMenuValider();
@@ -497,7 +497,7 @@ if (isset($_COOKIE["idrdv"])) {
 
             let valideur = <?= $_SESSION['id'] ?>
 
-            console.log(idrdv, motif, valideur, traiterpar, observation);
+            //console.log(idrdv, motif, valideur, traiterpar, observation);
             $.ajax({
                 url: "config/routes.php",
                 data: {
@@ -608,11 +608,11 @@ if (isset($_COOKIE["idrdv"])) {
                 method: "post",
                 async: false,
                 success: function(response, status) {
-                    console.log(response)
+                    //console.log(response)
                     resultat = response
 
                     if (resultat.error != false) {
-                        console.log(response)
+                        //console.log(response)
                     }
                 },
                 error: function(response, status, etat) {
@@ -624,7 +624,7 @@ if (isset($_COOKIE["idrdv"])) {
 
         function getListeSelectAgentTransformations(idVilleEff, villesRDV) {
 
-            console.log("selction de gestionnaire de transformation", idVilleEff, villesRDV)
+            //console.log("selction de gestionnaire de transformation", idVilleEff, villesRDV)
             $.ajax({
                 url: "config/routes.php",
                 data: {
@@ -645,7 +645,7 @@ if (isset($_COOKIE["idrdv"])) {
                     //verifierActivationBouton(); // Vérifie après chargement
                 },
                 error: function(response, status, etat) {
-                    console.log(response, status, etat);
+                    //console.log(response, status, etat);
                 }
             });
         }
@@ -661,7 +661,7 @@ if (isset($_COOKIE["idrdv"])) {
             var idVilleEff = tablo[0];
             var villesRDV = tablo[1];
 
-            console.log(idVilleEff, daterdveff, villesRDV, idusers)
+            //console.log(idVilleEff, daterdveff, villesRDV, idusers)
 
 
             $.ajax({
@@ -685,7 +685,7 @@ if (isset($_COOKIE["idrdv"])) {
 
                             $.each(response, function(indx, data) {
 
-                                console.log(data)
+                                //console.log(data)
                                 let agent = data.gestionnairenom
                                 let totalrdv = data.totalrdv
                                 let agentid = data.id
@@ -734,7 +734,7 @@ if (isset($_COOKIE["idrdv"])) {
             var idVilleEff = tablo[0];
             var villesRDV = tablo[1];
 
-            console.log("checkDate : " + daterdveff + " : " + idVilleEff + " - " + villesRDV)
+            //console.log("checkDate : " + daterdveff + " : " + idVilleEff + " - " + villesRDV)
             const dateStr = daterdveff; // format YYYY-MM-DD
             const parts = dateStr.split("-"); // ["2025", "11", "18"]
 
@@ -788,7 +788,7 @@ if (isset($_COOKIE["idrdv"])) {
 
                             success: function(response, status) {
 
-                                console.log(response)
+                                //console.log(response)
                                 let daterdvR = response.daterdv;
                                 let idVilleEffR = response.idVilleEff;
                                 let total = response.total;
@@ -885,13 +885,13 @@ if (isset($_COOKIE["idrdv"])) {
                 dataType: "json",
                 method: "POST",
                 success: function(response) {
-                    console.log("Réponse reçue :", response);
+                    //console.log("Réponse reçue :", response);
 
                     // Vérifie si dayNumber eXiste dans le tableau
                     // let existe = response.includes(dayNumber);
                     let existe = response.map(Number).includes(Number(dayNumber));
 
-                    console.log("DayNumber :", dayNumber, "→ existe ?", existe);
+                    //console.log("DayNumber :", dayNumber, "→ existe ?", existe);
 
                     // Appelle le callback avec true ou false
                     callback(existe);
@@ -991,7 +991,7 @@ if (isset($_COOKIE["idrdv"])) {
                         </div>`
                 })
 
-                console.log(details)
+                //console.log(details)
                 $("#infos-contrat").html(infos);
             } else {
                 $("#infos-contrat").html(" pas d'informations disponible");
@@ -1032,175 +1032,6 @@ if (isset($_COOKIE["idrdv"])) {
             $("#optionTraitement").html(bouton_rejet);
         }
     </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // const selectLieuRDV = document.getElementById('single-select-optgroup-field');
-            const selectLieuRDV = document.getElementById('idTblBureau');
-            const inputDateRDV = document.getElementById('daterdv');
-            const selectOptionsRdv = document.getElementById('optionsRdv');
-            const spinner = document.getElementById('spinner');
-            const spinnerDaterdv = document.getElementById('spinnerDaterdv');
-
-            inputDateRDV.disabled = true;
-
-            $(document).ready(function() {
-                var availableOptions = []; // Un tableau pour stocker les options de RDV disponibles
-                var availableOptions = []; // Tableau pour stocker les options de RDV disponibles
-
-                $('#idTblBureau').on('change', function() {
-                    var id = $(this).val();
-                    if (spinner) {
-                        spinner.style.display = 'block';
-                    }
-                    $.ajax({
-                        type: 'GET',
-                        url: '/espace-client/rdv/optionDate/' + id,
-                        dataType: 'json',
-                        success: function(data) {
-                            if (data.status === 'success' && data.data.length > 0) {
-                                var jmax = '';
-                                var lieu = '';
-                                var jours = [];
-                                availableOptions = []; // Réinitialiser les options disponibles
-                                // Boucle à travers les données reçues
-                                $.each(data.data, function(index, villeReseau) {
-                                    lieu = villeReseau.libelleVilleBureau || 'Lieu inconnu'; // Récupérer le nom du lieu
-                                    $.each(villeReseau.option_rdv, function(index, optionRdv) {
-                                        // Sauvegarder les options dans un tableau
-                                        availableOptions.push({
-                                            codejour: optionRdv.codejour,
-                                            codelieu: optionRdv.codelieu,
-                                            nbmax: optionRdv.nbmax
-                                        });
-
-                                        // Générer les options pour l'élément #optionsRdv
-                                        jmax += '<option value="' + optionRdv.nbmax + '">' + optionRdv.jour + '</option>';
-                                        jours.push(optionRdv.jour); // Ajouter le jour à la liste des jours disponibles
-                                    });
-                                });
-
-                                // Mettre à jour les champs HTML
-                                $('#optionsRdv').html(jmax); // Liste des options
-                                $('#lieurdv').text(lieu); // Nom du lieu
-                                $('#jourRdv').text(jours.join(' - ')); // Liste des jours disponibles
-                                inputDateRDV.disabled = false;
-                                inputDateRDV.value = "";
-                                $('#msgerror').text(''); // Ne pas afficher le message d'erreur
-                                $('#msgesucces').text(''); // Ne pas afficher le message de succès
-                                if (spinner) {
-                                    spinner.style.display = 'none';
-                                }
-                            } else {
-                                alert('Aucune information disponible pour ce lieu de RDV.');
-                                $('#lieurdv').text(''); // Réinitialiser le lieu
-                                $('#jourRdv').text(''); // Réinitialiser les jours
-                                if (spinner) {
-                                    spinner.style.display = 'none';
-                                }
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Erreur AJAX : ', xhr.responseText);
-                            alert('Une erreur est survenue lors de la récupération des données.');
-                            $('#lieurdv').text(''); // Réinitialiser le lieu
-                            $('#jourRdv').text(''); // Réinitialiser les jours
-                            if (spinner) {
-                                spinner.style.display = 'none';
-                            }
-                        }
-                    });
-                });
-
-                $('#daterdv').on('change', function() {
-                    var idTblBureau = $('#idTblBureau').val();
-                    var daterdv = $(this).val(); // Exemple : 10/12/2024
-                    // Réinitialiser les messages à chaque changement
-                    $('#msgerror').text('').hide(); // Masquer le message d'erreur
-                    $('#msgesucces').text('').hide(); // Masquer le message de succès
-                    if (spinnerDaterdv) {
-                        spinnerDaterdv.style.display = 'block';
-                    }
-
-                    if (daterdv) {
-                        // Conversion de la date au format JavaScript
-                        var parts = daterdv.split('-'); // Supposons que le format est d/m/Y
-                        var dateObj = new Date(parts[2], parts[1] - 1, parts[0]); // Année, mois (0-indexé), jour
-
-                        // Vérification si la date est un samedi (6) ou un dimanche (0)
-                        var day = dateObj.getDay();
-                        if (day === 0 || day === 6) {
-                            alert("Les rendez-vous ne peuvent pas être pris le week-end ou les jours fériés. Veuillez sélectionner un jour en semaine.");
-                            $('input[name="daterdv"]').val('');
-                            $('#msgerror').text("Les rendez-vous ne peuvent pas être pris le week-end ou les jours fériés. Veuillez sélectionner un jour en semaine.").show();
-                            return; // Arrête l'exécution
-                        }
-                    }
-
-                    if (idTblBureau && daterdv) {
-                        // Filtrage des options disponibles pour la date sélectionnée
-                        var availableForDate = availableOptions.filter(function(option) {
-                            return option.codelieu == idTblBureau && parseInt(option.codejour) === dateObj.getDay();
-                        });
-
-                        if (availableForDate.length > 0) {
-                            // Si des options sont disponibles pour la date et le lieu
-                            $.each(availableForDate, function(index, option) {
-                                var Nbmax = parseInt(option.nbmax);
-
-                                // Vérification de la disponibilité des places
-                                $.ajax({
-                                    type: 'GET',
-                                    url: '/espace-client/rdv/getRdv',
-                                    data: {
-                                        idTblBureau: idTblBureau,
-                                        daterdv: daterdv
-                                    },
-                                    dataType: 'json',
-                                    success: function(data) {
-                                        if (data.status === 'success') {
-                                            var orderInsert = parseInt(data.data.orderInsert);
-                                            if (orderInsert >= Nbmax) {
-                                                alert("Plus de places disponibles à cette date.");
-                                                $('input[name="daterdv"]').val('');
-                                                $('#msgerror').text("Plus de places disponibles à cette date.").show();
-                                                return;
-                                            } else {
-                                                var remainingSlots = Nbmax - orderInsert;
-                                                $('#msgesucces').text('Il reste ' + remainingSlots + ' place(s) à cette date.').show();
-                                            }
-                                        } else {
-                                            $('#msgesucces').text('Il reste ' + Nbmax + ' place(s) à cette date.').show();
-                                        }
-                                        if (spinnerDaterdv) {
-                                            spinnerDaterdv.style.display = 'none';
-                                        }
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error('Erreur AJAX : ', xhr.responseText);
-                                        alert("Erreur lors de la vérification de la disponibilité.");
-                                        $('input[name="daterdv"]').val('');
-                                        if (spinnerDaterdv) {
-                                            spinnerDaterdv.style.display = 'none';
-                                        }
-                                    }
-                                });
-                            });
-                        } else {
-                            alert("Cette date n'est pas disponible pour ce lieu de RDV. Veuillez choisir une autre.");
-                            $('input[name="daterdv"]').val('');
-                            $('#msgerror').text("Cette date n'est pas disponible pour ce lieu de RDV. Veuillez choisir une autre.").show();
-                            if (spinnerDaterdv) {
-                                spinnerDaterdv.style.display = 'none';
-                            }
-                        }
-                    }
-                });
-            });
-
-        });
-    </script>
-
 
 </body>
 

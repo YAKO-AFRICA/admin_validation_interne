@@ -584,9 +584,12 @@ class Fonction
 	public function _getRetourneListePrestation($etape, $plus = NULL)
 	{
 
-		if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
-		else $cible = " AND prestationlibelle != 'Autre' ";
-		//print_r($_SESSION);
+		if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
+		else {
+
+			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+			else $cible = " AND prestationlibelle != 'Autre' ";
+		}
 
 		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . " WHERE etape ='$etape' $cible  $plus ORDER BY id DESC  ");
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
@@ -599,8 +602,16 @@ class Fonction
 	public function _getRetourneAllListePrestation($plus = NULL)
 	{
 
-		if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
-		else $cible = " AND prestationlibelle != 'Autre' ";
+		// if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+		// else $cible = " AND prestationlibelle != 'Autre' ";
+
+		if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
+		else {
+
+			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+			else $cible = " AND prestationlibelle != 'Autre' ";
+		}
+
 
 		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . "   $plus  $cible ORDER BY id DESC  ");
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
@@ -669,8 +680,15 @@ class Fonction
 
 		$icone = "";
 
-		if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
-		else $cible = " AND prestationlibelle != 'Autre' ";
+		// if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+		// else $cible = " AND prestationlibelle != 'Autre' ";
+
+		if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
+		else {
+
+			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+			else $cible = " AND prestationlibelle != 'Autre' ";
+		}
 
 		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . " WHERE etape in ('1','2','3') $cible ORDER BY id DESC  ");
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
@@ -772,7 +790,7 @@ class Fonction
 		$rang_etat = array();
 		$val = 0;
 
-		$tab = $this->_Database->Select(Config::SqlSelect_ListTypePrestations . " ORDER BY id DESC  ");
+		$tab = $this->_Database->Select(Config::SqlSelect_ListTypePrestations . " WHERE etat='Actif' ORDER BY id DESC  ");
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
 			$this->Logger->Handler(__function__, 'echec recuperation de la liste des types de prestations');
 			return NULL;
@@ -951,7 +969,6 @@ class Fonction
 	{
 
 		$retour_documents = $this->_getListeDocumentPrestation($id_prestation);
-		#print_r($retour_documents);
 		$transferer = 0;
 		$echoue = 0;
 
@@ -1001,8 +1018,8 @@ class Fonction
 
 		//echo $sqlQuery =  "SELECT DISTINCT tbl_motifrejetbyprestats.*, tbl_motifrejetprestations.libelle as libellemotif ,tbl_motifrejetprestations.code as codemotif FROM tbl_motifrejetbyprestats INNER JOIN tbl_motifrejetprestations ON tbl_motifrejetbyprestats.codemotif = tbl_motifrejetprestations.code WHERE tbl_motifrejetbyprestats.codeprestation='" . trim($codeprestation) . "' $plus GROUP BY tbl_motifrejetbyprestats.codeprestation,tbl_motifrejetbyprestats.codemotif ORDER BY `tbl_motifrejetbyprestats`.`created_at` DESC ";
 		$sqlQuery =  "SELECT DISTINCT tbl_motifrejetbyprestats.*, tbl_motifrejetprestations.libelle as libellemotif ,tbl_motifrejetprestations.code as codemotif FROM tbl_motifrejetbyprestats INNER JOIN tbl_motifrejetprestations ON tbl_motifrejetbyprestats.codemotif = tbl_motifrejetprestations.code WHERE tbl_motifrejetbyprestats.codeprestation='" . trim($codeprestation) . "' $plus  ORDER BY `tbl_motifrejetbyprestats`.`created_at` DESC ";
-
 		//$sqlQuery = "SELECT *  FROM tbl_motifrejetprestations WHERE etat='1' $plus ORDER BY id   ";
+
 		$tab = $this->_Database->Select($sqlQuery);
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
 			$this->Logger->Handler(__function__, 'echec recuperation de la liste des rejets');
@@ -1019,10 +1036,8 @@ class Fonction
 			}
 		}
 
-		//print $tab;
 		return $tab;
 	}
-
 
 
 	public function _GetListeMotifRejet($plus = null)
@@ -1209,7 +1224,6 @@ class Fonction
 		$tab = Config::tablo_statut_rdv;
 		foreach ($tab as $key => $record) {
 
-			//print_r($record);
 			//Array ( [lib_statut] => En attente [libelle] => EN ATTENTE [statut_traitement] => 1 [color_statut] => badge badge-secondary [color] => gray [url] => ) 
 
 			$code = $record["statut_traitement"];
@@ -1758,7 +1772,14 @@ class Fonction
 		$badgeColorsType = ["badge-danger", "badge-success", "badge-primary", "badge-warning", "badge-info", "badge-light", "badge-dark", "badge-primary", "badge-secondary"];
 		//$pourcentage_etat[$code]['badge'] = $color_statut;
 
-		$plus = "  YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
+		if (isset($_SESSION['typeCompte']) && $_SESSION['typeCompte'] == "rdv") {
+			$cible = "  ";
+		} else {
+			$cible = "  gestionnaire = '" . $_SESSION['id'] . "' AND ";
+		}
+
+
+		$plus = " $cible  YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
 		// Total RDV
 		$sqlTotal = "SELECT COUNT(idrdv) as resultat FROM " . Config::TABLE_RDV . " WHERE $plus  $critereRecherche ORDER BY idrdv  DESC  ";
 		$nb_ligne_total = $this->_getValeursFormuleForSearch($sqlTotal);
@@ -1769,7 +1790,7 @@ class Fonction
 				$categories = Config::tablo_statut_rdv;
 				foreach ($categories as $k => $record) {
 					$code = $record["statut_traitement"];
-					 $sql = "SELECT COUNT(idrdv) as resultat 
+					$sql = "SELECT COUNT(idrdv) as resultat 
                         FROM " . Config::TABLE_RDV . " 
                         WHERE etat='" . trim($code) . "' AND $plus $critereRecherche";
 					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
@@ -1823,11 +1844,11 @@ class Fonction
 				$categories = $this->_Database->Select("SELECT * FROM " . Config::TABLE_USER . " WHERE etat='1' and typeCompte='gestionnaire' $critereRecherche ORDER BY id DESC");
 				foreach ($categories as $k => $record) {
 					$code = $record->id;
-					 $sql = "SELECT COUNT(idrdv) as resultat 
+					$sql = "SELECT COUNT(idrdv) as resultat 
                         FROM " . Config::TABLE_RDV . " 
                         WHERE idTblBureau = '" . $record->ville . "' 
                         AND gestionnaire='" . $code . "' AND $plus ";
-						
+
 					$nb_ligne_element = $this->_getValeursFormuleForSearch($sql);
 
 					$pct = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
@@ -1900,5 +1921,24 @@ class Fonction
 		}
 
 		return $pourcentage_etat;
+	}
+
+
+	public function getSelectSinistreAfficher($etat)
+	{
+		$plus = " AND YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
+		$sqlSelect = "
+			SELECT 
+				tbl_sinistres.*,
+				CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
+				TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv
+			LEFT JOIN users ON tblrdv.gestionnaire = users.id
+			LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+			WHERE tblrdv.etat = '$etat' 
+			$plus
+			ORDER BY tblrdv.idrdv DESC	";
+
+		return  $this->_getSelectDatabases($sqlSelect);
 	}
 }

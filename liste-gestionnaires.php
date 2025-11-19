@@ -174,7 +174,7 @@ else $effectue = 0;
 												?>
 											</td>
 											<td class="table-plus text-wrap">
-												
+
 												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail</button>
 												<?php if ($rdv->etat == "1"): ?>
 													<button class="btn btn-primary btn-sm traiter" id="traiter-<?= $i ?> " style="background-color:blue; color:white"><i class="fa fa-edit"></i> modifier</button>
@@ -236,7 +236,7 @@ else $effectue = 0;
 				<div class="modal-body">
 					<div class="col-12 col-lg-12 col-xl-12 d-flex">
 						<div class="card">
-							<form id="formOperateur" name="formOperateur">
+							<!-- <form id="formOperateur" name="formOperateur" method="post"> -->
 								<div class="card-body radius-12 w-100">
 									<div class="row" id="formOperateur">
 
@@ -299,7 +299,7 @@ else $effectue = 0;
 										<button type="button" id="closeModaleUser" name="closeModaleUser" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
 									</div>
 								</div>
-							</form>
+							<!-- </form> -->
 						</div>
 					</div>
 				</div>
@@ -574,7 +574,7 @@ else $effectue = 0;
 		}
 
 		function getListeVillesRDV(idVilleEff = "") {
-			console.log("Chargement des villes de réception, sélection :", idVilleEff);
+			//console.log("Chargement des villes de réception, sélection :", idVilleEff);
 
 			$.ajax({
 				url: "config/routes.php",
@@ -587,14 +587,14 @@ else $effectue = 0;
 				success: function(response) {
 					let optionsHtml = `<option value="" disabled ${!idVilleEff ? "selected" : ""}>[Villes de réception des RDV]</option>`;
 
-					console.log("Villes de réception des RDV :", response);
+					//console.log("Villes de réception des RDV :", response);
 					if (response && response.length > 0) {
 						$.each(response, function(index, ville) {
 
 							const id = ville.idVilleBureau;
 							const libelle = ville.libelleVilleBureau;
 							const selected = idVilleEff == id ? "selected" : "";
-							console.log(id, libelle, idVilleEff);
+							//console.log(id, libelle, idVilleEff);
 							optionsHtml += `<option value="${id}" ${selected}>${libelle}</option>`;
 						});
 					} else {
@@ -622,37 +622,7 @@ else $effectue = 0;
 		}
 
 
-		function getListeVillesRDV222(idVilleEff) {
-
-
-			console.log("selection de la ville", idVilleEff)
-			$.ajax({
-				url: "config/routes.php",
-				data: {
-					idVilleEff: idVilleEff,
-					etat: "getListeVillesTransformations"
-				},
-				dataType: "json",
-				method: "post",
-				success: function(response, status) {
-					let html = `<option value="" selected>[Villes de reception des RDV]</option>`;
-
-					$.each(response, function(indx, data) {
-						let idVilleBureau = data.idVilleBureau;
-						let libelleVilleBureau = data.libelleVilleBureau;
-						//html += `<option value="${idVilleBureau}|${libelleVilleBureau}" id="ob-${indx}">${libelleVilleBureau}</option>`;
-						html += `<option value="${idVilleBureau}" id="ob-${indx}" ${idVilleEff == idVilleBureau ? 'selected' : ''}>${libelleVilleBureau}</option>`;
-					});
-
-					$("#ListeVilles").html('<select id="villesRDV" name="villesRDV" class="form-control" required >' + html + '</select>');
-					// //verifierActivationBouton(); // Vérifie après chargement
-				},
-				error: function(response, status, etat) {
-					console.log(response, status, etat);
-				}
-			});
-		}
-
+		
 
 		function getTraitementAjoutUtilisateur() {
 
@@ -679,6 +649,7 @@ else $effectue = 0;
 				// … ton code AJAX ou ta soumission ici …
 			} else {
 				console.log("Formulaire incomplet !");
+				return;
 			}
 
 
@@ -720,7 +691,7 @@ else $effectue = 0;
 				method: "post",
 				success: function(response, status) {
 
-					console.log(response);
+					//console.log(response);
 					if (response != "0") {
 
 						let a_afficher = `<div class="alert alert-success" role="alert" style="text-align: center; font-size: 18px ; color: #033f1f; font-weight: bold">
@@ -759,16 +730,19 @@ else $effectue = 0;
 				if (
 					champ.type === "checkbox" && !champ.checked ||
 					champ.value.trim() === ""
+				
 				) {
 					tousRemplis = false;
 					champ.classList.add("is-invalid"); // Pour visuel Bootstrap par ex.
 					if (!premierManquant) premierManquant = champ;
+					return;
 				}
 			});
 
 			if (!tousRemplis) {
 				alert("Veuillez remplir tous les champs requis avant de continuer.");
 				if (premierManquant) premierManquant.focus();
+				tousRemplis = false;
 			}
 
 			return tousRemplis;

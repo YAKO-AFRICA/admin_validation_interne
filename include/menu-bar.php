@@ -76,12 +76,17 @@ if (!isset($_SESSION['typeCompte'])) {
                             <span class="micon dw dw-search"></span><span class="mtext">rechercher<br>une demande<br>de prestation</span>
                         </a>
                     </li>
-                    <li class="dropdown">
-                        <a href="liste-gestionnaires" class="dropdown-toggle no-arrow" style="font-size:14px">
-                            <span class="micon fa fa-users"></span><span class="mtext">Listes<br>utilisateurs</span>
+                    <?php if ($_SESSION['profil'] != "agent") {
+                    ?>
+                        <li class="dropdown">
+                            <a href="liste-gestionnaires" class="dropdown-toggle no-arrow" style="font-size:14px">
+                                <span class="micon fa fa-users"></span><span class="mtext">Listes<br>utilisateurs</span>
 
-                        </a>
-                    </li>
+                            </a>
+                        </li>
+                    <?php
+                    } ?>
+
 
                 <?php
                     break;
@@ -137,7 +142,7 @@ if (!isset($_SESSION['typeCompte'])) {
                             </a>
                         </li>
                     <?php } ?>
-                    
+
                     <li class="dropdown">
                         <a href="liste-bordereau-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-file"></span><span class="mtext">BORDEREAU RDV</span>
@@ -185,6 +190,38 @@ if (!isset($_SESSION['typeCompte'])) {
                             <span class="micon fa fa-calendar"></span><span class="mtext">Jour/Villes<br>Reception</span>
 
                         </a>
+                    </li>
+                <?php
+                    break;
+                case "sinistre":
+                ?>
+                    <li>
+                        <div class="sidebar-small-cap"><?= strtoupper($_SESSION['typeCompte'] . "s") ?></div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="liste-siniste-attente" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <span class="micon dw dw-edit"></span><span class="mtext">siniste<br>En attente</span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="liste-siniste-transmis" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <span class="micon fa fa-forward "></span><span class="mtext">siniste<br>transmis</span>
+
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="liste-siniste-traite" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <span class="micon fa fa-check"></span><span class="mtext">siniste<br>traite(s)</span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="liste-siniste-rejet" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <span class="micon fa fa-trash"></span><span class="mtext">siniste<br>Rejeté</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <div class="dropdown-divider"></div>
                     </li>
             <?php
                     break;

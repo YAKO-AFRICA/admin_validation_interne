@@ -44,7 +44,7 @@ class Database
 
 	public function Select($sql, array $boundParameters = NULL)
 	{
-		//echo $sql;print_r($boundParameters);		exit;
+		//echo $sql;print_r($boundParameters);		//exit;
 
 		$this->Logger->Handler(__class__ . '.' . __function__, 'executing query[' . $sql . '], boundParameters[' . json_encode($boundParameters) . ']');
 		$this->_SetErrors(0, NULL);
