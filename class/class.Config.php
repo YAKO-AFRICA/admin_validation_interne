@@ -28,7 +28,7 @@ class Config
     // const DatabaseUser = 'laloyale_llvweb';
     // const DatabasePass = 'j2y1YgwwIQ6u';
 
-
+// fcea920f7412b5da7be0cf42b8c93759
 
     const MessageServiceIndisponible = 'Desole, le service est momentanement indisponible. Veuillez reessayer plus tard.';
 

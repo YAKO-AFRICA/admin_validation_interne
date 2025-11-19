@@ -7,7 +7,10 @@ include("../autoload.php");
 $dbAcces = new dbAcess();
 */
 
-$lienEnvoiMail = "http://admin-prestation.test/notification-mail.php?";
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+$url = $protocol . $_SERVER['HTTP_HOST'];
+
+$lienEnvoiMail = "$url/notification-mail.php?";
 $maintenant =  @date('Y-m-d H:i:s');
 
 if ($request->action != null) {
