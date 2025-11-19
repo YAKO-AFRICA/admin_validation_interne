@@ -11,10 +11,13 @@ class Config
 
     const LogDirectory = 'log/';
     const DatabaseHost = '51.255.64.8';
-    const DatabaseName = 'laloyale_bdwebdev';
-    const DatabaseUser = 'laloyale_llvweb';
-    const DatabasePass = 'j2y1YgwwIQ6u';
-
+    const DatabaseName = 'laloyale_bdweb';
+    const DatabaseUser = 'laloyale_masterdev';
+    const DatabasePass = '1Mot2Passe.DSI';
+    // laloyale_masterdev
+    // 1Mot2Passe.DSI
+    // const DatabaseUser = 'laloyale_llvweb';
+    // const DatabasePass = 'j2y1YgwwIQ6u';
     // const LogDirectory = 'log/';
     // const DatabaseHost = 'localhost';
     // const DatabaseName = 'laloyale_bdweb';
