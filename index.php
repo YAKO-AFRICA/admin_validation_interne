@@ -68,7 +68,7 @@
                                 placeholder="Entrez votre mot de passe">
 
                         </div>
-                        <!-- <div class="row">
+                        <div class="row">
                             <div class="form-group col-sm-12 col-md-12 text-left">
                                 <bold style="color: #F9B233; font-weight: bold;font-size: 9px;"> *</bold>
                                 <span style="color:#033f1f; font-weight: bold;font-size: 12px;"> vous n'avez oublie
@@ -76,7 +76,7 @@
                                 <a class="btn" style="color:#F9B233 !important;font-weight: bold; font-size: 11px;"
                                     type="submit" name="passOublie" id="passOublie">cliquez ici</a>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
                                 <div class="input-group mb-0">
@@ -96,6 +96,22 @@
     </div>
     <!------POP UP NOTIFICATION -->
     <?php include "include/modals.php"; ?>
+    <div class="modal fade" id="notificationValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content ">
+                <div class="modal-body text-center">
+                    <div class="card-body" id="msgEchec">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="retourNotification" name="retourNotification" class="btn btn-success" style="background: #033f1f !important;">OK</button>
+                    <button type="button" id="closeEchec" class="btn btn-secondary" data-dismiss="modal">FERMER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- js -->
     <script src="vendors/scripts/core.js"></script>
     <script src="vendors/scripts/script.min.js"></script>
@@ -186,6 +202,11 @@
 
         })
 
+        $("#retourNotification").click(function() {
+            $('#notificationValidation').modal('hide');
+            location.reload(); // recharge la page au lieu de forcer vers detail-rdv
+        });
+
         $("#verifierPass").click(function() {
 
             var login = document.getElementById("loginPO").value;
@@ -206,6 +227,8 @@
 
                     if (checkEmail(email)) {
 
+                        $('#PassOublieModale').modal("hide")
+
                         $.ajax({
                             url: "config/routes.php",
                             data: {
@@ -218,17 +241,37 @@
                             //async: false,
                             success: function(response, status) {
 
-                                //console.log(response)
+
                                 let a_afficher = ""
                                 if (response != '-1') {
-                                    a_afficher = `<div class="alert alert-success" role="alert">
-                                                        <h2>Cher(e) <span class="text-success">` + login + `</span> votre mot de passe a bien été envoyé par email  !</h2></div>`
-                                    $("#a_afficher").text(a_afficher)
-                                    //$('#PassOublieModale').modal("show")
+
+                                    let result = response["result"];
+                                    let code = response["code"];
+                                    let data = response["data"];
+
+                                    if (result == "SUCCESS") {
+
+                                        a_afficher = `<div class="alert alert-success" role="alert">
+								        <h2><span class="text-success">` + data + `</span>  !</h2></div>`
+
+                                    } else {
+                                        a_afficher = `<div class="alert alert-danger" role="alert">
+                                                        <h2>` + data + `</h2></div>`
+                                        a_afficher = `<div class="alert alert-danger" role="alert">
+								            <h2><span class="text-success">` + data +
+                                            `</span> !</h2><br> Veuillez reessayer plus tard </div>`
+                                    }
+
+
+                                    $("#msgEchec").html(a_afficher)
+                                    $('#notificationValidation').modal("show")
+
+
+
                                 } else {
                                     a_afficher =
                                         "DESOLE LOGIN / EMAIL INCORRECT , Merci de ressayer"
-                                        alert(a_afficher)
+                                    alert(a_afficher)
                                     $("#a_afficher2").text(a_afficher)
                                     $('#error').modal("show")
                                 }

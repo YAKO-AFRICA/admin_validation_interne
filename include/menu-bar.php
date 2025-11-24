@@ -199,23 +199,18 @@ if (!isset($_SESSION['typeCompte'])) {
                         <div class="sidebar-small-cap"><?= strtoupper($_SESSION['typeCompte'] . "s") ?></div>
                     </li>
                     <li class="dropdown">
-                        <a href="liste-siniste-attente" class="dropdown-toggle no-arrow" style="font-size:14px">
+                        <a href="liste-sinistres?i=1" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon dw dw-edit"></span><span class="mtext">siniste<br>En attente</span>
                         </a>
                     </li>
+                    
                     <li class="dropdown">
-                        <a href="liste-siniste-transmis" class="dropdown-toggle no-arrow" style="font-size:14px">
-                            <span class="micon fa fa-forward "></span><span class="mtext">siniste<br>transmis</span>
-
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="liste-siniste-traite" class="dropdown-toggle no-arrow" style="font-size:14px">
+                        <a href="liste-sinistres?i=2" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-check"></span><span class="mtext">siniste<br>traite(s)</span>
                         </a>
                     </li>
                     <li class="dropdown">
-                        <a href="liste-siniste-rejet" class="dropdown-toggle no-arrow" style="font-size:14px">
+                        <a href="liste-sinistres?i=3" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-trash"></span><span class="mtext">siniste<br>Rejeté</span>
                         </a>
                     </li>

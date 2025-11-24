@@ -18,10 +18,23 @@ if (isset($_REQUEST['filtreliste'])) {
 	$filtre = '';
 }
 
+$etat = GetParameter::FromArray($_REQUEST, 'i');
+if (isset($etat) && $etat !== null && in_array($etat, array_keys(Config::tablo_statut_prestation))) {
+	$etat = $etat;
+	$retourEtat = Config::tablo_statut_prestation[$etat];
+	$libelleTraitement = " - ".$retourEtat["libelle"];
+} else {
+	$etat = null;
+	$libelleTraitement = " - Total(s)";
+}
 
-$liste_rdvs = $fonction->getSelectSinistreAfficher("1");
-if ($liste_rdvs != null) $effectue = count($liste_rdvs);
+
+
+$liste_sinistre = $fonction->getSelectSinistreAfficher($etat);
+if ($liste_sinistre != null) $effectue = count($liste_sinistre);
 else $effectue = 0;
+
+
 
 ?>
 
@@ -45,28 +58,30 @@ else $effectue = 0;
 					<div class="row">
 						<div class="col-md-12 col-sm-12">
 							<div class="title">
-								<h4><?= Config::lib_pageListeRDV ?></h4>
+								<h4>Pre-declarations de sinistre</h4>
 							</div>
 							<nav aria-label="breadcrumb" role="navigation">
 								<ol class="breadcrumb">
 									<li class="breadcrumb-item"><a
-											href="accueil-operateur.php"><?= Config::lib_pageAccueil ?></a></li>
+											href="intro"><?= Config::lib_pageAccueil ?></a></li>
 									<li class="breadcrumb-item active" aria-current="page">
-										<?= Config::lib_pageListeRDV ?></li>
+										Pre-déclarations de sinistre</li>
 								</ol>
 							</nav>
 						</div>
 					</div>
 				</div>
 				<hr>
-				<?php
-				$retourStatut = $fonction->afficheuseGlobalStatistiqueRDV();
-				echo $retourStatut;
-				?>
+				<div class="row">
+					<?php
+					$retourStatut = $fonction->getParametreGlobalSinistre();
+					echo $retourStatut;
+					?>
+				</div>
 
 				<div class="card-box mb-30">
 					<div class="pd-20">
-						<h4 class="text-center" style="color:#033f1f; "> Liste des Rendez-vous </h4>
+						<h4 class="text-center" style="color:#033f1f; "> Liste des Pre-declarations de sinistre <?php echo ucfirst($libelleTraitement) ?></h4>
 					</div>
 					<div class="pb-20">
 						<div class="col text-center">
@@ -78,59 +93,82 @@ else $effectue = 0;
 							<thead>
 								<tr>
 									<th class="table-plus datatable-nosort">#Ref</th>
-									<th>Id</th>
+									<th hidden>Id</th>
 									<th>Date</th>
-									<th>Nom & prénom(s)</th>
+									<th>code</th>
 									<th>Id contrat</th>
-									<th>Motif</th>
-									<th>Date RDV souhaité</th>
-									<th>lieu RDV</th>
+									<th>Declarant</th>
+									<th>Assure(e)</th>
+									<th>Sinistre</th>
+
 									<th class="table-plus datatable-nosort">Etat</th>
 									<th class="table-plus datatable-nosort">Action</th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php
-								if ($liste_rdvs != null) {
 
+								if ($liste_sinistre != null) {
 
-									$effectue = count($liste_rdvs);
+									$effectue = count($liste_sinistre);
 									for ($i = 0; $i <= ($effectue - 1); $i++) {
 
 
-										$rdv = $liste_rdvs[$i];
-										if (isset($rdv->etat)  && $rdv->villes != null) $villes = strtoupper($rdv->villes);
-										else $villes = "Non mentionné";
+										$sinistre = $liste_sinistre[$i];
 
-										if (isset($rdv->etat) && $rdv->etat !== null && in_array($rdv->etat, array_keys(Config::tablo_statut_rdv)))  $etat = $rdv->etat;
+										if (isset($sinistre->etape) && $sinistre->etape !== null && in_array($sinistre->etape, array_keys(Config::tablo_statut_prestation)))  $etat = $sinistre->etape;
 										else $etat = 1;
-										$retourEtat = Config::tablo_statut_rdv[$etat];
+										$retourEtat = Config::tablo_statut_prestation[$etat];
+										if (isset($sinistre->created_at) && $sinistre->created_at !== null) $dateDeclaration = date("d/m/Y H:i:s", strtotime($sinistre->created_at));
+										else $dateDeclaration = "Non mentionné";
 
 								?>
 										<tr id="ligne-<?= $i ?>" style="color: #033f1f !important; ">
 											<td class="table-plus" id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
-											<td id="id-<?= $i ?>"><?php echo $rdv->idrdv; ?></td>
-											<td><?php echo $rdv->dateajou; ?></td>
-											<td class="text-wrap"><?php echo $rdv->nomclient; ?>
+											<td id="id-<?= $i ?>" hidden><?php echo $sinistre->id; ?></td>
+											<td><?php echo $dateDeclaration; ?></td>
+											<td id="code-<?= $i ?>"><?= htmlspecialchars($sinistre->code ?? '') ?></td>
+											<td id="idcontrat-<?= $i ?>"><?= htmlspecialchars($sinistre->idcontrat ?? '') ?></td>
+											<td class="text-wrap"><?php echo $sinistre->nomDecalarant . " " . $sinistre->prenomDecalarant; ?>
+
 												<p class="mb-0 text-dark" style="font-size: 0.7em;">
-													Téléphone :<span style="font-weight:bold;"><?php echo $rdv->tel; ?></span>
+													Filiation :<span style="font-weight:bold;"><?php echo $sinistre->filiation; ?></span>
+												</p>
+												<p class="mb-0 text-dark" style="font-size: 0.7em;">
+													Téléphone :<span style="font-weight:bold;"><?php echo $sinistre->celDecalarant; ?></span>
+												</p>
+												<p class="mb-0 text-dark" style="font-size: 0.7em;">
+													Email :<span style="font-weight:bold;"><?php echo $sinistre->emailDecalarant; ?></span>
 												</p>
 											</td>
-											<td id="idcontrat-<?= $i ?>"><?= htmlspecialchars($rdv->police ?? '') ?></td>
-											<td><?= htmlspecialchars($rdv->motifrdv ?? '') ?></td>
-											<td id="daterdv-<?= $i ?>"><?= htmlspecialchars($rdv->daterdv ?? '') ?></td>
-											<td style="color:#F9B233; font-weight:bold;"> <?= $villes ?></td>
+											<td class="text-wrap"><?php echo $sinistre->nomAssuree . " " . $sinistre->prenomAssuree; ?>
+
+												<p class="mb-0 text-dark" style="font-size: 0.7em;">
+													date naissance :<span style="font-weight:bold;"><?php echo $sinistre->datenaissanceAssuree; ?></span>
+												</p>
+												<p class="mb-0 text-dark" style="font-size: 0.7em;">
+													lieu naissance :<span style="font-weight:bold;"><?php echo $sinistre->lieunaissanceAssuree; ?></span>
+												</p>
+												<p class="mb-0 text-dark" style="font-size: 0.7em;">
+													lieu residence :<span style="font-weight:bold;"><?php echo $sinistre->lieuresidenceAssuree; ?></span>
+												</p>
+											</td>
+
+											<td>
+												<?php echo $sinistre->natureSinistre; ?>
+												<p class="mb-0 text-dark" style="font-size: 0.7em;">
+													cause :<span style="font-weight:bold;"><?php echo $sinistre->causeSinistre; ?></span>
+												</p>
+
+											</td>
 											<td> <span class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span></td>
 											<td>
 												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail</button>
-												<?php if ($rdv->etat == "1"): ?>
+												<?php if ($sinistre->etape == "1"): ?>
 													<button class="btn btn-success btn-sm traiter" id="traiter-<?= $i ?> " style="background-color:#033f1f; color:white"><i class="fa fa-mouse-pointer"></i> Traiter</button>
 												<?php endif; ?>
-
 											</td>
 										</tr>
-
-
 								<?php
 									}
 								}
@@ -153,7 +191,7 @@ else $effectue = 0;
 			<div class="modal-content">
 				<div class="modal-body text-center font-18">
 					<h4 class="padding-top-30 mb-30 weight-500">
-						Voulez vous rejeter la demande de rdv <span id="a_afficher_1" name="a_afficher_1"
+						Voulez vous rejeter la demande de sinistre <span id="a_afficher_1" name="a_afficher_1"
 							style="color:#033f1f!important; font-weight:bold;"> </span> ?
 					</h4>
 					<span style='color:red;'>Attention cette action est irreversible !!</span><br>
@@ -222,16 +260,16 @@ else $effectue = 0;
 		$(document).ready(function() {
 
 
-			
+
 			// Voir detail
 			$(document).on('click', '.view', function() {
 				const index = this.id.split('-')[1];
 				const idrdv = $("#id-" + index).html();
 				const idcontrat = $("#idcontrat-" + index).html();
-				document.cookie = "idrdv=" + idrdv;
+				document.cookie = "idsinistre=" + idrdv;
 				document.cookie = "idcontrat=" + idcontrat;
 				document.cookie = "action=detail";
-				location.href = "detail-rdv";
+				location.href = "detail-sinistre";
 			});
 
 			// Traiter
@@ -239,54 +277,14 @@ else $effectue = 0;
 				const index = this.id.split('-')[1];
 				const idrdv = $("#id-" + index).html();
 				const idcontrat = $("#idcontrat-" + index).html();
-				document.cookie = "idrdv=" + idrdv;
+				document.cookie = "idsinistre=" + idrdv;
 				document.cookie = "idcontrat=" + idcontrat;
 				document.cookie = "action=traiter";
-				location.href = "fiche-rdv";
+				location.href = "fiche-sinistre";
 			});
-
-			
-			// $(".fa-trash").click(function(evt) {
-			// 	const ind = extraireIndex(evt.target.id);
-			// 	if (!ind) return;
-			// 	const {
-			// 		idrdv,
-			// 		daterdv
-			// 	} = extraireInfosRdv(ind);
-			// 	$("#idprestation").val(idrdv);
-			// 	$("#a_afficher_1").text(`n° ${idrdv} du ${daterdv}`);
-			// 	$('#confirmation-modal').modal('show');
-			// });
 
 
 		})
-
-		// $("#validerRejet").click(function() {
-		// 	const idrdv = $("#idprestation").val();
-		// 	const valideur = "<?= $_SESSION['id'] ?>";
-		// 	$.ajax({
-		// 		url: "config/routes.php",
-		// 		method: "POST",
-		// 		dataType: "json",
-		// 		data: {
-		// 			idrdv,
-		// 			motif: "",
-		// 			traiterpar: valideur,
-		// 			observation: "Aucune observation",
-		// 			etat: "confirmerRejetRDV"
-		// 		},
-		// 		success: function(response) {
-		// 			const msg = response !== '-1' && response !== '0' ?
-		// 				`<div class="alert alert-success" role="alert"><h2>Le RDV <span class="text-success">${idrdv}</span> a bien été rejetée !</h2></div>` :
-		// 				`<div class="alert alert-danger" role="alert"><h2>Erreur lors du rejet de la RDV <span class="text-danger">${idrdv}</span>.</h2></div>`;
-		// 			$("#msgEchec").html(msg);
-		// 			$('#notificationValidation').modal("show");
-		// 		},
-		// 		error: function(err) {
-		// 			console.error("Erreur AJAX rejet RDV", err);
-		// 		}
-		// 	});
-		// });
 
 
 		$("#retourNotification").click(function() {

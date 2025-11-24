@@ -74,8 +74,8 @@ if (isset($_COOKIE["id"])) {
                     </div>
                 </div>
 
-                
-                 <div class="card-body height-100-p pd-20">
+
+                <div class="card-body height-100-p pd-20">
                     <div class="card-box mb-30">
                         <div style="float:left" class="p-2">
                             <button class="btn btn-warning p-2 m-2" onclick="retour()"><i class='fa fa-arrow-left'>Retour</i></button>
@@ -86,7 +86,7 @@ if (isset($_COOKIE["id"])) {
                     </div>
                 </div>
 
-                
+
                 <div class="row">
                     <div class="col-xl-5 mb-30">
                         <div class="card-box height-100-p pd-20">
@@ -97,12 +97,12 @@ if (isset($_COOKIE["id"])) {
                                 style="border:1px solid whitesmoke;background:whitesmoke;color:white">
                                 <div class="row" style="color:#033f1f!important">
                                     <div class="col-md-<?php
-                                        if ($prestation->prestationlibelle != "Autre") {
-                                    ?>6<?php
-                                        } else {
+                                                        if ($prestation->prestationlibelle != "Autre") {
+                                                        ?>6<?php
+                                                        } else {
                                         ?>12<?php
-                                        }
-                                    ?>">
+                                                        }
+                                            ?>">
                                         <p><span class="text-color">Date demande: </span><span class="text-infos"
                                                 style="font-size:18px; font-weight:bold;"><?= $prestation->lib_datedemande; ?></span></span>
                                         </p>
@@ -120,51 +120,51 @@ if (isset($_COOKIE["id"])) {
                                         <!--<p><span class="text-color">Commentaire :</span> </span><span class="text-infos"-->
                                         <!--        style="font-size:18px; font-weight:bold;"><?= $prestation->msgClient; ?></span>-->
                                         <!--</p>-->
-                                        
+
                                         <?php
                                         if ($prestation->prestationlibelle != "Autre") {
                                         ?>
-                                        <p><span class="text-color">Commentaire :</span> </span><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->msgClient; ?></span>
-                                        </p>
+                                            <p><span class="text-color">Commentaire :</span> </span><span class="text-infos"
+                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->msgClient; ?></span>
+                                            </p>
                                         <?php
                                         }
                                         ?>
 
                                     </div>
                                     <?php
-                                        if ($prestation->prestationlibelle != "Autre") {
+                                    if ($prestation->prestationlibelle != "Autre") {
                                     ?>
-                                    <div class="col-md-6">
-                                        <p><span class="text-color">Montant souhaité :</span> <span class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->montantSouhaite ?>
-                                                FCFA</span></p>
-                                        <p><span class="text-color">Moyen de paiement :</span> <span class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->lib_moyenPaiement; ?>
-                                        </p>
-                                        <?php
-                                        if ($prestation->moyenPaiement == "Virement_Bancaire") {
-                                        ?>
-                                        <p><span class="text-color">IBAN du compte :</span> <span class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->IBAN; ?>
-                                        </p>
+                                        <div class="col-md-6">
+                                            <p><span class="text-color">Montant souhaité :</span> <span class="text-infos"
+                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->montantSouhaite ?>
+                                                    FCFA</span></p>
+                                            <p><span class="text-color">Moyen de paiement :</span> <span class="text-infos"
+                                                    style="font-size:18px; font-weight:bold;"><?= $prestation->lib_moyenPaiement; ?>
+                                            </p>
+                                            <?php
+                                            if ($prestation->moyenPaiement == "Virement_Bancaire") {
+                                            ?>
+                                                <p><span class="text-color">IBAN du compte :</span> <span class="text-infos"
+                                                        style="font-size:18px; font-weight:bold;"><?= $prestation->IBAN; ?>
+                                                </p>
 
-                                        <?php
-                                        } else {
-                                        ?>
-                                        <p><span class="text-color">Operateur :</span> <span class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->lib_Operateur; ?>
-                                        </p>
-                                        <p><span class="text-color">Telephone de Paiement :</span> <span
-                                                class="text-infos"
-                                                style="font-size:18px; font-weight:bold;"><?= $prestation->telPaiement; ?>
-                                        </p>
-                                        <?php
-                                        }
-                                        ?>
-                                    </div>
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <p><span class="text-color">Operateur :</span> <span class="text-infos"
+                                                        style="font-size:18px; font-weight:bold;"><?= $prestation->lib_Operateur; ?>
+                                                </p>
+                                                <p><span class="text-color">Telephone de Paiement :</span> <span
+                                                        class="text-infos"
+                                                        style="font-size:18px; font-weight:bold;"><?= $prestation->telPaiement; ?>
+                                                </p>
+                                            <?php
+                                            }
+                                            ?>
+                                        </div>
                                     <?php
-                                        }
+                                    }
                                     ?>
                                 </div>
                             </div>
@@ -214,189 +214,189 @@ if (isset($_COOKIE["id"])) {
                                 style="border:1px solid whitesmoke;background:bisque;color:white">
 
                                 <?php
-                                    $i = 0;
-                                    if ($retour_documents != null) {
-                                        for ($i = 0; $i <= count($retour_documents) - 1; $i++) {
-                                            $tablo = $retour_documents[$i];
+                                $i = 0;
+                                if ($retour_documents != null) {
+                                    for ($i = 0; $i <= count($retour_documents) - 1; $i++) {
+                                        $tablo = $retour_documents[$i];
 
-                                            $id_prestation = $tablo["idPrestation"];
-                                            $path_doc = trim($tablo["path"]);
-                                            $type_doc = trim($tablo["type"]);
-                                            $doc_name = trim($tablo["libelle"]);
-                                            $ref_doc = trim($tablo["id"]);
-                                            $datecreation_doc = trim($tablo["created_at"]);
-                                            $documents = Config::URL_PRESTATION_RACINE . $path_doc;
-
-                                            
-                                            switch ($type_doc) {
-                                                case 'RIB':
-                                                    $nom_document = "RIB";
-                                                    break;
-                                                case 'Police':
-                                                    $nom_document = "Police du contrat d'assurance";
-                                                    break;
-                                                case 'bulletin':
-                                                    $nom_document = "Bulletin de souscription";
-                                                    break;
-                                                case 'AttestationPerteContrat':
-                                                    $nom_document = "Attestation de déclaration de perte";
-                                                    break;
-                                                case 'CNI':
-                                                    $nom_document = "CNI";
-                                                    break;
-                                                case 'etatPrestation':
-                                                    $nom_document = "Fiche de demande de prestation";
-                                                    break;
-                                                default:
-                                                    $nom_document = "Fiche d'identification du numéro de paiement";
-                                                    break;
-                                            }
-
-                                            $values = $id_prestation . "-" . $ref_doc . "-" . $nom_document . "-" . $doc_name;
-                                    ?>
-                                <div class="d-flex align-items-center mt-3 document-ligne" id="line_<?= $ref_doc ?>">
-                                    <input type="text" class="val_doc" name="val_doc" value="<?php echo $values; ?>" hidden>
-                                    <input type="text" class="path_doc" name="path_doc" value="<?php echo $documents; ?>"
-                                        hidden>
-
-                                    <div class="fm-file-box text-success p-2">
-                                        <i class="fa fa-file-pdf-o"></i>
-                                    </div>
-                                    <div class="flex-grow-1 ms-2">
-                                        <h6 class="mb-0" style="font-size: 12px;">
-                                            <a href="<?= $documents ?>" target="_blank"> <?= $nom_document ?> </a>
-                                        </h6>
-                                        <p class="mb-0 text-secondary" style="font-size: 0.6em;">
-                                            <?= $datecreation_doc ?> </p>
-                                    </div>
-                                    <button type="button" class="btn btn-warning bx bx-show"
-                                        data-doc-id="<?= $documents; ?>" data-path-doc="<?= $documents; ?>"
-                                        style="background-color:#F9B233 !important;">
-                                        <i class="dw dw-eye"></i>
-                                    </button>
+                                        $id_prestation = $tablo["idPrestation"];
+                                        $path_doc = trim($tablo["path"]);
+                                        $type_doc = trim($tablo["type"]);
+                                        $doc_name = trim($tablo["libelle"]);
+                                        $ref_doc = trim($tablo["id"]);
+                                        $datecreation_doc = trim($tablo["created_at"]);
+                                        $documents = Config::URL_PRESTATION_RACINE . $path_doc;
 
 
-                                </div>
-                                <span id="checking_<?= $ref_doc ?>"> </span>
-                                <?php
+                                        switch ($type_doc) {
+                                            case 'RIB':
+                                                $nom_document = "RIB";
+                                                break;
+                                            case 'Police':
+                                                $nom_document = "Police du contrat d'assurance";
+                                                break;
+                                            case 'bulletin':
+                                                $nom_document = "Bulletin de souscription";
+                                                break;
+                                            case 'AttestationPerteContrat':
+                                                $nom_document = "Attestation de déclaration de perte";
+                                                break;
+                                            case 'CNI':
+                                                $nom_document = "CNI";
+                                                break;
+                                            case 'etatPrestation':
+                                                $nom_document = "Fiche de demande de prestation";
+                                                break;
+                                            default:
+                                                $nom_document = "Fiche d'identification du numéro de paiement";
+                                                break;
                                         }
-                                    } else {
-                                        echo '<div class="alert alert-danger" role="alert">  Attention ! <strong>Aucun document joint</strong>. </div>';
+
+                                        $values = $id_prestation . "-" . $ref_doc . "-" . $nom_document . "-" . $doc_name;
+                                ?>
+                                        <div class="d-flex align-items-center mt-3 document-ligne" id="line_<?= $ref_doc ?>">
+                                            <input type="text" class="val_doc" name="val_doc" value="<?php echo $values; ?>" hidden>
+                                            <input type="text" class="path_doc" name="path_doc" value="<?php echo $documents; ?>"
+                                                hidden>
+
+                                            <div class="fm-file-box text-success p-2">
+                                                <i class="fa fa-file-pdf-o"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-2">
+                                                <h6 class="mb-0" style="font-size: 12px;">
+                                                    <a href="<?= $documents ?>" target="_blank"> <?= $nom_document ?> </a>
+                                                </h6>
+                                                <p class="mb-0 text-secondary" style="font-size: 0.6em;">
+                                                    <?= $datecreation_doc ?> </p>
+                                            </div>
+                                            <button type="button" class="btn btn-warning bx bx-show"
+                                                data-doc-id="<?= $documents; ?>" data-path-doc="<?= $documents; ?>"
+                                                style="background-color:#F9B233 !important;">
+                                                <i class="dw dw-eye"></i>
+                                            </button>
+
+
+                                        </div>
+                                        <span id="checking_<?= $ref_doc ?>"> </span>
+                                <?php
                                     }
-                                    ?>
+                                } else {
+                                    echo '<div class="alert alert-danger" role="alert">  Attention ! <strong>Aucun document joint</strong>. </div>';
+                                }
+                                ?>
 
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <?php
 
                 if ($prestation->etape != "1") {
 
                 ?>
-                <div class="card-box mb-30 p-2" style="background-color:whitesmoke ;  font-weight:bold;">
-                    <h4 class="text-center p-2" style="color:#033f1f !important; font-weight:bold;"> Détails traitement
-                        de la demande de prestation </h4>
-                    <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
-                    <div class="row">
+                    <div class="card-box mb-30 p-2" style="background-color:whitesmoke ;  font-weight:bold;">
+                        <h4 class="text-center p-2" style="color:#033f1f !important; font-weight:bold;"> Détails traitement
+                            de la demande de prestation </h4>
+                        <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
+                        <div class="row">
 
-                        <div class="col-md-5">
-                            <div class="card-body radius-12 w-100 p-4"
-                                style="border:1px solid whitesmoke;background:whitesmoke; color:#033f1f">
-                                <p><span class="text-color">traite le : </span><span class="text-infos"
-                                        style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->traiterle; ?></span></span>
-                                </p>
-                                <p><span class="text-color">traite par : </span><span class="text-infos"
-                                        style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->traiterpar; ?></span></span>
-                                </p>
-                                <p><span class="text-color">statut : </span><span class="text-infos"
-                                        style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->lib_statut; ?></span></span>
-                                </p>
-                                <?php
+                            <div class="col-md-5">
+                                <div class="card-body radius-12 w-100 p-4"
+                                    style="border:1px solid whitesmoke;background:whitesmoke; color:#033f1f">
+                                    <p><span class="text-color">traite le : </span><span class="text-infos"
+                                            style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->traiterle; ?></span></span>
+                                    </p>
+                                    <p><span class="text-color">traite par : </span><span class="text-infos"
+                                            style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->traiterpar; ?></span></span>
+                                    </p>
+                                    <p><span class="text-color">statut : </span><span class="text-infos"
+                                            style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->lib_statut; ?></span></span>
+                                    </p>
+                                    <?php
                                     if ($prestation->etape == "3") {
                                     ?>
-                                <?php
+                                    <?php
                                     }
                                     ?>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-md-7">
-                            <div class="card-body radius-12 w-100 p-4"
-                                style="border:1px solid whitesmoke;background:whitesmoke; color:#033f1f">
-                                <?php
+                            <div class="col-md-7">
+                                <div class="card-body radius-12 w-100 p-4"
+                                    style="border:1px solid whitesmoke;background:whitesmoke; color:#033f1f">
+                                    <?php
                                     if ($prestation->etape == "2") {
                                     ?>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><span class="text-color">Migration NSIL : </span><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->migrationNsil; ?></span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><span class="text-color">Date Migration NSIL : </span><span
-                                                class="text-infos"
-                                                style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->migreele; ?></span>
-                                        </p>
-                                    </div>
-                                    <?php
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><span class="text-color">Migration NSIL : </span><span class="text-infos"
+                                                        style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->migrationNsil; ?></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><span class="text-color">Date Migration NSIL : </span><span
+                                                        class="text-infos"
+                                                        style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->migreele; ?></span>
+                                                </p>
+                                            </div>
+                                            <?php
                                             $detailPrestationNsil = $fonction->_GetDetailsTraitementPrestation($prestation->id);
                                             if ($detailPrestationNsil != null) {
                                             ?>
 
-                                    <div class="col-md-6">
-                                        <p><span class="text-color">libelle Operation : </span><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $detailPrestationNsil->libelleOperation; ?></span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><span class="text-color">delai Traitement : </span><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $detailPrestationNsil->delaiTraitement; ?></span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><span class="text-color">id courrier NSIL : </span><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $detailPrestationNsil->idTblCourrier; ?></span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><span class="text-color">code courrier NSIL : </span><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $detailPrestationNsil->codeCourrier; ?></span>
-                                        </p>
-                                    </div>
+                                                <div class="col-md-6">
+                                                    <p><span class="text-color">libelle Operation : </span><span class="text-infos"
+                                                            style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $detailPrestationNsil->libelleOperation; ?></span>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p><span class="text-color">delai Traitement : </span><span class="text-infos"
+                                                            style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $detailPrestationNsil->delaiTraitement; ?></span>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p><span class="text-color">id courrier NSIL : </span><span class="text-infos"
+                                                            style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $detailPrestationNsil->idTblCourrier; ?></span>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p><span class="text-color">code courrier NSIL : </span><span class="text-infos"
+                                                            style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $detailPrestationNsil->codeCourrier; ?></span>
+                                                    </p>
+                                                </div>
 
-                                    <?php
+                                            <?php
                                             }
                                             ?>
-                                </div>
+                                        </div>
 
 
-                                <?php
+                                    <?php
                                     } elseif ($prestation->etape == "3") {
                                         $ListeMotifRejet = $fonction->_GetListeMotifRejetPrestation($prestation->code, null, true);
 
                                     ?>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p><span class="text-color">Observations : </span><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->observationtraitement; ?></span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <p><span class="text-color"> Liste des motifs de rejet de la prestation :
-                                            </span><br><span class="text-infos"
-                                                style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $ListeMotifRejet; ?></span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <?php
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <p><span class="text-color">Observations : </span><span class="text-infos"
+                                                        style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->observationtraitement; ?></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <p><span class="text-color"> Liste des motifs de rejet de la prestation :
+                                                    </span><br><span class="text-infos"
+                                                        style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $ListeMotifRejet; ?></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    <?php
                                     }
                                     ?>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 <?php
                 }
                 ?>
@@ -477,9 +477,9 @@ if (isset($_COOKIE["id"])) {
 
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            $(".bx-show").click(function () {
+            $(".bx-show").click(function() {
                 let path_document = $(this).data("path-doc");
                 let val_doc = $(this).closest('.d-flex').find('.val_doc').val();
 
@@ -498,7 +498,7 @@ if (isset($_COOKIE["id"])) {
 
 
 
-        $("#ajourner").click(function (evt) {
+        $("#ajourner").click(function(evt) {
 
             var search = $("#search").text()
             var tablo = search.split("|");
@@ -515,7 +515,7 @@ if (isset($_COOKIE["id"])) {
 
         })
 
-        $("#modifier").click(function (evt) {
+        $("#modifier").click(function(evt) {
 
             var search = $("#search").text()
             var tablo = search.split("|");
@@ -532,7 +532,7 @@ if (isset($_COOKIE["id"])) {
         })
 
 
-        $("#rechercher").click(function (evt) {
+        $("#rechercher").click(function(evt) {
 
             var search = $("#search").text()
             var tablo = search.split("|");
@@ -554,7 +554,7 @@ if (isset($_COOKIE["id"])) {
                 dataType: "json",
                 method: "post",
                 //async: false,
-                success: function (response, status) {
+                success: function(response, status) {
                     console.log(response)
                     etat = response
                     let contact1;
@@ -585,7 +585,7 @@ if (isset($_COOKIE["id"])) {
                         $('#echecNotification').modal("show")
                     }
                 },
-                error: function (response, status, etat) {
+                error: function(response, status, etat) {
                     console.log(etat, response)
                     //   etat =  '-1';
                 }
@@ -593,7 +593,7 @@ if (isset($_COOKIE["id"])) {
         })
 
 
-        $('div #tabloContrat').on("click", ".generer", function (evt) {
+        $('div #tabloContrat').on("click", ".generer", function(evt) {
 
             var data = evt.target.id.split('-');
             var ind = data[1]
@@ -606,12 +606,12 @@ if (isset($_COOKIE["id"])) {
         })
 
 
-        $("#closeNotif").click(function () {
+        $("#closeNotif").click(function() {
             $('#notification').modal('hide')
             window.history.back();
         })
 
-        $("#closeEchec").click(function () {
+        $("#closeEchec").click(function() {
             $('#echecNotification').modal('hide')
             location.reload();
         })
@@ -633,7 +633,7 @@ if (isset($_COOKIE["id"])) {
             let nbreCR
             if (resultat && resultat.lenght !== 0) {
                 //nbreCR = resultat.lenght;
-                $.each(resultat, function (indx, element) {
+                $.each(resultat, function(indx, element) {
                     //console.log(indx);
                     if (element.Contact1 == null) contact1 = "";
                     else contact1 = element.Contact1;
@@ -735,7 +735,7 @@ if (isset($_COOKIE["id"])) {
                 dataType: "json",
                 method: "post",
                 //async: false,
-                success: function (response, status) {
+                success: function(response, status) {
                     console.log(response)
 
                     if (response != '-1') {
@@ -764,7 +764,7 @@ if (isset($_COOKIE["id"])) {
                         $('#echecNotification').modal("show")
                     }
                 },
-                error: function (response, status, etat) {
+                error: function(response, status, etat) {
                     console.log(response)
                 }
             })
@@ -806,13 +806,13 @@ if (isset($_COOKIE["id"])) {
                 dataType: "json",
                 method: "post",
                 //async: false,
-                success: function (response, status) {
+                success: function(response, status) {
                     console.log(response)
                     a_afficher = "La demande a bien été  ajournée ! "
                     $("#a_afficher2").text(a_afficher)
                     $('#notification').modal("show")
                 },
-                error: function (response, status, etat) {
+                error: function(response, status, etat) {
                     console.log(response)
                 }
             })
@@ -822,15 +822,15 @@ if (isset($_COOKIE["id"])) {
 
 
         //column checkbox select all or cancel
-        $("input.select-all").click(function () {
+        $("input.select-all").click(function() {
             var checked = this.checked;
-            $("input.select-item").each(function (index, item) {
+            $("input.select-item").each(function(index, item) {
                 item.checked = checked;
             });
         });
 
         //check selected items
-        $("input.select-item").click(function () {
+        $("input.select-item").click(function() {
             var checked = this.checked;
             console.log(checked);
             checkSelected();
@@ -846,12 +846,12 @@ if (isset($_COOKIE["id"])) {
             all.checked = len === total;
         }
         //button select all or cancel
-        $("#select-all").click(function () {
+        $("#select-all").click(function() {
             //$('div #tabloContrat').on("click", ".select-all", function(evt) {
             var all = $("input.select-all")[0];
             all.checked = !all.checked
             var checked = all.checked;
-            $("input.select-item").each(function (index, item) {
+            $("input.select-item").each(function(index, item) {
                 item.checked = checked;
             });
         });
@@ -859,10 +859,10 @@ if (isset($_COOKIE["id"])) {
 
 
         /*generer plusieurs contrat correspondant */
-        $("#selected").click(function () {
+        $("#selected").click(function() {
 
             var items = [];
-            $("input.select-item:checked:checked").each(function (index, item) {
+            $("input.select-item:checked:checked").each(function(index, item) {
                 items[index] = item.value;
             });
             if (items.length < 1) {

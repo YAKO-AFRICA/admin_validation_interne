@@ -45,32 +45,29 @@ if ($request->action != null) {
             $loginPO = GetParameter::FromArray($_REQUEST, 'login');
             $email = GetParameter::FromArray($_REQUEST, 'email');
 
+            //print_r($_REQUEST);
+
             if (isset($loginPO) && $loginPO != null) {
                 $plus = " AND login = '$loginPO' AND etat = '1' ";
-                $retourUsers = $fonction->_GetUsers($plus);
+
+                $sqlSelect = "SELECT * FROM users  WHERE login = '$loginPO'  ";
+                $retourUsers = $fonction->_getSelectDatabases($sqlSelect);
+                //$retourUsers = $fonction->_GetUsers($plus);
                 if ($retourUsers != null) {
 
-                    list($pre_email, $post_email) = explode('@', $email, 2);
-
-                    if (preg_match("/^yakoafricassur/", $post_email)) {
-
-                        $retour_recup_users = $fonction->_getSelectDatabases("SELECT * FROM tbl_recup_users WHERE id_users = '" . $retourUsers->id . "' ");
-
-                        if ($retour_recup_users == null) {
-                            $retour = $fonction->insertRecuperationMotPasse($retourUsers, $email);
-                        } else {
-                            $fonction->updateRecuperationMotPasse($retourUsers, $email);
-                            $retour =  $retour_recup_users[0]->id;
-                        }
-
-                        $lib = "recuperation-mail?i=" . trim($retour) . "&p=rp-" . date('YmdHis');
-                        $url_notification = "http://localhost/mes-projets/yako-africa/admin-prestation/" . $lib;
-                        file_get_contents($url_notification);
-
-                        echo json_encode($retour);
+                    $users = new users($retourUsers[0]);
+                    if ($users->etat != "1") {
+                        $result = array("result" => "ERROR", "code" => '100', "data" =>  "Desolé ce compte est desactivé !!");
                     } else {
-                        echo json_encode("-2");
+                        if (isset($users->email) && $users->email != null) {
+                            $url_notification = $url . "/recuperation-mail?i=" . trim($users->id) . "&p=rp-" . date('YmdHis');
+                           // file_get_contents($url_notification);
+                            $result = array("result" => "SUCCESS", "code" => '0', "data" =>  "Merci de continuer le traitement en suivant le lien envoyé par mail a l'adresse " . $users->email . " !!");
+                        } else {
+                            $result = array("result" => "ERROR", "code" => '101', "data" =>  "Merci de contacter l'administrateur !!");
+                        }
                     }
+                    echo json_encode($result);
                 } else {
                     echo json_encode("-1");
                 }
@@ -785,6 +782,109 @@ if ($request->action != null) {
             }
 
             break;
+
+        case "confirmerRejetSinistre":
+
+            $id_sinistre = GetParameter::FromArray($_REQUEST, 'id_sinistre');
+            $traiterpar = GetParameter::FromArray($_REQUEST, 'traiterpar');
+            $observation = GetParameter::FromArray($_REQUEST, 'observation');
+
+
+            $sqlSelect = " SELECT * FROM tbl_sinistres  WHERE YEAR(created_at) = YEAR(CURDATE()) AND id = '" . $id_sinistre . "'  ORDER BY id DESC ";
+            $retour = $fonction->_getSelectDatabases($sqlSelect);
+            if ($retour != null) {
+                $sinistre = $retour[0];
+
+                $sqlUpdateSinistre = "UPDATE tbl_sinistres SET etape= ?, observationtraitement=?, traiterpar=?, updated_at =now(), traiterle = now() WHERE id = ?";
+                $queryOptions = array(
+                    "3",
+                    addslashes(htmlspecialchars(trim(ucfirst(strtolower($observation))))),
+                    $traiterpar,
+                    intval($id_sinistre)
+                );
+
+                $result = $fonction->_Database->Update($sqlUpdateSinistre, $queryOptions);
+                if ($result != null) {
+                    $retour = $sinistre->code;
+
+                    $numero = "225" . substr($sinistre->celDecalarant, -10);
+                    $numero = "2250758401797";
+                    $sms_envoi = new SMSService();
+                    $ref_sms = "YAAV-SMS-" . $sinistre->id;
+
+                    $message = "Cher client(e), votre pré-declaration de sinistre n° " . $sinistre->code . " a été rejetée." . PHP_EOL . " Consultez les détails du rejet sur votre espace personnel : urlr.me/9ZXGSr";
+                    if (strlen($message) > 160) $message = substr($message, 0, 160);
+                    $sms_envoi->sendOtpInfobip($numero, $message,  "YAKO AFRICA");
+
+                    // $url_notification = $lienEnvoiMail . "action=confirmerRejetSinistre&data=[idsinistre:" . trim($id_sinistre) . "]";
+                    // file_get_contents($url_notification);
+                } else $retour = 0;
+                echo json_encode($retour);
+            } else echo json_encode("-1");
+
+            break;
+        case "validerSinistre":
+
+            $id_sinistre = GetParameter::FromArray($_REQUEST, 'id_sinistre');
+            $traiterpar = GetParameter::FromArray($_REQUEST, 'traiterpar');
+
+
+            $idcontrat = GetParameter::FromArray($_REQUEST, 'idcontrat');
+            $typeOpe = GetParameter::FromArray($_REQUEST, 'typeOpe');
+            $ListeOpe = GetParameter::FromArray($_REQUEST, 'ListeOpe');
+            $delaiTrait = GetParameter::FromArray($_REQUEST, 'delaiTrait');
+
+            if ($id_sinistre != null) {
+
+                $sqlSelect = " SELECT * FROM tbl_sinistres  WHERE YEAR(created_at) = YEAR(CURDATE()) AND id = '" . $id_sinistre . "'  ORDER BY id DESC ";
+                $retour = $fonction->_getSelectDatabases($sqlSelect);
+                if ($retour != null) {
+                    $sinistre = $retour[0];
+
+
+                    $retourDetail = $fonction->_GetDetailsTraitementPrestation($sinistre->id, "sinistre");
+                    if ($retourDetail != null) {
+                        $result = $retourDetail;
+                    } else {
+
+                        list($keyType, $typeOperation) = explode("-", $typeOpe);
+                        $tablo = explode("-", $ListeOpe);
+                        $count = count($tablo);
+                        if ($count > 1) {
+                            $CodeTypeAvenant = $tablo[0];
+                            $DelaiTraitement = $tablo[1];
+                            $operation = $tablo[2];
+                        }
+
+                        $result = $fonction->_InsertDetailPrestation($CodeTypeAvenant, $operation, $DelaiTraitement, $idcontrat, $sinistre->id, $maintenant, "sinistre");
+                    }
+
+                    $sqlUpdateSinistre = "UPDATE tbl_sinistres SET etape=? , traiterpar=? , estMigree=? , updated_at=NOW() , traiterle = NOW() , migreele = NOW() WHERE id =?";
+                    $queryOptions = array(
+                        "2",
+                        $traiterpar,
+                        '1',
+                        intval($id_sinistre)
+                    );
+
+                    $result = $fonction->_Database->Update($sqlUpdateSinistre, $queryOptions);
+                    if ($result != null) {
+                        $retour = $sinistre->code;
+
+                        $numero = "225" . substr($sinistre->celDecalarant, -10);
+                        $numero = "2250758817235";
+                        $sms_envoi = new SMSService();
+                        $ref_sms = "YAAV-SMS-" . $sinistre->id;
+                        $message = "Cher client(e) , la pré-declaration de sinistre n° " . $sinistre->code . " a été acceptée. Merci de vous rendre en Agence YAKO AFRICA, muni des originaux des documents.";
+                        if (strlen($message) > 160) $message = substr($message, 0, 160);
+                        //$sms_envoi->sendOtpInfobip($numero, $message,  "YAKO AFRICA");
+
+                        echo json_encode($retour);
+                    } else echo json_encode("-1");
+                } else echo json_encode("-1");
+            } else echo json_encode("-1");
+            break;
+
         default:
             echo json_encode("0");
             break;

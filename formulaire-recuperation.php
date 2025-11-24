@@ -10,13 +10,11 @@ if ($id != null && $action != null) {
 
 
     if ($action == "mp") {
-
-        $req = "SELECT tbl_recup_users.* , users.nom , users.prenom , users.profil as profil_agent , CONCAT(users.nom, ' ', users.prenom) AS nom_prenom FROM tbl_recup_users INNER JOIN users ON tbl_recup_users.id_users = users.id WHERE tbl_recup_users.id = '" . $id . "' ";
-        $retour_recup_users = $fonction->_getSelectDatabases($req);
-
-        $created_at = $retour_recup_users[0]->created_at;
+        $created_at = date('Y-m-d H:i:s');
         $expire = strtotime($created_at . ' +1 day');
         $expireDate = date('Y-m-d H:i:s', $expire);
+
+        $users = $fonction->_GetUsers(" AND id = '$id'  ");
     }
 }
 ?>
@@ -73,7 +71,7 @@ if ($id != null && $action != null) {
     <div class="login-wrap d-flex align-items-center flex-wrap justify-content-center">
         <div class="container" style="background-color: #033f1f;">
 
-            <?php if (!empty($retour_recup_users)) : ?>
+            <?php if (!empty($users)) : ?>
                 <div class="row align-items-center">
 
                     <div class="col-md-5 col-lg-7 text-center">
@@ -87,21 +85,25 @@ if ($id != null && $action != null) {
                             </div>
 
                             <p class="text-center">
-                                Agent : <strong><?= htmlspecialchars($retour_recup_users[0]->nom_prenom); ?></strong>
+                                Agent : <strong><?= htmlspecialchars($users->userConnect); ?></strong>
                             </p>
 
+                            <input type="hidden" id="idusers" name="idusers" value="<?= $users->id ?>" hidden>
                             <div class="input-group mb-3">
-                                <input type="password" class="form-control form-control-lg" id="passW"
+                                <input type="password" class="form-control form-control-lg" id="new_passe" name="new_passe"
                                     placeholder="Nouveau mot de passe">
+                                <div class="validation" id="validNom" style="color:#F9B233"></div>
                             </div>
 
                             <div class="input-group mb-4">
-                                <input type="password" class="form-control form-control-lg" id="passW2"
+                                <input type="password" class="form-control form-control-lg" id="confirmer_new_passe" name="confirmer_new_passe"
                                     placeholder="Confirmer le mot de passe">
+                                <div class="validation" id="validNom" style="color:#F9B233"></div>
                             </div>
 
-                            <button id="btnReset" class="btn btn-success btn-lg btn-block" style="background-color:#033f1f;">
+                            <button id="btnReset" class="btn btn-success btn-lg btn-block" style="background-color:#033f1f;" onclick="getModifierMonMDP()">
                                 Réinitialiser le mot de passe
+                                <span id="spinnerMDP" class="spinner-border spinner-border-sm"></span>
                             </button>
                         </div>
                     </div>
@@ -245,77 +247,116 @@ if ($id != null && $action != null) {
 
         })
 
-        $("#verifierPass").click(function() {
-
-            var login = document.getElementById("loginPO").value;
-            var email = document.getElementById("email").value;
-
-
-            if (login == "") {
-                alert("veuillez renseigner votre login SVP !!");
-                document.getElementById("loginPO").focus();
-                return false;
-            } else {
-
-                if (email == "") {
-                    alert("veuillez renseigner votre email SVP !!");
-                    document.getElementById("email").focus();
-                    return false;
-                } else {
-
-                    if (checkEmail(email)) {
-                        //alert("email valide");
-
-                        $.ajax({
-                            url: "config/routes.php",
-                            data: {
-                                login: login,
-                                email: email,
-                                etat: "motdepasseOublie"
-                            },
-                            dataType: "json",
-                            method: "post",
-                            //async: false,
-                            success: function(response, status) {
-
-                                console.log(response)
-                                // let a_afficher = ""
-                                // if (response != '-1') {
-                                //     a_afficher = `<div class="alert alert-success" role="alert">
-                                //                         <h2>Cher(e) <span class="text-success">` + login + `</span> votre mot de passe a bien été envoyé par email  !</h2></div>`
-                                //     $("#a_afficher").text(a_afficher)
-                                //     $('#passOublieModale').modal("hide")
-                                // } else {
-                                //     var a_afficher =
-                                //         "DESOLE LOGIN / EMAIL INCORRECT , Merci de ressayer"
-                                //     $("#a_afficher").text(a_afficher)
-                                //     $('#passOublieModale').modal("show")
-                                // }
-                            },
-                            error: function(err) {
-                                console.error("Erreur AJAX rejet RDV", err);
-                            }
-
-                        })
-
-
-
-                    } else {
-
-                        alert("Veuillez renseigner votre adresse email  SVP !!");
-                        document.getElementById("email").focus();
-                        return false;
-                    }
-
-                }
-            }
-
-        })
 
         $("#close").click(function() {
             $('#error').modal('hide')
             location.reload(true)
         })
+
+        function getModifierMonMDP() {
+
+            //let passe_actuel = document.getElementById("passe_actuel");
+            let new_passe = document.getElementById("new_passe");
+            let confirmer_new_passe = document.getElementById("confirmer_new_passe");
+            let idusers = document.getElementById("idusers").value
+            // Réinitialise les messages
+            document.querySelectorAll(".validation").forEach(e => e.innerHTML = "");
+
+            // // Vérification du mot de passe actuel
+            // if (passe_actuel.value.trim() === "") {
+            //     passe_actuel.focus();
+            //     passe_actuel.nextElementSibling.innerHTML = "Veuillez entrer votre mot de passe actuel.";
+            //     document.getElementById("spinnerMDP").style.display = "none";
+            //     return false;
+            // }
+
+            // Vérification du nouveau mot de passe
+            if (new_passe.value.trim() === "") {
+                new_passe.focus();
+                new_passe.nextElementSibling.innerHTML = "Veuillez entrer un nouveau mot de passe.";
+                document.getElementById("spinnerMDP").style.display = "none";
+                return false;
+            }
+
+            // Longueur minimale du nouveau mot de passe
+            if (new_passe.value.length <= 5) {
+                new_passe.focus();
+                new_passe.nextElementSibling.innerHTML = "Le mot de passe doit contenir au moins 6 caractères.";
+                document.getElementById("spinnerMDP").style.display = "none";
+                return false;
+            }
+
+            // // Nouveau mot de passe ne doit pas être le même que l'ancien
+            // if (new_passe.value === passe_actuel.value) {
+            //     new_passe.focus();
+            //     new_passe.nextElementSibling.innerHTML = "Le nouveau mot de passe ne peut pas être identique à l’actuel.";
+            //     document.getElementById("spinnerMDP").style.display = "none";
+            //     return false;
+            // }
+
+            // Vérification de la confirmation
+            if (confirmer_new_passe.value.trim() === "") {
+                confirmer_new_passe.focus();
+                confirmer_new_passe.nextElementSibling.innerHTML = "Veuillez confirmer le nouveau mot de passe.";
+                document.getElementById("spinnerMDP").style.display = "none";
+                return false;
+            }
+
+            // Vérifier si confirmation correspond
+            if (new_passe.value !== confirmer_new_passe.value) {
+                confirmer_new_passe.focus();
+                confirmer_new_passe.nextElementSibling.innerHTML = "Les deux mots de passe ne correspondent pas.";
+                document.getElementById("spinnerMDP").style.display = "none";
+                return false;
+            }
+
+            // Si tout est bon, on peut envoyer au backend
+            // Tu peux ajouter ton AJAX ici si besoin
+
+
+            //alert("Mot de passe validé — vous pouvez maintenant procéder à la mise à jour. " + new_passe.value);
+
+            $('#modifierMonMotDePasse').modal("hide")
+            let monMDP = new_passe.value;
+
+            $.ajax({
+                url: "config/routes.php",
+                data: {
+                    idusers: idusers,
+                    pass1: monMDP,
+                    pass2: monMDP,
+                    etat: "modifierPasse"
+                },
+                dataType: "json",
+                method: "post",
+                //async: false,
+                success: function(response, status) {
+
+                    console.log(response)
+                    let a_afficher = ""
+                    if (response != '-1') {
+
+                        a_afficher = `<div class="alert alert-success" role="alert">
+										<h2>Cher(e) utilisateur votre mot de passe ont bien a bien été modifiée  !</h2></div>`
+                    } else {
+                        a_afficher = `<div class="alert alert-danger" role="alert">
+										<h2>"Désolé , une erreur est survenue sur lors de la modification de vos informations !</h2><br> Veuillez reessayer plus tard 
+									</div>`
+                    }
+                    //$("#msgEchec").html(a_afficher)
+                    //$('#notificationValidation').modal("show")
+                    alert("Cher(e) utilisateur votre mot de passe ont bien a bien été modifiée  !")
+                    location.href = "index.php";
+
+                },
+                error: function(response, status, etat) {
+                    console.log(etat, response)
+                }
+            })
+
+
+            return true;
+        }
 
 
         function checkEmail(email) {

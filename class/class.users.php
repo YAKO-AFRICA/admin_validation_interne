@@ -45,7 +45,7 @@ class users
                 if ($value == null) $value = "";
                 $this->{$key} = trim($value);
             }
-            $this->email = $this->login;
+            //$this->email = $this->login;
 
             $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
             if (preg_match($regex, $this->login)) {

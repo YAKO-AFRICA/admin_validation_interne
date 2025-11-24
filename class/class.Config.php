@@ -11,8 +11,8 @@ class Config
 
     const LogDirectory = 'log/';
     const DatabaseHost = '51.255.64.8';
-    // const DatabaseName = 'laloyale_bdwebdev';
-    const DatabaseName = 'laloyale_bdweb';
+    const DatabaseName = 'laloyale_bdwebdev';
+    //const DatabaseName = 'laloyale_bdweb';
     const DatabaseUser = 'laloyale_masterdev';
     const DatabasePass = '1Mot2Passe.DSI';
     // laloyale_masterdev
@@ -29,7 +29,7 @@ class Config
     // const DatabaseUser = 'laloyale_llvweb';
     // const DatabasePass = 'j2y1YgwwIQ6u';
 
-// fcea920f7412b5da7be0cf42b8c93759
+    // fcea920f7412b5da7be0cf42b8c93759
 
     const MessageServiceIndisponible = 'Desole, le service est momentanement indisponible. Veuillez reessayer plus tard.';
 
@@ -162,4 +162,6 @@ class Config
     const URL_PRESTATION_RACINE = "https://testsite.yakoafricassur.com/";
     const URL_DOC_PRESTATION = "https://testsite.yakoafricassur.com/api/getPrestationsDoc/";
     const URL_API_OTP_PAYS = "https://apiotp.yakoafricassur.com/api/getAllCountries/";
+
+    const URL_DOC_SINISTRE = "https://testsite.yakoafricassur.com/api/getSinistreDoc/";
 }

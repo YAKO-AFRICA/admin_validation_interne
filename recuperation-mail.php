@@ -22,13 +22,40 @@ if ($id != null && $dateUp != null) {
     if ($action == "rp") {
         $dateUp = date('Y-m-d H:i:s', $timeSamp);
 
-        $result = recuperationMail($id, $lienService, $lienYako, $mailSupport, $services);
-        if ($result) {
-            $mail = true;
-            $to = $result[0];
-            $subject = $result[1];
-            $message = $result[2];
+        $users = $fonction->_GetUsers(" AND id = '$id'  ");
+        if ($users != NULL) {
+           
+            $lienRecup = $lienService . "formulaire-recuperation?i=" . $users->id . "&p=mp";
+            $libelleRecup = "Réinitialisation de votre mot de passe";
+
+            $text_form = "
+                <div style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                    <div class='content'>
+                        <div class='title'>
+                            Bonjour <span class='important'> Cher Agent " . $users->nom . "</span> !
+                        </div>  <br>
+                        <p>Vous avez demandé la réinitialisation de votre mot de passe pour accéder à votre espace $services.</p>
+                        <p>Pour définir un nouveau mot de passe, veuillez cliquer sur le lien ci-dessous :</p>
+                        <ul>
+                            <li> 👉 <a href='" . $lienRecup . "' target='_blank'>" . $libelleRecup . "</a></li>
+                        </ul>
+                        
+                        <p>Si vous n’êtes pas à l’origine de cette demande, vous pouvez ignorer ce message — votre mot de passe actuel restera inchangé.</p>
+                        <p>Pour toute assistance, n’hésitez pas à contacter le support à l’adresse suivante : " . $mailSupport . ".</p>
+                        <p>Merci de votre confiance,<br>
+                        <br>L’equipe " . $services . "</p>
+                    </div>
+                </div>";
+
+
+            $subject = "Réinitialisation de votre mot de passe - " . $users->nom." " . $users->prenom;
         }
+
+        $subject = "Réinitialisation de votre mot de passe - " . $users->nom." " . $users->prenom;
+        $message = format_mail_by_NISSA($users->nom." " . $users->prenom, $text_form, $subject);
+        //print_r($message);
+        $to = $users->email;
+        $mail = true;
     }
 }
 
@@ -81,51 +108,6 @@ if ($mail && $to != "") {
 
 
 
-function recuperationMail($id, $lienService, $lienYako, $mailSupport, $services)
-{
-    global $fonction;
-
-    $lienRecup = $lienService . "formulaire-recuperation?i=" .$id. "&p=mp";
-    $libelleRecup = "Réinitialisation de votre mot de passe";
-    $req = "SELECT tbl_recup_users.* , users.nom , users.prenom , users.profil as profil_agent , CONCAT(users.nom, ' ', users.prenom) AS nom_prenom FROM tbl_recup_users INNER JOIN users ON tbl_recup_users.id_users = users.id WHERE tbl_recup_users.id = '" . $id . "' ";
-    $retour_recup_users = $fonction->_getSelectDatabases($req);
-
-    if ($retour_recup_users != null) {
-
-        $created_at = $retour_recup_users[0]->created_at;
-        $expire = strtotime($created_at . ' +1 day');
-        $expireDate = date('Y-m-d H:i:s', $expire);
-
-
-        $text_form = "
-        <div style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
-            <div class='content'>
-                <div class='title'>
-                    Bonjour <span class='important'> Cher Agent " . $retour_recup_users[0]->nom . "</span> !
-                </div>  <br>
-                <p>Vous avez demandé la réinitialisation de votre mot de passe pour accéder à votre espace $services.</p>
-                <p>Pour définir un nouveau mot de passe, veuillez cliquer sur le lien ci-dessous :</p>
-                <ul>
-                    <li><a href='" . $lienRecup . "' target='_blank'>" . $libelleRecup . "</a></li>
-                </ul>
-                <p>👉 Ce lien est valable jusqu'au " . $expireDate . ".</p> 
-                <p>Si vous n’êtes pas à l’origine de cette demande, vous pouvez ignorer ce message — votre mot de passe actuel restera inchangé.</p>
-                <p>Pour toute assistance, n’hésitez pas à contacter le support à l’adresse suivante : " . $mailSupport . ".</p>
-                <p>Merci de votre confiance,<br>
-                <br>L’equipe " . $services . "</p>
-            </div>
-        </div>";
-
-
-        $subject = "Réinitialisation de votre mot de passe - " . $retour_recup_users[0]->nom_prenom;
-        $message = format_mail_by_NISSA($retour_recup_users[0]->nom_prenom, $text_form, $subject);
-        $to = $retour_recup_users[0]->email;
-        $mail = true;
-        return array($to, $subject, $message);
-    } else {
-        return false;
-    }
-}
 
 
 function format_mail_by_NISSA($nom_destinataire, $text_form, $docs = null)

@@ -19,6 +19,7 @@ if ($retourUsers != NULL) {
 	else $images = "images-users-3.jpg";
 } else header("Location:deconnexion.php");
 
+
 ?>
 
 <!DOCTYPE html>
@@ -56,42 +57,108 @@ if ($retourUsers != NULL) {
 
 			<div class="row clearfix">
 
-				<div class="col-lg-5 col-md-8 col-sm-12 mb-30">
-					<div class="da-card">
 
-						<div class="da-card-photo">
-							<img src="vendors/images/<?= $images ?>" alt="">
-							<div class="da-overlay">
-								<div class="da-social">
-									<ul class="clearfix">
-										<li><?= $retourUsers->userConnect ?></li><br>
-									</ul>
-								</div>
+				<div class="col-lg-6 col-md-8 col-sm-12 mb-30">
+					<div class="card user-profile shadow-sm border-0 mb-4">
+						<div class="card-body text-center py-4">
+							<div class="profile-photo mb-3">
+								<img src="vendors/images/avatar-2.png" alt="" class="avatar-photo">
 							</div>
-						</div>
-						<div class="da-card-content">
-							<h5 class="h5 mb-10"><?= $retourUsers->userConnect ?></h5>
-							<p class="mb-0">
-							<ul id="accordion-menu">
-								<li class="dropdown">
-									Telephone : <span class="mtext"> <?= $retourUsers->telephone ?></span>
-								</li>
-								<li>
-									Email : <span class="mtext"> <?= $retourUsers->email ?></span>
-								</li>
-								<li>
-									Type Compte : <span class="mtext"> <?= $retourUsers->typeCompte ?></span>
-								</li>
-								<li>
-									Adresse : <span class="mtext"> <?= $retourUsers->pays ?> - <?= $retourUsers->pays ?></span>
-								</li>
 
-							</ul>
+							<h5 class="card-title mb-1 text-uppercase">
+								<?= strtoupper($retourUsers->nom . " " . $retourUsers->prenom) ?>
+							</h5>
+
+							<p class="text-muted mb-2">
+								<i class="bi bi-person-badge"></i>
+								<strong>Profil :</strong> <?= ucfirst($retourUsers->profil) ?>
 							</p>
+
+							<p class="text-muted mb-4">
+								<i class="bi bi-gear"></i>
+								<strong>Type de compte :</strong> <?= ucfirst($retourUsers->typeCompte) ?>
+								<?= $retourUsers->cible ? " - " . ucfirst($retourUsers->cible) : "" ?>
+							</p>
+
+							<!-- ✅ Statut du compte -->
+							<?php
+							$actif = isset($retourUsers->etat) && $retourUsers->etat == 1;
+							?>
+							<p class="mb-4">
+								<span class="badge <?= $actif ? 'bg-success' : 'bg-danger' ?> px-3 py-2 text-white">
+									<i class="bi <?= $actif ? 'bi-check-circle' : 'bi-x-circle' ?> me-1"></i>
+									<?= $actif ? '✅ Compte actif' : ' ❌ Compte désactivé' ?>
+								</span>
+							</p>
+							<hr class="my-3">
+
+							<h6 class="text-uppercase text-secondary mb-3">Contact</h6>
+
+							<ul class="list-unstyled mb-0">
+								<li class="mb-2">
+									<i class="bi bi-envelope text-primary me-2"></i>
+									<strong>Email :</strong>
+									<?= $retourUsers->email ? htmlspecialchars($retourUsers->email) : htmlspecialchars($retourUsers->login) ?>
+								</li>
+								<li class="mb-2">
+									<i class="bi bi-telephone text-success me-2"></i>
+									<strong>Téléphone :</strong>
+									<?= $retourUsers->telephone ? htmlspecialchars($retourUsers->telephone) : "--" ?>
+								</li>
+								<li>
+									<i class="bi bi-geo-alt text-danger me-2"></i>
+									<strong>Adresse :</strong>
+									<?= $retourUsers->adresse ? htmlspecialchars($retourUsers->adresse) : "--" ?>
+								</li>
+							</ul>
+
+							<!-- ======================= -->
+							<!-- SECTION RECEPTION RDV -->
+							<!-- ======================= -->
+							<?php if ($_SESSION["typeCompte"] == "rdv") : ?>
+								<hr class="my-4">
+								<h5 class="mb-3 h5 text-blue">
+									<i class="bi bi-calendar-week me-1"></i> Informations Réception Rendez-vous
+								</h5>
+
+								<?php
+								$jourReception = "";
+								$nbreParReception = 0;
+
+								$option_rdv = $fonction->getRetourJourReception($retourUsers->ville);
+								if ($option_rdv != null) $effectueoptordv = count($option_rdv);
+								else $effectueoptordv = 0;
+
+								foreach ($option_rdv as $optionJour) {
+									$jourReception .= $optionJour->jour . ", ";
+									$nbreParReception = $optionJour->nbmax;
+								}
+								$jourReception = rtrim($jourReception, ", ");
+								?>
+
+								<div class="text-start d-inline-block">
+									<p><strong>Villes :</strong>
+										<span class="badge bg-info text-white"><?= $user->ville_nom ?: "--"; ?></span>
+									</p>
+									<p><strong>Jour(s) de réception :</strong>
+										<span class="badge bg-success text-white"><?= $jourReception ?: "--"; ?></span>
+									</p>
+									<p><strong>Heure de réception :</strong>
+										<span class="text-dark fw-bold">08:00 - 14:00</span>
+									</p>
+									<p><strong>Nombre max. par jour :</strong>
+										<span class="text-dark fw-bold"><?= $nbreParReception ?: "--"; ?></span>
+									</p>
+									<p><strong>Lieu de réception :</strong>
+										<span class="text-dark fw-bold"><?= $user->localisation ?: "--"; ?></span>
+									</p>
+								</div>
+							<?php endif; ?>
 						</div>
 					</div>
+
 				</div>
-				<div class="col-lg-7 col-md-9 col-sm-12 mb-30">
+				<div class="col-lg-6 col-md-9 col-sm-12 mb-30">
 
 					<div class="card-box height-100-p overflow-hidden">
 						<div class="card-body p-2">
@@ -107,6 +174,9 @@ if ($retourUsers != NULL) {
 				</div>
 
 			</div>
+
+
+
 			<div class="footer-wrap pd-20 mb-20">
 				<?php include "include/footer.php";    ?>
 			</div>
@@ -170,7 +240,55 @@ if ($retourUsers != NULL) {
 		</div>
 	</div>
 
-	<div class="modal fade" id="notificationValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	<div class="modal fade" id="modifierMonMotDePasse" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
+			<div class="modal-content ">
+				<div class="modal-header" style="background-color: #033f1f !important;">
+					<h5 style="color:white !important;">Modifier mon mot de passe </h5>
+				</div>
+				<div class="modal-body">
+					<div class="col-12 col-lg-12 col-xl-12 d-flex">
+						<div class="card">
+							<div class="card-body radius-12 w-100" id="ModuleMonMotDePasse">
+								<div class="row">
+									<div class="card-body p-2">
+										<h4 class="text-center" style="color:#F9B233; font-size:16px; font-weight:bold;"> Veuillez renseigner vos informations svp !!</h4>
+									</div>
+									<hr>
+									<input type="hidden" id="idusers" name="idusers" class="form-control" hidden>
+									<div class="form-group col-sm-12 col-md-12">
+										<label for="nomRdv" style="color: #000000;">Mot de passe actuel <bold style="color: #F9B233;"> *</bold></label>
+										<input type="password" id="passe_actuel" name="passe_actuel" data-rule="required" required placeholder="Entrez votre mot de passe actuel" value="" class="form-control">
+										<div class="validation" id="validNom" style="color:#F9B233"></div>
+									</div>
+
+									<div class="form-group col-sm-12 col-md-12">
+										<label for="prenom" style="color: #000000;"> Nouveau mot de passe <bold style="color: #F9B233;">*</bold></label>
+										<input type="password" id="new_passe" name="new_passe" data-rule="required" required placeholder="Entrez votre nouveau mot de passe" value="" class="form-control">
+										<div class="validation" id="validPrenom" style="color:#F9B233"></div>
+									</div>
+									<div class="form-group col-sm-12 col-md-12">
+										<label for="prenom" style="color: #000000;"> Confirmer votre nouveau mot de passe <bold style="color: #F9B233;">*</bold></label>
+										<input type="password" id="confirmer_new_passe" name="confirmer_new_passe" data-rule="required" required placeholder="confirmer votre nouveau mot de passe" value="" class="form-control">
+										<div class="validation" id="validPrenom" style="color:#F9B233"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" name="modifierMonMDP" id="modifierMonMDP" class="btn btn-warning" onclick="getModifierMonMDP()">Modifier mon mot de passe
+						<span id="spinnerMDP" class="spinner-border spinner-border-sm"></span>
+					</button>
+					<button type="button" id="closeMonMDP" name="closeMonMDP" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade in" id="notificationValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
 			<div class="modal-content ">
@@ -180,7 +298,7 @@ if ($retourUsers != NULL) {
 					</div>
 				</div>
 				<div class="modal-footer" id="closeEchec">
-					<!--button type="submit" name="traitGen" id="traitGen" class="btn btn-success" style="background: #033f1f !important;">OK</button-->
+					<button type="submit" name="traitGen" id="traitGen" class="btn btn-success" style="background: #033f1f !important;">OK</button>
 					<button type="button" id="closeEchec" class="btn btn-secondary" data-dismiss="modal">FERMER</button>
 				</div>
 			</div>
@@ -200,8 +318,52 @@ if ($retourUsers != NULL) {
 		})
 
 		$("#modifierPasse").click(function(evt) {
-			location.href = "reset-password";
+
+			let idusers = "<?php echo $_SESSION['id']; ?>";
+
+			$.ajax({
+				url: "config/routes.php",
+				data: {
+					idusers: idusers,
+					etat: "checkUsers"
+				},
+				dataType: "json",
+				method: "post",
+				//async: false,
+				success: function(response, status) {
+
+					let a_afficher = ""
+					if (response != '-1') {
+
+						$("#passe_actuel").val(response.password)
+						$("#idusers").val(response.id)
+						$('#modifierMonMotDePasse').modal("show")
+
+					} else {
+						a_afficher = `
+						<div class="alert alert-danger" role="alert">
+								<h2>"Désolé , une erreur est survenue sur lors de la modification de vos informations !</h2><br> Veuillez reessayer plus tard 
+						</div>`
+						$("#msgEchec").html(a_afficher)
+						$('#notificationValidation').modal("show")
+					}
+
+				},
+				error: function(response, status, etat) {
+					console.log(etat, response)
+				}
+			})
+
+			//$('#modifierMonMotDePasse').modal("show")
 		})
+
+		$("#closeMonMDP").click(function(evt) {
+			$('#modifierMonMotDePasse').modal("hide")
+		})
+
+
+
+
 
 		$("#modifierInfos").click(function(evt) {
 
@@ -244,6 +406,112 @@ if ($retourUsers != NULL) {
 			})
 
 		})
+
+
+		function getModifierMonMDP() {
+
+			let passe_actuel = document.getElementById("passe_actuel");
+			let new_passe = document.getElementById("new_passe");
+			let confirmer_new_passe = document.getElementById("confirmer_new_passe");
+			let idusers = document.getElementById("idusers").value
+			// Réinitialise les messages
+			document.querySelectorAll(".validation").forEach(e => e.innerHTML = "");
+
+			// Vérification du mot de passe actuel
+			if (passe_actuel.value.trim() === "") {
+				passe_actuel.focus();
+				passe_actuel.nextElementSibling.innerHTML = "Veuillez entrer votre mot de passe actuel.";
+				document.getElementById("spinnerMDP").style.display = "none";
+				return false;
+			}
+
+			// Vérification du nouveau mot de passe
+			if (new_passe.value.trim() === "") {
+				new_passe.focus();
+				new_passe.nextElementSibling.innerHTML = "Veuillez entrer un nouveau mot de passe.";
+				document.getElementById("spinnerMDP").style.display = "none";
+				return false;
+			}
+
+			// Longueur minimale du nouveau mot de passe
+			if (new_passe.value.length <= 5) {
+				new_passe.focus();
+				new_passe.nextElementSibling.innerHTML = "Le mot de passe doit contenir au moins 6 caractères.";
+				document.getElementById("spinnerMDP").style.display = "none";
+				return false;
+			}
+
+			// Nouveau mot de passe ne doit pas être le même que l'ancien
+			if (new_passe.value === passe_actuel.value) {
+				new_passe.focus();
+				new_passe.nextElementSibling.innerHTML = "Le nouveau mot de passe ne peut pas être identique à l’actuel.";
+				document.getElementById("spinnerMDP").style.display = "none";
+				return false;
+			}
+
+			// Vérification de la confirmation
+			if (confirmer_new_passe.value.trim() === "") {
+				confirmer_new_passe.focus();
+				confirmer_new_passe.nextElementSibling.innerHTML = "Veuillez confirmer le nouveau mot de passe.";
+				document.getElementById("spinnerMDP").style.display = "none";
+				return false;
+			}
+
+			// Vérifier si confirmation correspond
+			if (new_passe.value !== confirmer_new_passe.value) {
+				confirmer_new_passe.focus();
+				confirmer_new_passe.nextElementSibling.innerHTML = "Les deux mots de passe ne correspondent pas.";
+				document.getElementById("spinnerMDP").style.display = "none";
+				return false;
+			}
+
+			// Si tout est bon, on peut envoyer au backend
+			// Tu peux ajouter ton AJAX ici si besoin
+
+
+			//alert("Mot de passe validé — vous pouvez maintenant procéder à la mise à jour. " + new_passe.value);
+
+			$('#modifierMonMotDePasse').modal("hide")
+			let monMDP = new_passe.value;
+
+			$.ajax({
+				url: "config/routes.php",
+				data: {
+					idusers: idusers,
+					pass1: monMDP,
+					pass2: monMDP,
+					etat: "modifierPasse"
+				},
+				dataType: "json",
+				method: "post",
+				//async: false,
+				success: function(response, status) {
+
+					console.log(response)
+					let a_afficher = ""
+					if (response != '-1') {
+
+						a_afficher = `<div class="alert alert-success" role="alert">
+										<h2>Cher(e) utilisateur votre mot de passe ont bien a bien été modifiée  !</h2></div>`
+					} else {
+						a_afficher = `<div class="alert alert-danger" role="alert">
+										<h2>"Désolé , une erreur est survenue sur lors de la modification de vos informations !</h2><br> Veuillez reessayer plus tard 
+									</div>`
+					}
+					//$("#msgEchec").html(a_afficher)
+					//$('#notificationValidation').modal("show")
+					alert("Cher(e) utilisateur votre mot de passe ont bien a bien été modifiée  !")
+					location.href = "index.php";
+
+				},
+				error: function(response, status, etat) {
+					console.log(etat, response)
+				}
+			})
+
+
+			return true;
+		}
 
 
 		function getModifierMesInfos() {

@@ -531,6 +531,20 @@ class Fonction
 		}
 	}
 
+	function _getListeDocumentSinistre($id = "1")
+	{
+
+		$resultat = json_decode(file_get_contents(Config::URL_DOC_SINISTRE . $id), true);
+
+		if ($resultat["status"] == "success") {
+			$reqdoc = $resultat["data"];
+			if (count($reqdoc) == 0) {
+				return null;
+			}
+			return $reqdoc;
+		}
+	}
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -902,11 +916,11 @@ class Fonction
 		return $tab;
 	}
 
-	public function _InsertDetailPrestation($CodeTypeAvenant, $operation, $DelaiTraitement, $idcontrat, $id_prestation, $maintenant)
+	public function _InsertDetailPrestation($CodeTypeAvenant, $operation, $DelaiTraitement, $idcontrat, $id_prestation, $maintenant, $type = "prestation")
 	{
 
-		$sqlUpdatePrestation = "INSERT INTO " . Config::TABLE_DETAIL_COURRIER . "  ( typeOperation , libelleOperation , delaiTraitement , idProposition , idCourrier  , createdAt )  VALUES (?,?,?,?,?,?)";
-		$tab = $this->_Database->Update($sqlUpdatePrestation, array($CodeTypeAvenant, addslashes($operation), $DelaiTraitement, $idcontrat, $id_prestation, $maintenant));
+		$sqlUpdatePrestation = "INSERT INTO " . Config::TABLE_DETAIL_COURRIER . "  ( typeOperation , libelleOperation , delaiTraitement , idProposition , idCourrier  , createdAt , type )  VALUES (?,?,?,?,?,?,?)";
+		$tab = $this->_Database->Update($sqlUpdatePrestation, array($CodeTypeAvenant, addslashes($operation), $DelaiTraitement, $idcontrat, $id_prestation, $maintenant, $type));
 		$this->Logger->Handler(__function__, 'mise à jour du validation de la prestation  pour ' .  ': ' . json_encode($tab));
 		return $tab;
 	}
@@ -1001,10 +1015,10 @@ class Fonction
 
 
 
-	public function _GetDetailsTraitementPrestation($id = "3")
+	public function _GetDetailsTraitementPrestation($id, $type = "prestation")
 	{
 
-		$sqlQuery = "SELECT *  FROM " . Config::TABLE_DETAIL_COURRIER . " WHERE idCourrier='" . $id . "' ORDER BY idDetail   ";
+		$sqlQuery = "SELECT *  FROM " . Config::TABLE_DETAIL_COURRIER . " WHERE idCourrier='" . $id . "' AND type='" . $type . "' ORDER BY idDetail   ";
 		$tab = $this->_Database->Select($sqlQuery);
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
 			$this->Logger->Handler(__function__, 'echec recuperation de la liste des candidates');
@@ -1924,21 +1938,162 @@ class Fonction
 	}
 
 
-	public function getSelectSinistreAfficher($etat)
+	public function getSelectSinistreAfficher($etape = NULL)
 	{
-		$plus = " AND YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
-		$sqlSelect = "
-			SELECT 
-				tbl_sinistres.*,
-				CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
-				TRIM(tblvillebureau.libelleVilleBureau) AS villes
-			FROM tblrdv
-			LEFT JOIN users ON tblrdv.gestionnaire = users.id
-			LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
-			WHERE tblrdv.etat = '$etat' 
-			$plus
-			ORDER BY tblrdv.idrdv DESC	";
+		if ($etape == NULL) $etape = "";
+		else $etape = " AND etape ='$etape' ";
+		$plus = " YEAR(tbl_sinistres.created_at) = YEAR(CURDATE())";
 
+		$sqlSelect = " SELECT * FROM tbl_sinistres  WHERE $plus $etape  ORDER BY id DESC ";
 		return  $this->_getSelectDatabases($sqlSelect);
+	}
+
+
+	function _recapGlobaleSinistre()
+	{
+
+		$total = 0;
+		$rejete = 0;
+		$attente = 0;
+		$Valider = 0;
+		$autres = 0;
+
+		$icone = "";
+
+		$tab = $this->_Database->Select("SELECT * FROM tbl_sinistres  WHERE etape in ('1','2','3') ORDER BY id DESC  ");
+		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
+			$this->Logger->Handler(__function__, 'echec recuperation de la liste des prestations');
+			return NULL;
+		} else {
+			for ($i = 0, $maxI = count($tab); $i < $maxI; $i++) {
+
+				$sinistre = $tab[$i];
+
+				if ($sinistre->etape == "1") {
+					$attente = $attente + 1;
+				} elseif ($sinistre->etape == "2") {
+					$Valider = $Valider + 1;
+				} elseif ($sinistre->etape == "3") {
+					$rejete = $rejete + 1;
+				} else $autres = $autres + 1;
+			}
+			$nb_ligne_total = $attente + $Valider + $rejete + $autres;
+		}
+
+
+
+
+		$pourcentage_etat = array();
+		$rang_etat = array();
+		$val = 0;
+		$totalP = 0;
+		$totalT = 0;
+
+		foreach (Config::tablo_statut_prestation as $record) {
+			$val += 1;
+
+			$code = $record['statut_traitement'];
+			$libelle = $record['libelle'];
+			$lib_statut = $record['lib_statut'];
+			$color_statut = $record['color_statut'];
+			$color = $record['color'];
+			$url = $record['url'];
+			$icone = $record['icone'];
+
+			list($color_b_1, $color_b_2) = explode('-', $color_statut, 2);
+
+			$pourcentage_etat[$code]['etat'] = $code;
+			$pourcentage_etat[$code]['libelle'] = $libelle;
+			$pourcentage_etat[$code]['keyword'] = $lib_statut;
+			$pourcentage_etat[$code]['bagde'] = $color_statut;
+			$pourcentage_etat[$code]['bagde_color'] = $color_b_2;
+			$pourcentage_etat[$code]['color'] = $color;
+			$pourcentage_etat[$code]['url'] = $url;
+			$pourcentage_etat[$code]['icone'] = $icone;
+
+			if ($code == Config::etat_ATTENTE) {
+				$nb_ligne_element = $attente;
+			} else {
+
+				if ($code == Config::etat_VALIDER) {
+					$nb_ligne_element = $Valider;
+				} else if ($code == Config::etat_REJETE) {
+					$nb_ligne_element = $rejete;
+				} else {
+					$nb_ligne_element = $autres;
+				}
+
+				$totalT += $nb_ligne_element;
+			}
+			$totalT += $nb_ligne_element;
+
+			$pourcentage_etat[$code]['nb_ligne_element'] = $nb_ligne_element;
+			$pourcentage_etat[$code]['nb_ligne_total'] = $nb_ligne_total;
+
+			$pourcentage_etat[$code]['pourcentage'] = self::formulePourcentage($nb_ligne_element, $nb_ligne_total);
+			$pourcentage_etat[$code]['lib_pourcentage'] = $pourcentage_etat[$code]['pourcentage'] . '%';
+
+			$rang_candidates[] = $pourcentage_etat[$code]['pourcentage'];
+			$val += $pourcentage_etat[$code]['pourcentage'];
+			foreach ($pourcentage_etat as $key => $infos) {
+				$pourcentage_etat[$key]['rang'] = $this->rangCandidate($rang_candidates, $infos['pourcentage']);
+				$pourcentage_etat[$key]['classement'] = $this->rangCandidate($rang_candidates, $infos['pourcentage']) . $this->indexRang($pourcentage_etat[$key]['rang']);
+			}
+			$pourcentage_candidates['totale'] = $val;
+		}
+
+		return $pourcentage_etat;
+	}
+
+
+	function getParametreGlobalSinistre()
+	{
+
+		$col = "";
+
+		$retourStatut = $this->_recapGlobaleSinistre();
+		if (isset($retourStatut) && $retourStatut != null) {
+			foreach ($retourStatut as $etat => $statut) {
+
+				$col .= '
+						<div class="col-xl-3 mb-30">
+						<a href="liste-sinistres?i=' . trim($statut["etat"]) . '">
+						<div class="card-box height-100-p widget-style1 text-white"
+							style="background-color:' . trim($statut["color"]) . '; font-weight:bold; ">
+							<div class="d-flex flex-wrap align-items-center">
+								<div class="progress-data">
+									
+								</div>
+								 
+								<div class="widget-data">
+									<div class="h4 mb-0 text-white">' . trim($statut["nb_ligne_element"]) . '</div>
+									<div class="weight-600 font-14">DECLARATIONS ' . trim(strtoupper($statut["keyword"])) . '
+									</div>
+								</div>
+							</div>
+						</div>
+						</a>
+					</div>';
+			}
+
+			return $col . '<div class="col-xl-3 mb-30">
+						<a href="liste-sinistres">
+						<div class="card-box height-100-p widget-style1"
+							style="background-color:whitesmoke; font-weight:bold; color:#033f1f ">
+							<div class="d-flex flex-wrap align-items-center">
+								<div class="progress-data">
+									<!-- <span class="micon dw dw-folder"></span> -->
+
+								</div>
+								<div class="widget-data">
+									<div class="h4 mb-0">' . trim($retourStatut[1]['nb_ligne_total']) . '</div>
+									<div class="weight-600 font-14" style="color:#033f1f !important;">TOTALS DECLARATIONS
+										SINISTRES</div>
+								</div>
+							</div>
+						</div>
+						</a>
+					</div>';
+		} else return false;
 	}
 }
