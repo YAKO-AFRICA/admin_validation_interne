@@ -77,7 +77,7 @@ if (isset($_COOKIE["idrdv"])) {
                             </div>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb bg-transparent p-0">
-                                    <li class="breadcrumb-item"><a href="accueil-operateur.php">Accueil</a></li>
+                                    <li class="breadcrumb-item"><a href="intro">Accueil</a></li>
                                     <li class="breadcrumb-item">Liste des demandes</li>
                                     <li class="breadcrumb-item active" aria-current="page">Traitement demande</li>
                                 </ol>
@@ -543,9 +543,9 @@ if (isset($_COOKIE["idrdv"])) {
                                         <select name="resultatOpe" id="resultatOpe" class="form-control "  data-rule="required">
                                             <option value="">...</option>
                                             <option value="transformation">Transformations</option>
-                                            <option value="partielle">Le client a demandé un rachat partielle</option>
+                                            <option value="partielle">Le client a demandé un rachat partiel</option>
                                             <option value="avance">Le client a demandé une avance / pret</option>
-                                            <option value="renonce">Le client a changé d'avis</option>
+                                            <option value="renonce">Le client a decider de conserver son contrat</option>
                                             <option value="absent">Le client ne c'est pas presenté</option>
                                             <option value="autres">Autres</option>
                                         </select>

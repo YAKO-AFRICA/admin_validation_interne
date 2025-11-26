@@ -20,12 +20,9 @@ if (isset($_REQUEST['filtreliste'])) {
 		$plus = " WHERE $pars1 ";
 	}
 } else {
-	$filtre = '';
+	$filtre = ' AND date(traiterle) = CURDATE() ';
 }
 
-
-$plus = " WHERE etape ='2'  $filtre ";
-//$liste_prestations = $fonction->_getRetournePrestation($plus);
 $liste_prestations = $fonction->_getRetourneListePrestation("2", $filtre);
 if ($liste_prestations != null) $effectue = count($liste_prestations);
 else $effectue = 0;
@@ -53,43 +50,99 @@ else $effectue = 0;
 					<div class="row">
 						<div class="col-md-12 col-sm-12">
 							<div class="title">
-								<h4>Recapitulatif des traitements des prestations </h4>
+								<h4>Bordereau de traitement des prestations </h4>
 							</div>
 							<nav aria-label="breadcrumb" role="navigation">
 								<ol class="breadcrumb">
 									<li class="breadcrumb-item"><a
 											href="intro"><?= Config::lib_pageAccueil ?></a></li>
-									<li class="breadcrumb-item active" aria-current="page"> Recapitulatif des
-										traitements des prestations </li>
+									<li class="breadcrumb-item active" aria-current="page"> Bordereau de traitement des prestations </li>
 								</ol>
 							</nav>
 						</div>
 					</div>
 				</div>
 
-				<?php
-				if (isset($_SESSION['cible']) && $_SESSION['cible'] != "administratif") {
-				?>
+				<i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
+				<div class="card-box mb-10" id="myDIV">
+					<div class="card-body">
+						<form method="POST">
+							<div class="card-box p-2 m-2" style="border:2px solid #F9B233; border-radius:10px;">
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<fieldset class="border rounded p-3">
+											<legend class="w-auto px-2 font-weight-bold">
+												Filtrer sur la date validation prestation
+											</legend>
 
-					<i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
-					<div class="card-box mb-10" id="myDIV">
-						<?php echo $fonction->setFiltrePrestationTechnique(); ?>
+											<div class="row g-3">
+												<div class="col-md-6">
+													<label for="DateDebutTrait" class="form-label">Date début ( <span style="color:red;">*</span> )</label>
+													<input type="date" class="form-control" id="DateDebutTrait" name="DateDebutTrait" required>
+												</div>
+
+												<div class="col-md-6">
+													<label for="DateFinTrait" class="form-label">Date fin ( <span style="color:red;">*</span> )</label>
+													<input type="date" class="form-control" id="DateFinTrait" name="DateFinTrait" required>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<fieldset class="border rounded p-3">
+											<legend class="w-auto px-2 font-weight-bold">
+												Filtrer sur type et partenaire
+											</legend>
+
+											<div class="row g-3">
+												<div class="col-md-6 form-group">
+													<h6 style="color: #033f1f !important;">Type demande prestation</h6>
+													<?php echo $fonction->getSelectTypePrestationFiltre(); ?>
+												</div>
+												<div class="col-md-6 form-group">
+													<h6 style="color: #033f1f !important;">Partenaire prestation</h6>
+													<?php echo $fonction->getSelectPartenairePrestationFiltre(); ?>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<fieldset class="border rounded p-3">
+											<legend class="w-auto px-2 font-weight-bold">
+												Filtrer sur la declaration NSIL
+											</legend>
+
+											<div class="row g-3">
+												<div class="col-md-6 form-group">
+													<h6 style="color: #033f1f !important;">Migration NSIL</h6>
+													<select name="migration" id="migration" class="form-control" data-msg="Objet" data-rule="required">
+														<option value="">...</option>
+														<option value="1">Oui</option>
+														<option value="0">En attente</option>
+													</select>
+												</div>
+												<div class="col-md-6 form-group">
+													<h6 style="color: #033f1f !important;"> Date declaration NSIL </h6>
+													<input type="date" class="form-control" name="DateNIL" id="DateNIL" />
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+
+							<div class="modal-footer" id="footer">
+								<button type="submit" name="filtreliste" id="filtreliste" class="btn btn-secondary" style="background: #F9B233; color: white">FILTRER</button>
+							</div>
+						</form>
 					</div>
-					<hr>
-				<?php
-				}else {?>
-					<div class="card-box mb-10" id="myDIV"></div>
-					<?php 
-				}
-				?>
-
-
-				<div class="row">
-					<?php
-					echo $fonction->getParametreGlobalPrestations();
-					?>
 				</div>
-
+				<hr>
 
 
 
@@ -107,22 +160,19 @@ else $effectue = 0;
 					</div>
 
 					<div class="pb-20">
-						<table class="table hover  data-table-export nowrap">
+						<table class="table hover data-table-export nowrap">
 							<thead>
 								<tr>
 									<th class="table-plus datatable-nosort">#Ref</th>
 									<th hidden>Idprestation</th>
+									<th>Date acceptation</th>
 									<th>Code</th>
-									<th>Date<br>demande</th>
-									<th>Id contrat</th>
-									<th>Nom & prénom(s)</th>
-									<!-- <th>Téléphone</th> -->
-									<th>Type prestation</th>
-									<th>Montant souhaite</th>
+									<th hidden>Id contrat</th>
+									<th>Souscripteur</th>
+									<th>Reférence NSIL</th>
+									<th>Detail demande</th>
+									<th>Partenaire</th>
 									<th>Etat </th>
-									<th>Détail<br>traitement</th>
-
-									<th>Migration NSIL</th>
 									<th class="datatable-nosort"></th>
 
 								</tr>
@@ -136,43 +186,78 @@ else $effectue = 0;
 
 										$prestations = new tbl_prestations($liste_prestations[$i]);
 
+										if ($prestations->partenaire == 'LLV') {
+											$partenaire = 'YAKO AFRICA ASSURANCES VIE';
+										} elseif ($prestations->partenaire == '092') {
+											$partenaire = 'BNI';
+										} else {
+											$partenaire = $prestations->partenaire;
+										}
+										$detailPrestationNsil = $fonction->_GetDetailsTraitementPrestation($prestations->id);
+
 								?>
-										<tr>
-											<td class="table-plus" id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
+
+										<tr id="ligne-<?= $i ?>" style="color: #033f1f !important; ">
+
+											<td><?php echo $i + 1; ?></td>
 											<td id="id-<?= $i ?>" hidden><?php echo $prestations->id; ?></td>
+											<td><?php if (!empty($prestations->traiterle)) echo date('d/m/Y à H:i:s', strtotime($prestations->traiterle));
+												else echo $prestations->traiterle; ?></td>
 											<td id="code-<?= $i ?>"><?php echo $prestations->code; ?></td>
-											<td>
-												<?php echo $prestations->created_at; ?>
-											</td>
-
-											<td id="idcontrat-<?= $i ?>"><?php echo $prestations->idcontrat; ?></td>
-											<td class="text-wrap"><?php echo $prestations->souscripteur2; ?><br>
-												<small>téléphone : <?php echo $prestations->cel; ?></small>
-											</td>
-											<!-- <td><?php echo $prestations->cel; ?></td> -->
-											<td><?php echo $prestations->typeprestation; ?></td>
-											<td><?php echo $prestations->montantSouhaite; ?> FCFA</td>
-											<td>
-												<span
-													class="<?php echo $prestations->color_statut; ?>"><?php echo $prestations->lib_statut; ?></span>
-											</td>
+											<td id="idcontrat-<?= $i ?>" hidden><?php echo $prestations->idcontrat; ?></td>
 											<td class="text-wrap">
-												<p class="mb-0 text-dark" style="font-size: 0.9em;">
-													<span style="font-weight:bold;">traité le : <?php echo $prestations->updated_at; ?></span><br>
-													<span style="font-weight:bold;">traité par : </span><span class="badge badge-info" style="background:info; color:white ! important;"><?php echo $prestations->traiterpar; ?> </span>
-												</p>
+												<?php echo $prestations->souscripteur2; ?><br>
+												<small>Date Naissance : <?= $prestations->datenaissance ?></small><br>
+												<small>contact : <?= $prestations->cel ?></small>
 											</td>
 											<td>
+												<?php if ($detailPrestationNsil != null) {
 
-												<span
-													class="<?php echo $prestations->estMigree == "1" ? "badge badge-success" : "badge badge-secondary"; ?>"><?php echo $prestations->estMigree == "1" ? "Oui" : "En attente"; ?></span>
+												?>
+													<small>Id contrat : <?= $prestations->idcontrat ?></small><br>
+													<small>Id Courrier Nsil : <?= $detailPrestationNsil->idTblCourrier ?></small><br>
+													<small>Code Courrier Nsil : <?= $detailPrestationNsil->codeCourrier ?></small><br>
+												<?php }
+
+												?>
 											</td>
 
+											<td class="text-wrap"><?= $prestations->typeprestation ?><br>
+
+												<?php
+												if (strtoupper($prestations->prestationlibelle) != "AUTRE") {
+
+												?>
+													<small>Montant : <?= $prestations->montantSouhaite ?> FCFA</small><br>
+													<small>mode de paiement : <?= $prestations->lib_Operateur ?></small>
+
+												<?php
+												}
+												?>
+
+											</td>
+											<td>
+												<?php echo $partenaire ?? ""; ?>
+											</td>
+											<td>
+												<span class="<?php echo $prestations->color_statut; ?>"><?php echo $prestations->lib_statut; ?></span>
+											</td>
 											<td class="table-plus">
+												<!-- <label class="btn btn-secondary" style="background-color:#F9B233 ;"
+													for="click-<?= $i ?>"><i class="fa  fa-eye" id="click-<?= $i ?>"> Détail
+														demande </i></label>
+												<?php if ($prestations->etape == "1") { ?>
+													<label class="btn btn-secondary" style="background-color: #033f1f ;"
+														for="click-<?= $i ?>"><i class="fa  fa-mouse-pointer" id="click-<?= $i ?>">
+															Traiter la demande </i></label>
+												<?php  } ?> -->
+
 												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail demande</button>
 												<?php if ($prestations->etape == "1"): ?>
 													<button class="btn btn-success btn-sm traiter" id="traiter-<?= $i ?> " style="background-color:#033f1f; color:white"><i class="fa fa-mouse-pointer"></i> Traiter la demande</button>
 												<?php endif; ?>
+
+
 											</td>
 
 										</tr>
@@ -254,7 +339,36 @@ else $effectue = 0;
 		</div>
 	</div>
 
-	<!-- js -->
+	<script src="vendors/scripts/core.js"></script>
+	<script src="vendors/scripts/script.min.js"></script>
+	<script src="vendors/scripts/process.js"></script>
+	<script src="vendors/scripts/layout-settings.js"></script>
+
+	<script src="src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+	<script src="src/plugins/datatables/js/dataTables.responsive.min.js"></script>
+	<script src="src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
+
+	<!-- JSZip (obligatoire pour Excel) -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+	<!-- Buttons for Export datatable -->
+	<script src="src/plugins/datatables/js/dataTables.buttons.min.js"></script>
+	<script src="src/plugins/datatables/js/buttons.bootstrap4.min.js"></script>
+	<script src="src/plugins/datatables/js/buttons.print.min.js"></script>
+	<script src="src/plugins/datatables/js/buttons.html5.min.js"></script>
+	<script src="src/plugins/datatables/js/buttons.flash.min.js"></script>
+	<script src="src/plugins/datatables/js/pdfmake.min.js"></script>
+	<script src="src/plugins/datatables/js/vfs_fonts.js"></script>
+
+	<!-- Datatable Setting js -->
+	<script src="vendors/scripts/datatable-setting.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
+	<!-- js
 	<script src="vendors/scripts/core.js"></script>
 	<script src="vendors/scripts/script.min.js"></script>
 	<script src="vendors/scripts/process.js"></script>
@@ -263,7 +377,7 @@ else $effectue = 0;
 	<script src="src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
 	<script src="src/plugins/datatables/js/dataTables.responsive.min.js"></script>
 	<script src="src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
-	<!-- buttons for Export datatable -->
+	buttons for Export datatable
 	<script src="src/plugins/datatables/js/dataTables.buttons.min.js"></script>
 	<script src="src/plugins/datatables/js/buttons.bootstrap4.min.js"></script>
 	<script src="src/plugins/datatables/js/buttons.print.min.js"></script>
@@ -271,14 +385,14 @@ else $effectue = 0;
 	<script src="src/plugins/datatables/js/buttons.flash.min.js"></script>
 	<script src="src/plugins/datatables/js/pdfmake.min.js"></script>
 	<script src="src/plugins/datatables/js/vfs_fonts.js"></script>
-	<!-- Datatable Setting js -->
+	 Datatable Setting js
 	<script src="vendors/scripts/datatable-setting.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script> -->
 
 	<script>
-		var filtre = document.getElementById("myDIV");
-		filtre.style.display = "none";
+		// var filtre = document.getElementById("myDIV");
+		// filtre.style.display = "none";
 
 
 		$(document).ready(function() {
@@ -324,7 +438,7 @@ else $effectue = 0;
 			// Traiter
 			$(document).on('click', '.traiter', function() {
 				const ind = this.id.split('-')[1];
-				
+
 				var idprestation = $("#id-" + ind).html()
 				var code = $("#code-" + ind).html()
 				var idcontrat = $("#idcontrat-" + ind).html()

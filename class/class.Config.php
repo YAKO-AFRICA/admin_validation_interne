@@ -162,6 +162,5 @@ class Config
     const URL_PRESTATION_RACINE = "https://testsite.yakoafricassur.com/";
     const URL_DOC_PRESTATION = "https://testsite.yakoafricassur.com/api/getPrestationsDoc/";
     const URL_API_OTP_PAYS = "https://apiotp.yakoafricassur.com/api/getAllCountries/";
-
     const URL_DOC_SINISTRE = "https://testsite.yakoafricassur.com/api/getSinistreDoc/";
 }

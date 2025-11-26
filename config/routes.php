@@ -61,7 +61,7 @@ if ($request->action != null) {
                     } else {
                         if (isset($users->email) && $users->email != null) {
                             $url_notification = $url . "/recuperation-mail?i=" . trim($users->id) . "&p=rp-" . date('YmdHis');
-                           // file_get_contents($url_notification);
+                            // file_get_contents($url_notification);
                             $result = array("result" => "SUCCESS", "code" => '0', "data" =>  "Merci de continuer le traitement en suivant le lien envoyé par mail a l'adresse " . $users->email . " !!");
                         } else {
                             $result = array("result" => "ERROR", "code" => '101', "data" =>  "Merci de contacter l'administrateur !!");
@@ -343,6 +343,18 @@ if ($request->action != null) {
             $typeOpe = GetParameter::FromArray($_REQUEST, 'typeOpe');
             $ListeOpe = GetParameter::FromArray($_REQUEST, 'ListeOpe');
             $delaiTrait = GetParameter::FromArray($_REQUEST, 'delaiTrait');
+            $provenance = GetParameter::FromArray($_REQUEST, 'provenance');
+            $ListePartenaire = GetParameter::FromArray($_REQUEST, 'ListePartenaire');
+
+            if ($ListePartenaire != null) {
+                list($idpartenaire, $codePartenaire, $nomPartenaire) = explode('-', $ListePartenaire, 3);
+            } else {
+                $idpartenaire = null;
+                $codePartenaire = null;
+                $nomPartenaire = null;
+            }
+
+
 
 
             $retour = $fonction->_getRetournePrestation(" WHERE id='" . trim($idprestation) . "'");
@@ -368,7 +380,7 @@ if ($request->action != null) {
                 if ($result != null) {
 
                     $numero = "225" . substr($prestation->cel, -10);
-                    $fonction->_UpdatePrestationValiderNSIL($prestation, $traiterpar);
+                    $fonction->_UpdatePrestationValiderNSIL($prestation, $traiterpar, $codePartenaire);
                     $resultat = array("result" => "SUCCESS", "total" => '0', "data" =>  "validation de la prestation");
 
                     $sms_envoi = new SMSService();
@@ -691,17 +703,38 @@ if ($request->action != null) {
             $ciblePrestation = GetParameter::FromArray($_REQUEST, 'ciblePrestation');
             $codeagent = GetParameter::FromArray($_REQUEST, 'codeagent');
             $villesRDV = GetParameter::FromArray($_REQUEST, 'villesRDV');
+            $provenance = GetParameter::FromArray($_REQUEST, 'provenance');
+            $ListePartenaire = GetParameter::FromArray($_REQUEST, 'ListePartenaire');
+
 
             $existe = false;
             if ($agent_id != null) {
-                $sqlSelect = " SELECT * FROM " . Config::TABLE_USER . " WHERE id = '$agent_id' ";
-                $result = $fonction->_getSelectDatabases($sqlSelect);
-                if ($result != NULL) {
-                    $existe = true;
+                $parms = " WHERE id = '" . $agent_id . "' ";
+            } else {
+                $parms = " WHERE email = '" . $email . "' ";
+            }
+
+            $sqlSelect = " SELECT * FROM " . Config::TABLE_USER . "  $parms";
+            $result = $fonction->_getSelectDatabases($sqlSelect);
+            if ($result != NULL) {
+                $existe = true;
+            }
+
+            if ($ListePartenaire != null && $ListePartenaire != "All") {
+                list($idpartenaire, $codePartenaire, $nomPartenaire) = explode('-', $ListePartenaire, 3);
+            } else {
+                if ($ListePartenaire == "All") {
+                    $codePartenaire = "All";
+                    $idpartenaire = "99";
+                    $nomPartenaire = "TOUS LES PARTENAIRES";
+                } else {
+                    $codePartenaire = null;
+                    $idpartenaire = null;
+                    $nomPartenaire = null;
                 }
             }
 
-            $retour = traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id);
+            $retour = traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id, $provenance, $codePartenaire);
             echo json_encode($retour);
             break;
 
@@ -885,6 +918,7 @@ if ($request->action != null) {
             } else echo json_encode("-1");
             break;
 
+
         default:
             echo json_encode("0");
             break;
@@ -893,7 +927,7 @@ if ($request->action != null) {
 
 
 
-function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id)
+function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id, $provenance, $codePartenaire)
 {
 
     global $fonction, $lienEnvoiMail;
@@ -912,7 +946,7 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
 
     if ($existe) {
 
-        $sqlUpdatePrestation = "UPDATE " . Config::TABLE_USER . " SET etat= ?, nom=?, prenom=?, email=?, telephone =? , typeCompte =? , profil=? ,cible=?, codeagent=?, ville=? WHERE id = ?";
+        $sqlUpdatePrestation = "UPDATE " . Config::TABLE_USER . " SET etat= ?, nom=?, prenom=?, email=?, telephone =? , typeCompte =? , profil=? ,cible=?, codeagent=?, ville=? , reseaux=? , partenaire=? WHERE id = ?";
         $queryOptions = array(
             $etatCompte,
             addslashes(htmlspecialchars(trim(ucfirst(strtoupper($nom))))),
@@ -924,13 +958,15 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
             $ciblePrestation,
             $codeagent,
             $villesRDV,
+            $provenance,
+            $codePartenaire,
             intval($agent_id)
         );
         $result = $fonction->_Database->Update($sqlUpdatePrestation, $queryOptions);
         $retour = "le compte de l'utilisateur $nom $prenom a bien été mis à jour ";
     } else {
 
-        $sqlInsertUtilisateur = "INSERT INTO " . Config::TABLE_USER . " (nom,prenom,email,telephone,typeCompte,profil,etat,cible,codeagent,ville,login,password,date,modifiele) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,now(),now())";
+        $sqlInsertUtilisateur = "INSERT INTO " . Config::TABLE_USER . " (nom,prenom,email,telephone,typeCompte,profil,etat,cible,codeagent,ville,login,password,date,modifiele,reseaux,partenaire) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?,?)";
         $queryOptions = array(
             addslashes(htmlspecialchars(trim(ucfirst(strtoupper($nom))))),
             addslashes(htmlspecialchars(trim(ucfirst(strtoupper($prenom))))),
@@ -943,7 +979,9 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
             $codeagent,
             $villesRDV,
             $login,
-            $motdepasse
+            $motdepasse,
+            $provenance,
+            $codePartenaire
 
         );
         $result = $fonction->_Database->Update($sqlInsertUtilisateur, $queryOptions);
@@ -1085,4 +1123,29 @@ function traitementApresReceptionRDV($rdv, $etat, $typeOperation, $obervation, $
     } else $retour = 0;
 
     return $retour;
+}
+
+
+function getAPI($tabloCritere, $url_api)
+{
+    //if ($url_api == NULL) $url_api = dbAcess::URL_API_ETAT_ENCAISSEMENT;
+    try {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url_api);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TCP_KEEPALIVE, 1);
+        curl_setopt($ch, CURLOPT_TCP_KEEPIDLE, 2);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($tabloCritere));
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 60000);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("cache-control: no-cache", "content-type: application/json",));
+        $data = curl_exec($ch);
+        $data = json_decode($data);
+        //print_r($data);exit;
+        return $data;
+    } catch (Exception $e) {
+        echo 'Exception reçue : ', $e->getMessage(), "\n";
+        return false;
+    }
 }

@@ -63,7 +63,7 @@ if (isset($_COOKIE["id"])) {
                             </div>
                             <nav aria-label="breadcrumb" role="navigation">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="accueil-operateur.php">Accueil</a></li>
+                                    <li class="breadcrumb-item"><a href="intro">Accueil</a></li>
                                     <li class="breadcrumb-item " aria-current="page">Liste des demandes</li>
                                     <li class="breadcrumb-item active" aria-current="page">Traitement demande</li>
                                 </ol>
@@ -551,12 +551,17 @@ if (isset($_COOKIE["id"])) {
                             $("#color_button").text("green");
                             $("#nom_button").text("Valider la prestation");
                             getMenuValider();
-                            
+
                             chargerListeOperations();
+                            chargerListePartenaireYAKO();
 
                             // --- Recharger la liste dès que l’utilisateur modifie le type d’opération ---
                             $("#afficheuse").on("input change", "#typeOpe", function() {
                                 chargerListeOperations();
+                            });
+
+                            $("#afficheuse").on("input change", "#provenance", function() {
+                                chargerListePartenaireYAKO();
                             });
 
                         } else {
@@ -844,6 +849,10 @@ if (isset($_COOKIE["id"])) {
                 var ListeOpe = document.getElementById("ListeOpe").value;
                 var delaiTrait = document.getElementById("delaiTrait").value;
 
+                var provenance = document.getElementById("provenance").value;
+                var ListePartenaire = document.getElementById("ListePartenaire").value;
+
+
                 if (typeOpe.length <= 0 || typeOpe == "") {
                     alert("Veuillez renseigner le type de l'operation svp !!");
                     document.getElementById("typeOpe").focus();
@@ -856,7 +865,19 @@ if (isset($_COOKIE["id"])) {
                     return false;
                 }
 
+                if (provenance == "" || provenance == null) {
+                    alert("Veuillez renseigner la provenance de l'operation svp !!");
+                    document.getElementById("provenance").focus();
+                    return false;
+                }
+                if (ListePartenaire == "" || ListePartenaire == null) {
+                    alert("Veuillez renseigner le partenaire de l'operation svp !!");
+                    document.getElementById("ListePartenaire").focus();
+                    return false;
+                }
 
+
+                //alert(ListePartenaire + " " + provenance);
                 const spinner = document.getElementById("spinner");
                 spinner.style.display = "block"; // Afficher le spinner
 
@@ -870,6 +891,8 @@ if (isset($_COOKIE["id"])) {
                         typeOpe: typeOpe,
                         ListeOpe: ListeOpe,
                         delaiTrait: delaiTrait,
+                        provenance: provenance,
+                        ListePartenaire: ListePartenaire,
                         etat: "validerprestation"
                     },
                     dataType: "json",
@@ -914,40 +937,31 @@ if (isset($_COOKIE["id"])) {
         });
 
 
+        $("#afficheuse").on("change", "#ListeOpe", function(evt) {
+            var val = evt.target.value.split('-');
+            var key = val[0]
+            var lib = val[1]
 
-        // $("#afficheuse").on("change", "#typeOpe", function(evt) {
-        //     var val = evt.target.value.split('-');
-        //     var key = val[0]
-        //     var lib = val[1]
-        //     //console.log(val)
+            $("#delaiTrait").val(lib)
+        })
 
-        //     $("#opeType").val(lib)
+        $("#closeAfficheDocument").click(function() {
 
-        //     $.ajax({
-        //         url: "https://api.laloyalevie.com/enov/op-type-operation-list",
-        //         data: {
-        //             type: key
-        //         },
-        //         dataType: "json",
-        //         method: "post",
-        //         success: function(response, statut) {
-        //             //console.log(response)
-        //             var apt = "<option value=''> Choix de l\'operation " + lib + "</option>"
+            $('#modaleAfficheDocument').modal('hide')
+        })
 
-        //             $.each(response, function(key, value) {
-        //                 let valueOpe = value.CodeTypeAvenant + '-' + value
-        //                     .DelaiTraitement + ' jours' + '-' + value.MonLibelle
-        //                 apt += '<option  value="' + valueOpe + '">' + value.MonLibelle +
-        //                     '-(' + value.DelaiTraitement + ' jours)' + '</option>'
-        //             })
-        //             $("#ListeOpe").html(apt)
-        //         },
-        //         error: function(response, statut, err) {
-        //             console.log(err)
-        //             console.log(response)
-        //         }
-        //     })
-        // })
+        $("#retourNotification").click(function() {
+
+            $('#notificationValidation').modal('hide')
+            //location.reload();
+            location.href = "detail-prestation";
+
+        })
+
+
+        function retour() {
+            window.history.back();
+        }
 
         function chargerListeOperations() {
             const val = $("#typeOpe").val().split("-");
@@ -984,90 +998,50 @@ if (isset($_COOKIE["id"])) {
             });
         }
 
+        function chargerListePartenaireYAKO() {
 
-        $("#afficheuse").on("change", "#ListeOpe", function(evt) {
-            var val = evt.target.value.split('-');
-            var key = val[0]
-            var lib = val[1]
+            const provenance = $("#provenance").val();
+            //alert(provenance)
 
-            $("#delaiTrait").val(lib)
-        })
+            $("#ListePartenaire").html(`<option value="">Chargement des partenaires...</option>`);
 
-        $("#closeAfficheDocument").click(function() {
+            $.ajax({
+                url: "https://api.yakoafricassur.com/enov/partenaire-list",
+                method: "get",
+                dataType: "json",
+                data: {},
+                success: function(response) {
+                    //console.log(response);
+                    if (provenance == "LLV") {
+                        response = response.filter(partenaire => partenaire.code == "LLV");
 
-            $('#modaleAfficheDocument').modal('hide')
-        })
+                    } else {
+                        response = response.filter(partenaire => partenaire.code != "LLV");
+                    }
 
-        $("#retourNotification").click(function() {
+                    let options = `<option value="">Choisir un partenaire </option>`;
+                    $.each(response, function(i, value) {
 
-            $('#notificationValidation').modal('hide')
-            //location.reload();
-            location.href = "detail-prestation";
+                        if (value.actif == "1") {
 
-        })
+                            const id = value.id;
+                            const code = value.code || "";
+                            const libelle = code == "LLV" ? "YAKO AFRICA ASSURANCES VIE" : value.designation  || "";
+                            const valueOpe = `${id}-${code}-${libelle}`;
 
+                            options += `<option value="${valueOpe}">${libelle} (${code})</option>`;
 
-        function retour() {
-            window.history.back();
+                        }
+
+                    });
+                    $("#ListePartenaire").html(options);
+                },
+                error: function(xhr, statut, err) {
+                    console.error("Erreur AJAX :", err);
+                    $("#ListePartenaire").html(`<option value="">Erreur de chargement</option>`);
+                }
+            });
         }
-
-        // function getMenuValider() {
-
-        //     let valueType = ""
-        //     let cible = "<?php echo $_SESSION['cible']; ?>";
-        //     if (cible == "administratif") {
-        //         valueType = "AVT-Administratif"
-        //     } else {
-        //         valueType = "TECH-Technique"
-        //     }
-
-
-
-        //     let notif = `
-        //             <!-- Le reste de ton contenu ici -->
-        //             <h4 class="text-center p-2" style="color:#033f1f;  font-weight:bold; "> Verification pour migration NSIL </h4>
-        //                                         <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
-
-        //                     <div class="row">
-        //                         <div class="form-group col-md-2 col-sm-12">
-        //                             <label for="tel" class="col-form-label">id contrat :</label>
-        //                             <input type="text" class="form-control" id="actionType" name="actionType" value="valider" hidden>
-        //                             <input type="text" class="form-control" id="idcontrat" name="idcontrat" value="<?php echo $prestation->idcontrat; ?>" disabled>
-        //                             </div>
-        //                         <div class="form-group col-md-3 col-sm-12">
-        //                             <label for="validationTextarea" class="form-label" style="font-size:16px; font-weight:bold;">Type d\'opération (<span style="color:red;">*</span>)</label>
-        //                                 <select name="typeOpe" id="typeOpe" class="form-control " required>
-        //                                     <option value="">...</option>
-        //                                     <option value="TECH-Technique" ${valueType === "TECH-Technique" ? "selected" : "disabled"} >Technique</option>
-        //                                     <option value="AVT-Administratif" ${valueType === "AVT-Administratif" ? "selected" : "disabled"}>Administratif</option>
-        //                                 </select>
-        //                         </div>
-        //                         <div class="form-group col-md-5 col-sm-12">
-        //                             <label for="validationTextarea" class="form-label" style="font-size:16px; font-weight:bold;" >Liste d\'opération <span id="opeType"></span> (<span style="color:red;">*</span>)</label>
-        //                                 <select name="ListeOpe" id="ListeOpe" class="form-control " required>
-
-        //                                 </select>
-        //                         </div>
-        //                         <div class="form-group col-md-2 col-sm-12">
-        //                             <label for="tel" class="col-form-label">Délai de traitement :</label>
-        //                             <input type="text" class="form-control" id="delaiTrait" name="delaiTrait" value="" disabled>
-        //                         </div>
-        //                     </div>`;
-
-        //     let bouton_valider = `<button type="submit" name="valider" id="valider" class="btn btn-success" style="background:#033f1f;font-weight:bold; color:white"> Accepter la prestation</button> 
-        //         <div id="spinner" style="display: none; margin-top: 10px;">
-        //           <div class="spinner-border" style="color: #076633;" role="status">
-        //             <span class="visually-hidden"></span>
-        //           </div>
-        //         </div>
-        //         `
-
-
-        //     $("#color_button").text(`#033f1f`)
-        //     $("#nom_button").text(`Enregistrer le traitement`)
-        //     $("#afficheuse").html(notif)
-        //     $("#optionTraitement").html(bouton_valider)
-        // }
 
         function getMenuValider() {
             const cible = "<?php echo $_SESSION['cible']; ?>";
@@ -1104,7 +1078,26 @@ if (isset($_COOKIE["id"])) {
                     <label class="col-form-label">Délai de traitement :</label>
                     <input type="text" class="form-control" id="delaiTrait" name="delaiTrait" value="" disabled>
                 </div>
-            </div>`;
+                
+                <div class="row">
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label class="col-form-label">Provenance  (<span style="color:red;">*</span>) :</label>
+                        <select name="provenance" id="provenance" class="form-control" required>
+                            <option value="" disabled>...</option>
+                            <option value="LLV">Reseaux Particulier</option>
+                            <option value="entreprisePartenaire">Entreprise Partenaire</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label class="col-form-label">Partenaire  (<span style="color:red;">*</span>) :</label>
+                        <select name="ListePartenaire" id="ListePartenaire" class="form-control" required>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            `;
 
             let bouton_valider = `
             <button type="submit" name="valider" id="valider" class="btn btn-success" style="background:#033f1f;font-weight:bold; color:white">
@@ -1337,7 +1330,6 @@ if (isset($_COOKIE["id"])) {
 
             return parts.join(dec_point);
         }
-
     </script>
 
 

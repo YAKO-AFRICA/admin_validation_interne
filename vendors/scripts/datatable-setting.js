@@ -43,7 +43,7 @@ $('document').ready(function() {
         },
         dom: 'Bfrtp',
         buttons: [
-            'copy', 'csv', 'pdf', 'print'
+            'copy', 'csv', 'pdf', 'print','excel'
         ]
     });
 
