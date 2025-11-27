@@ -139,7 +139,7 @@ if (isset($_COOKIE["idrdv"])) {
                         </div>
                         <div class="col-md-6">
                             <p><span class="text-color">Traiter le :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->datetraitement ?? "--" ?></span></p>
-                            <p><span class="text-color">Traiter par :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= strtoupper($rdv->nomAdmin . " " . $rdv->prenomAdmin) ?? "--" ?></span></p>
+                            <p><span class="text-color">Traiter par :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= ($rdv->etat == "2" || $rdv->etat == "3") ? strtoupper($rdv->nomgestionnaire) :  strtoupper($rdv->nomAdmin . " " . $rdv->prenomAdmin) ?? "--" ?></span></p>
                             <p><span class="text-color">Motif du Rdv :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->motifrdv ?? "---" ?></span></p>
                             <p><span class="text-color">ID contrat / N° de police(s) :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->police ?? "---" ?></span></p>
                             <p><span class="text-color">Etat du rdv :</span> <span class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span></p>
@@ -175,8 +175,13 @@ if (isset($_COOKIE["idrdv"])) {
                             <div class="col-md-6">
                                 <p><span class="text-color">Transmis par :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->nomAdmin . " " . $rdv->prenomAdmin ?></span></p>
                                 <p><span class="text-color">Sms envoyé ? :</span> <span style="text-transform:uppercase; font-weight:bold;" class="<?php echo $color_etatSms; ?>"><?php echo $lib_etatSms ?></span></p>
-                                <p><span class="text-color">Issue apres Rdv :</span> <span class="text-infos"><?= $rdv->estPermit === 1 ? "<span class='btn btn-success btn-sm'>Accordé</span>" : ($rdv->estPermit === 0 ? "<span class='btn btn-danger '>Non Accordé</span>" : "") ?></span></p>
-                                <p><span class="text-color">Reponse Apres entretien :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->reponseGest ?? "--" ?></span></p>
+                                <p><span class="text-color">Issue apres Rdv :</span> <span class="text-infos"><?= $rdv->estPermit == 1 && $rdv->etatTraitement == 1 ? "<span class='btn btn-success btn-sm'>Accordé pour $rdv->motifrdv </span>" : ($rdv->estPermit == 1 && $rdv->etatTraitement != 1 ? "<span class='btn btn-danger '>Non Accordé pour $rdv->motifrdv</span>" : "") ?></span></p>
+                                <p><span class="text-color">Reponse Apres entretien :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->libelleTraitement ?? "--" ?></span></p>
+                            </div>
+                        </div>
+                        <div class="row pd-20">
+                            <div class="col-md-12">
+                                <p><span class="text-color">Observation :</span> lor <span class="text-infos" style="font-weight:bold;"><?= $rdv->reponseGest ?? "" ?></span></p>
                             </div>
                         </div>
                     </div>

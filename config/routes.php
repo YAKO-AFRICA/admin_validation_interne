@@ -225,9 +225,9 @@ if ($request->action != null) {
                 //print_r($rdv);
 
                 $tablo = array(
-                    "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partielle", "operation" => "Rachat partiel"),
+                    "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partiel", "operation" => "Rachat partiel"),
                     "avance" => array("etat" => "2", "libelle" => "Le client a demandé une avance / pret", "operation" => "Avance ou prêt"),
-                    "renonce" => array("etat" => "3", "libelle" => "Le client a changé d'avis", "operation" => "Renonce"),
+                    "renonce" => array("etat" => "3", "libelle" => "Le client décide de conserver son contrat", "operation" => "Renonce"),
                     "absent" => array("etat" => "3", "libelle" => "Le client ne c'est pas presenté", "operation" => "Absent"),
                     "transformation" => array("etat" => "4", "libelle" => "Le client a demandé une transformation", "operation" => "transformation"),
                     "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres")
@@ -616,7 +616,7 @@ if ($request->action != null) {
                     $result = $fonction->_Database->Update($sqlUpdatePrestation, $queryOptions);
                     if ($result != null) {
                         //$url_notification = "https://admin.prestations.yakoafricassur.com/notification-mail.php?action=transmettreRDV&idrdv=" . trim($idrdv);
-                        echo $url_notification = $lienEnvoiMail . "action=transmettreRDV&data=[idrdv:" . trim($idrdv) . "]";
+                        $url_notification = $lienEnvoiMail . "action=transmettreRDV&data=[idrdv:" . trim($idrdv) . "]";
                         $retour = file_get_contents($url_notification);
                     }
                     echo json_encode($idrdv);
@@ -667,7 +667,7 @@ if ($request->action != null) {
                     $retour = $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
 
                     //$url_notification = "https://admin.prestations.yakoafricassur.com/notification-mail.php?action=confirmerRejetRDV&idrdv=" . trim($idrdv);
-                    echo $url_notification = $lienEnvoiMail . "action=confirmerRejetRDV&data=[idrdv:" . trim($idrdv) . "]";
+                    $url_notification = $lienEnvoiMail . "action=confirmerRejetRDV&data=[idrdv:" . trim($idrdv) . "]";
 
                     file_get_contents($url_notification);
                 } else $retour = 0;
@@ -974,7 +974,7 @@ function traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $obs
 {
     global $fonction, $maintenant, $lienEnvoiMail;
 
-    $sqlUpdatePrestation = "UPDATE tblrdv SET etat = ?, etatTraitement=?, libelleTraitement=?, reponse=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? WHERE idrdv = ?";
+    $sqlUpdatePrestation = "UPDATE tblrdv SET etat = ?, etatTraitement=?, libelleTraitement=?, reponseGest=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? WHERE idrdv = ?";
     $queryOptions = array(
         "3",
         $etat,
@@ -1048,7 +1048,7 @@ function traitementApresReceptionRDV($rdv, $etat, $typeOperation, $obervation, $
     $idprestation = $rrr["LastInsertId"];
 
 
-    $sqlUpdatePrestation = "UPDATE tblrdv SET etat = ?, etatTraitement= ?, libelleTraitement=?, reponse=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? , idCourrier=? , estPermit=? WHERE idrdv = ?";
+    $sqlUpdatePrestation = "UPDATE tblrdv SET etat = ?, etatTraitement= ?, libelleTraitement=?, reponseGest=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? , idCourrier=? , estPermit=? WHERE idrdv = ?";
     $queryOptions = array(
         "3",
         $etat,

@@ -291,14 +291,14 @@ if ($mail && $to != "") {
     if (mail($to, $subject, $msg, $headers)) // Envoi du message
     {
         $to_log = __FUNCTION__ . ' | Message de notification a bien été envoyé à ' . $to . " ( " . $message . " ) ";
-        print $to_log;
+        // print $to_log;
 
         //$fonction->_UpdateStatutEnvoiMail($prestation, "1", $contenu = "");
         //echo json_encode($resultat);
     } else // Non envoyé
     {
         $to_log = __FUNCTION__ . ' | Le message de notification n\'a pas pu être envoyé à ' . $to . " ( " . $message . " ) ";
-        print $to_log;
+        // print $to_log;
     }
 
     //print $to;
