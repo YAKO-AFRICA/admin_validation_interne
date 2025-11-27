@@ -65,7 +65,7 @@ if (isset($_COOKIE["id"])) {
                             </div>
                             <nav aria-label="breadcrumb" role="navigation">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="accueil-operateur.php">Accueil</a></li>
+                                    <li class="breadcrumb-item"><a href="intro">Accueil</a></li>
                                     <li class="breadcrumb-item " aria-current="page">Liste des demandes</li>
                                     <li class="breadcrumb-item active" aria-current="page">Traitement demande</li>
                                 </ol>
@@ -82,7 +82,7 @@ if (isset($_COOKIE["id"])) {
                         </div>
                     </div>
                     <div class="card-body radius-12 w-100 p-4" style="border:1px solid gray;background:#033f1f">
-                        <h3 class="text-center" style="color:white">Demande de Prestation n° <span style="color:#F9B233;"><?= strtoupper($code) ?></span></h3>
+                        <h3 class="text-center" style="color:white">Demande de Prestation n° <span style="color:#F9B233;"><?= strtoupper($code) . (empty($prestation->partenaire) ? "" : " - " . $prestation->partenaire) ?>  </span></h3>
                     </div>
                 </div>
 
@@ -100,7 +100,7 @@ if (isset($_COOKIE["id"])) {
                                                         if ($prestation->prestationlibelle != "Autre") {
                                                         ?>6<?php
                                                         } else {
-                                        ?>12<?php
+                                                            ?>12<?php
                                                         }
                                             ?>">
                                         <p><span class="text-color">Date demande: </span><span class="text-infos"
@@ -340,6 +340,13 @@ if (isset($_COOKIE["id"])) {
                                                         style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->migreele; ?></span>
                                                 </p>
                                             </div>
+
+                                            <!-- <div class="col-md-12">
+                                                <p><span class="text-color">Partenaire : </span><span
+                                                        class="text-infos"
+                                                        style="font-size:18px; font-weight:bold; color:<?= $prestation->color ?>"><?= $prestation->partenaire; ?></span>
+                                                </p>
+                                            </div> -->
                                             <?php
                                             $detailPrestationNsil = $fonction->_GetDetailsTraitementPrestation($prestation->id);
                                             if ($detailPrestationNsil != null) {

@@ -98,7 +98,7 @@ $effectue = is_array($liste_prestations) ? count($liste_prestations) : 0;
 							</div>
 							<nav aria-label="breadcrumb">
 								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="accueil-operateur.php">Accueil</a></li>
+									<li class="breadcrumb-item"><a href="intro">Accueil</a></li>
 									<li class="breadcrumb-item active" aria-current="page">Journal RDV</li>
 								</ol>
 							</nav>

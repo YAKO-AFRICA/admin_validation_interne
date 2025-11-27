@@ -77,7 +77,7 @@ if (isset($_COOKIE["idrdv"])) {
                             </div>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb bg-transparent p-0">
-                                    <li class="breadcrumb-item"><a href="accueil-operateur.php">Accueil</a></li>
+                                    <li class="breadcrumb-item"><a href="intro">Accueil</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Détail Rdv</li>
                                 </ol>
                             </nav>

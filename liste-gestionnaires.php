@@ -82,7 +82,7 @@ else $effectue = 0;
 							</div>
 							<nav aria-label="breadcrumb" role="navigation">
 								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="accueil-operateur.php"><?= Config::lib_pageAccueil ?></a></li>
+									<li class="breadcrumb-item"><a href="intro"><?= Config::lib_pageAccueil ?></a></li>
 									<li class="breadcrumb-item active" aria-current="page"> Liste des Utilisateurs</li>
 								</ol>
 							</nav>
@@ -237,68 +237,68 @@ else $effectue = 0;
 					<div class="col-12 col-lg-12 col-xl-12 d-flex">
 						<div class="card">
 							<!-- <form id="formOperateur" name="formOperateur" method="post"> -->
-								<div class="card-body radius-12 w-100">
-									<div class="row" id="formOperateur">
+							<div class="card-body radius-12 w-100">
+								<div class="row" id="formOperateur">
 
-										<div class="form-group col-sm-12 col-md-12">
-											<h4 style="color:#033f1f; font-size:16px; font-weight:bold;"> Veuillez renseigner les informations de l'utilisateur a ajouter svp !!</h4>
-										</div>
-										<input type="text" class="form-control" name="agent_id" id="agent_id" hidden>
-										<input type="text" class="form-control" name="action" id="action" hidden>
-										<hr>
-										<div class="form-group col-sm-12 col-md-4">
-											<label for="nomRdv" style="color: #000000;">Nom <bold style="color: #F9B233;"> *</bold></label>
-											<input type="text" id="nom" name="nom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le nom" value="" class="form-control">
-											<div class="validation" id="validNom" style="color:#F9B233"></div>
-										</div>
+									<div class="form-group col-sm-12 col-md-12">
+										<h4 style="color:#033f1f; font-size:16px; font-weight:bold;"> Veuillez renseigner les informations de l'utilisateur a ajouter svp !!</h4>
+									</div>
+									<input type="text" class="form-control" name="agent_id" id="agent_id" hidden>
+									<input type="text" class="form-control" name="action" id="action" hidden>
+									<hr>
+									<div class="form-group col-sm-12 col-md-4">
+										<label for="nomRdv" style="color: #000000;">Nom <bold style="color: #F9B233;"> *</bold></label>
+										<input type="text" id="nom" name="nom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le nom" value="" class="form-control">
+										<div class="validation" id="validNom" style="color:#F9B233"></div>
+									</div>
 
-										<div class="form-group col-sm-12 col-md-8">
-											<label for="nomRdv" style="color: #000000;">Prenom <bold style="color: #F9B233;"> *</bold></label>
-											<input type="text" id="prenom" name="prenom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le prenom" value="" class="form-control">
-											<div class="validation" id="validNom" style="color:#F9B233"></div>
-										</div>
+									<div class="form-group col-sm-12 col-md-8">
+										<label for="nomRdv" style="color: #000000;">Prenom <bold style="color: #F9B233;"> *</bold></label>
+										<input type="text" id="prenom" name="prenom" onkeyup="this.value=this.value.toUpperCase()" data-rule="required" required placeholder="Entrez le prenom" value="" class="form-control">
+										<div class="validation" id="validNom" style="color:#F9B233"></div>
+									</div>
 
-										<div class="form-group col-sm-12 col-md-6">
-											<label for="nomRdv" style="color: #000000;">Telephone <bold style="color: #F9B233;"> *</bold></label>
-											<input type="number" id="telephone" name="telephone" data-rule="required" required placeholder="Entrez le telephone" value="" class="form-control">
-											<div class="validation" id="validNom" style="color:#F9B233"></div>
-										</div>
+									<div class="form-group col-sm-12 col-md-6">
+										<label for="nomRdv" style="color: #000000;">Telephone <bold style="color: #F9B233;"> *</bold></label>
+										<input type="number" id="telephone" name="telephone" data-rule="required" required placeholder="Entrez le telephone" value="" class="form-control">
+										<div class="validation" id="validNom" style="color:#F9B233"></div>
+									</div>
 
-										<div class="form-group col-sm-12 col-md-6">
-											<label for="nomRdv" style="color: #000000;">email <bold style="color: #F9B233;"> *</bold></label>
-											<input type="email" id="email" name="email" data-rule="required" required placeholder="Entrez le email" value="" class="form-control">
-											<div class="validation" id="validNom" style="color:#F9B233"></div>
-										</div>
+									<div class="form-group col-sm-12 col-md-6">
+										<label for="nomRdv" style="color: #000000;">email <bold style="color: #F9B233;"> *</bold></label>
+										<input type="email" id="email" name="email" data-rule="required" required placeholder="Entrez le email" value="" class="form-control">
+										<div class="validation" id="validNom" style="color:#F9B233"></div>
+									</div>
 
-										<div class="form-group col-sm-12 col-md-6">
-											<label for="nomRdv" style="color: #000000;">Type de compte <bold style="color: #F9B233;"> *</bold></label>
-											<select id="typeCompte" name="typeCompte" class="form-control" required>
-												<option value="" selected disabled>Veuillez selectionner</option>
-												<option value="rdv">admin RDV</option>
-												<option value="prestation">gestionnaire Prestation</option>
-												<option value="sinistre">gestionnaire Sinistre</option>
-												<option value="gestionnaire">gestionnaire RDV</option>
-												<option value="compte-ynov">compte-ynov</option>
-											</select>
-										</div>
+									<div class="form-group col-sm-12 col-md-6">
+										<label for="nomRdv" style="color: #000000;">Type de compte <bold style="color: #F9B233;"> *</bold></label>
+										<select id="typeCompte" name="typeCompte" class="form-control" required>
+											<option value="" selected disabled>Veuillez selectionner</option>
+											<option value="rdv">admin RDV</option>
+											<option value="prestation">gestionnaire Prestation</option>
+											<option value="sinistre">gestionnaire Sinistre</option>
+											<option value="gestionnaire">gestionnaire RDV</option>
+											<option value="compte-ynov">compte-ynov</option>
+										</select>
+									</div>
 
-										<div class="form-group col-sm-12 col-md-6" id="divProfil">
-
-										</div>
-										<div class="form-group col-sm-12 col-md-12" id="divCible"></div>
-										<div class="form-group col-sm-12 col-md-12" id="ListeVilles"></div>
-
-										<div class="form-group col-sm-12 d-flex align-items-center justify-content-end col-md-12" id="divEtat">
-
-										</div>
-
+									<div class="form-group col-sm-12 col-md-6" id="divProfil">
 
 									</div>
-									<div class="modal-footer" id="footer">
-										<button type="submit" name="traitAll" id="traitAll" class="btn btn-warning" onclick="getTraitementAjoutUtilisateur()"><span id="titreAction" style="color:white"></span></button>
-										<button type="button" id="closeModaleUser" name="closeModaleUser" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+									<div class="form-group col-sm-12 col-md-12" id="divCible"></div>
+									<div class="form-group col-sm-12 col-md-12" id="ListeVilles"></div>
+
+									<div class="form-group col-sm-12 d-flex align-items-center justify-content-end col-md-12" id="divEtat">
+
 									</div>
+
+
 								</div>
+								<div class="modal-footer" id="footer">
+									<button type="submit" name="traitAll" id="traitAll" class="btn btn-warning" onclick="getTraitementAjoutUtilisateur()"><span id="titreAction" style="color:white"></span></button>
+									<button type="button" id="closeModaleUser" name="closeModaleUser" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+								</div>
+							</div>
 							<!-- </form> -->
 						</div>
 					</div>
@@ -367,6 +367,7 @@ else $effectue = 0;
 						<option value="agent" ${profil === "agent" ? "selected" : ""}>agent</option>
 						<option value="supervisseur" ${profil === "supervisseur" ? "selected" : ""}>superviseur</option>
 						<option value="admin" ${profil === "admin" ? "selected" : ""}>administrateur</option>
+						<option value="nsil" ${profil === "nsil" ? "selected" : ""}>gestionnaire NSIL</option>
 					</select>
 				`;
 				$("#divProfil").html(profilSelect);
@@ -374,7 +375,7 @@ else $effectue = 0;
 				// -- CIBLE / CODE AGENT --
 				let cibleHtml = "";
 
-				if (typeCompte === "prestation" && profil === "agent") {
+				if ((typeCompte === "prestation" && profil === "agent")) {
 					cibleHtml = `
 						<label for="ciblePrestation" style="color: #000000;">
 						cible <strong style="color: #F9B233;">*</strong>
@@ -394,11 +395,66 @@ else $effectue = 0;
 					`;
 					//console.log(" 2 : idville", idville);
 					getListeVillesRDV(null);
+				} else if ((typeCompte === "sinistre" && profil === "nsil")) {
+					cibleHtml = `<div class="row">
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label class="col-form-label">Provenance  (<span style="color:red;">*</span>) :</label>
+                        <select name="provenance" id="provenance" class="form-control" required>
+                            <option value="" disabled selected>...</option>
+                            <option value="LLV">Reseaux Particulier</option>
+                            <option value="entreprisePartenaire">Entreprise Partenaire</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label class="col-form-label">Partenaire  (<span style="color:red;">*</span>) :</label>
+                        <select name="ListePartenaire" id="ListePartenaire" class="form-control" required>
+                        </select>
+                    </div>
+                </div>`;
+
+					// chargerListePartenaireYAKO();
+				} else if ((typeCompte === "prestation" && profil === "nsil")) {
+					cibleHtml = `
+					<div class="row">
+						<div class="form-group col-12">
+							<label for="ciblePrestation" style="color: #000000;">
+							cible <strong style="color: #F9B233;">*</strong>
+							</label>
+							<select id="ciblePrestation" name="ciblePrestation" class="form-control" required>
+								<option value="" selected disabled>Veuillez sélectionner</option>
+								<option value="administratif">administratif</option>
+								<option value="technique">technique</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="row">
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label class="col-form-label">Provenance  (<span style="color:red;">*</span>) :</label>
+                        <select name="provenance" id="provenance" class="form-control" required>
+                            <option value="" disabled selected>...</option>
+                            <option value="LLV">Reseaux Particulier</option>
+                            <option value="entreprisePartenaire">Entreprise Partenaire</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label class="col-form-label">Partenaire  (<span style="color:red;">*</span>) :</label>
+                        <select name="ListePartenaire" id="ListePartenaire" class="form-control" required>
+                        </select>
+                    </div>
+                </div>`;
+
 				}
 
 
 				$("#divCible").html(cibleHtml);
 			}
+
+			$("#divCible").on("input change", "#provenance", function() {
+				chargerListePartenaireYAKO();
+			});
 
 			// --- Insérer la case à cocher (état) une seule fois ---
 
@@ -622,7 +678,7 @@ else $effectue = 0;
 		}
 
 
-		
+
 
 		function getTraitementAjoutUtilisateur() {
 
@@ -639,6 +695,8 @@ else $effectue = 0;
 			let ciblePrestation = null;
 			let codeagent = null;
 			let villesRDV = null;
+			let provenance = null;
+			let ListePartenaire = null;
 
 			// verifier que tous les champs requis sont remplis
 
@@ -653,13 +711,15 @@ else $effectue = 0;
 			}
 
 
+
+
 			if (etatCompte == true) {
 				etatCompte = 1;
 			} else {
 				etatCompte = 0;
 			}
 
-			if (typeCompte == "prestation" && profil == "agent") {
+			if ((typeCompte == "prestation" && profil == "agent") || (typeCompte == "prestation" && profil == "nsil")) {
 				ciblePrestation = document.getElementById("ciblePrestation").value;
 			}
 
@@ -668,7 +728,15 @@ else $effectue = 0;
 				villesRDV = document.getElementById("villesRDV").value;
 			}
 
-			//alert(action + " " + agent_id + " " + nom + " " + prenom + " " + email + " " + telephone + " " + typeCompte + " " + profil + " " + codeagent + " " + villesRDV + " " + etatCompte + " " + ciblePrestation);
+			if ((typeCompte == "sinistre" || typeCompte == "prestation") && profil == "nsil") {
+				provenance = document.getElementById("provenance").value;
+				ListePartenaire = document.getElementById("ListePartenaire").value;
+
+			}
+
+
+
+			alert(action + " " + agent_id + " " + nom + " " + prenom + " " + email + " " + telephone + " " + typeCompte + " " + profil + " " + codeagent + " " + villesRDV + " " + etatCompte + " " + ciblePrestation + " " + provenance + " " + ListePartenaire);
 
 			$.ajax({
 				url: "config/routes.php",
@@ -685,6 +753,8 @@ else $effectue = 0;
 					codeagent: codeagent,
 					villesRDV: villesRDV,
 					statut: etatCompte,
+					provenance: provenance,
+					ListePartenaire: ListePartenaire,
 					etat: "getTraitementAjoutUtilisateur"
 				},
 				dataType: "json",
@@ -730,7 +800,7 @@ else $effectue = 0;
 				if (
 					champ.type === "checkbox" && !champ.checked ||
 					champ.value.trim() === ""
-				
+
 				) {
 					tousRemplis = false;
 					champ.classList.add("is-invalid"); // Pour visuel Bootstrap par ex.
@@ -746,6 +816,55 @@ else $effectue = 0;
 			}
 
 			return tousRemplis;
+		}
+
+		function chargerListePartenaireYAKO() {
+
+			const provenance = $("#provenance").val();
+			//alert(provenance)
+
+			$("#ListePartenaire").html(`<option value="">Chargement des partenaires...</option>`);
+
+			$.ajax({
+				url: "https://api.yakoafricassur.com/enov/partenaire-list",
+				method: "get",
+				dataType: "json",
+				data: {},
+				success: function(response) {
+					//console.log(response);
+					if (provenance == "LLV") {
+						response = response.filter(partenaire => partenaire.code == "LLV");
+
+					} else {
+						response = response.filter(partenaire => partenaire.code != "LLV");
+					}
+
+					let options = `<option value="">Choisir un partenaire </option>`;
+					if (provenance != "LLV") {
+						options += `<option value="All">TOUS LES PARTENAIRES</option>`;
+					}
+					$.each(response, function(i, value) {
+
+						if (value.actif == "1") {
+
+							const id = value.id;
+							const code = value.code || "";
+							const libelle = code == "LLV" ? "YAKO AFRICA ASSURANCES VIE" : value.designation || "";
+							const valueOpe = `${id}-${code}-${libelle}`;
+
+							options += `<option value="${valueOpe}">${libelle} (${code})</option>`;
+
+						}
+
+					});
+
+					$("#ListePartenaire").html(options);
+				},
+				error: function(xhr, statut, err) {
+					console.error("Erreur AJAX :", err);
+					$("#ListePartenaire").html(`<option value="">Erreur de chargement</option>`);
+				}
+			});
 		}
 	</script>
 

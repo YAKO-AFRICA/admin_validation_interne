@@ -80,6 +80,7 @@ class tbl_prestations
 
     var $libellemotifrejet  = null;
     var $prestationlibelle = null;
+    var $partenaire = null;
 
     public $codeBanque;
     public $codeGuichet;

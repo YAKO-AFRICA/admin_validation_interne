@@ -25,7 +25,7 @@ if (isset($_REQUEST['filtreliste'])) {
 	}
 	//echo $plus; exit;
 } else {
-	$plus = " WHERE etape != '1' ";
+	$plus = " WHERE etape != '1'  AND YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE()) ";
 }
 
 $sqlSelect = "
@@ -73,7 +73,7 @@ $effectue = is_array($liste_prestations) ? count($liste_prestations) : 0;
 							</div>
 							<nav aria-label="breadcrumb" role="navigation">
 								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="accueil-operateur.php">Accueil</a></li>
+									<li class="breadcrumb-item"><a href="intro">Accueil</a></li>
 									<li class="breadcrumb-item " aria-current="page">Liste des demandes</li>
 									<li class="breadcrumb-item active" aria-current="page">Traitement demande</li>
 								</ol>

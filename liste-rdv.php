@@ -98,22 +98,30 @@ else $effectue = 0;
 									<th>Date RDV</th>
 									<th>Lieu RDV</th>
 									<th>Délais</th>
-									<th>Detail</th>
+
+									<?php if (!empty($liste_rdvs) && ($liste_rdvs[0]->etat == "2" || $liste_rdvs[0]->etat == "3" || $liste_rdvs[0]->etat == "0")): ?>
+										<th>Détail</th>
+									<?php endif; ?>
+
 									<th>État</th>
 									<th class="table-plus datatable-nosort">Action</th>
 								</tr>
 							</thead>
 
 							<tbody>
+
 								<?php if (!empty($liste_rdvs)) : ?>
 
 									<?php foreach ($liste_rdvs as $i => $rdv) : ?>
 
 										<?php
-										// Déterminer la date RDV utilisée
-										$dateRdv = $rdv->daterdv ?: $rdv->daterdveff;
+										// Détermination de la date RDV affichée
+										$dateRdv = $rdv->daterdv;
+										if ($rdv->etat == "2" || $rdv->etat == "3") {
+											if (isset($rdv->daterdveff) && $rdv->daterdveff != "") $dateRdv = date("d/m/Y", strtotime($rdv->daterdveff));
+										}
 
-										// Obtention délai
+										// Délai
 										$delai = $fonction->getDelaiRDV($dateRdv);
 										$lib_delai = $delai['libelle'];
 										$couleur_fond = $delai['couleur'] ?? 'transparent';
@@ -122,18 +130,23 @@ else $effectue = 0;
 										// Villes
 										$villes = !empty($rdv->villes) ? strtoupper($rdv->villes) : "Non mentionné";
 
-										// État RDV
-										$etat = (!empty($rdv->etat) && isset(Config::tablo_statut_rdv[$rdv->etat]))	? $rdv->etat : 1;
+										// État
+										$etat = (!empty($rdv->etat) && isset(Config::tablo_statut_rdv[$rdv->etat]))
+											? $rdv->etat
+											: 1;
+
 										$retourEtat = Config::tablo_statut_rdv[$etat];
 										?>
 
-										<tr id="ligne-<?= $i ?>" style="color:#033f1f; background-color: <?= $couleur_fond ?>;">
+										<tr id="ligne-<?= $i ?>" style="color: <?= htmlspecialchars($couleur_fond) ?>;">
 
 											<td class="table-plus"><?= $i + 1 ?></td>
 
 											<td id="id-<?= $i ?>"><?= htmlspecialchars($rdv->idrdv) ?></td>
 
-											<td><?= $rdv->dateajou ?></td>
+											<td>
+												<?= !empty($rdv->dateajou) ? date('d/m/Y H:i', strtotime($rdv->dateajou)) : "" ?>
+											</td>
 
 											<td class="text-wrap">
 												<?= htmlspecialchars($rdv->nomclient) ?>
@@ -147,46 +160,73 @@ else $effectue = 0;
 
 											<td><?= htmlspecialchars($rdv->motifrdv ?? '') ?></td>
 
-											<td id="daterdv-<?= $i ?>"><?= htmlspecialchars($dateRdv) ?></td>
+											<td id="daterdv-<?= $i ?>" style="font-weight:bold;">
+												<?= htmlspecialchars($dateRdv) ?>
+											</td>
 
-											<td style="color:#F9B233; font-weight:bold;"><?= $villes ?></td>
+											<td style="color:#F9B233; font-weight:bold;">
+												<?= $villes ?>
+											</td>
 
 											<!-- Délais -->
 											<td>
-												<span class="<?= $badge_delai ?>"><?= $lib_delai ?></span>
+												<span class="<?= htmlspecialchars($badge_delai) ?>"><?= $lib_delai ?></span>
 											</td>
-											<td>
-												<?php if ($rdv->etat == "1"): ?>
-													<p class="mb-0 text-dark" style="font-size:0.7em;">
-														Date Affectation :
-														<span style="font-weight:bold;"><?= htmlspecialchars($rdv->tel) ?></span>
-													</p>
-													<p class="mb-0 text-dark" style="font-size:0.7em;">
-														Date RDV Effective :
-														<span style="font-weight:bold;"><?= htmlspecialchars($rdv->tel) ?></span>
-													</p>
+
+											<!-- Colonne DÉTAIL (uniquement état 2 ou 3) -->
+											<?php if ($rdv->etat == "2" || $rdv->etat == "3"): ?>
+												<td class="text-wrap">
 													<p class="mb-0 text-dark" style="font-size:0.7em;">
 														Agent Transformation :
-														<span style="font-weight:bold;"><?php echo $rdv->nomgestionnaire ?? "Non mentionné"; ?></span>
+														<span style="font-weight:bold;"><?= htmlspecialchars($rdv->nomgestionnaire ?? "Non mentionné") ?></span>
 													</p>
-												<?php endif; ?>
 
-											</td>
+													<?php if ($rdv->etat == "3"): ?>
+														<p class="mb-0 text-dark" style="font-size:0.7em;">
+															Date Traitement :
+															<span style="font-weight:bold;"><?= !empty($rdv->updatedAt) ? date('d/m/Y H:i', strtotime($rdv->updatedAt)) : "" ?></span>
+
+														</p>
+														<p class="mb-0 text-dark" style="font-size:0.7em;">
+															Traitement :
+															<span style="font-weight:bold;">
+																<?php if (isset($rdv->etatTraitement) && $rdv->etatTraitement != null && $rdv->etatTraitement != "0"): ?>
+																	<?= $rdv->libelleTraitement ?>
+																<?php else: ?>
+																	traitement non mentionné
+																<?php endif; ?>
+															</span>
+
+														</p>
+
+													<?php endif; ?>
+
+												</td>
+											<?php elseif ($rdv->etat == "0"): ?>
+												<td class="text-wrap">
+													<?= $rdv->reponse ?>
+												</td>
+											<?php endif; ?>
+
+											<!-- État -->
 											<td>
-												<span class="<?= $retourEtat["color_statut"] ?>">
-													<?= $retourEtat["libelle"] ?>
+												<span class="<?= htmlspecialchars($retourEtat["color_statut"]) ?>">
+													<?= htmlspecialchars($retourEtat["libelle"]) ?>
 												</span>
 											</td>
-											<!-- État -->
 
-
+											<!-- Actions -->
 											<td>
-												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white">
+												<button class="btn btn-warning btn-sm view"
+													id="view-<?= $i ?>"
+													style="background-color:#F9B233;color:white">
 													<i class="fa fa-eye"></i> Détail
 												</button>
 
 												<?php if ($rdv->etat == "1"): ?>
-													<button class="btn btn-success btn-sm traiter" id="traiter-<?= $i ?>" style="background-color:#033f1f; color:white">
+													<button class="btn btn-success btn-sm traiter"
+														id="traiter-<?= $i ?>"
+														style="background-color:#033f1f; color:white">
 														<i class="fa fa-mouse-pointer"></i> Traiter
 													</button>
 												<?php endif; ?>
@@ -200,6 +240,7 @@ else $effectue = 0;
 							</tbody>
 						</table>
 					</div>
+
 
 				</div>
 

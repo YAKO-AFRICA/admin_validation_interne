@@ -24,21 +24,96 @@ class Fonction
 
 
 
-	private function _IsForList()
+	function diff_date($date_debut)
 	{
-		if (in_array(strtolower($this->Request->Content), array('list', 'liste'))) {
-			return TRUE;
-		}
-		return FALSE;
+		$maintenant =  date('Y-m-d H:i:s');
+
+		$date1 = strtotime($maintenant);
+		$date2 = strtotime($date_debut);
+
+		$date_diff = $this->dateDiff($date1, $date2);
+		return $date_diff;
 	}
 
-	private function _IsForStats()
+	function dateDiff($date1, $date2)
 	{
-		if (in_array(strtolower($this->Request->Content), array('class', 'stats', 'stat', 'tendance'))) {
-			return TRUE;
-		}
-		return FALSE;
+		$diff = abs($date1 - $date2); // abs pour avoir la valeur absolute, ainsi éviter d'avoir une différence négative
+		$retour = array();
+
+		$tmp = $diff;
+		$retour['second'] = $tmp % 60;
+
+		$tmp = floor(($tmp - $retour['second']) / 60);
+		$retour['minute'] = $tmp % 60;
+
+		$tmp = floor(($tmp - $retour['minute']) / 60);
+		$retour['heure'] = $tmp % 24;
+
+		$tmp = floor(($tmp - $retour['heure'])  / 24);
+		$retour['jour'] = $tmp;
+		return $retour;
 	}
+
+
+	public function getDelaiRDV($dateRDV)
+	{
+		// Convertir format d/m/Y en Y-m-d
+		if ($dateRDV && strpos($dateRDV, '/') !== false) {
+			list($jour, $mois, $annee) = explode('/', $dateRDV);
+			$dateRDV = "$annee-$mois-$jour";
+		}
+
+		// Sécurisation
+		if (!$dateRDV || !strtotime($dateRDV)) {
+			return [
+				'etat'    => 'indisponible',
+				'couleur' => 'gray', // gris
+				'libelle' => 'Date non disponible',
+				'jours'   => null
+			];
+		}
+
+		/* --- Création objets Date sans heure --- */
+		$today = new DateTime(date('Y-m-d'));           // Aujourd’hui à 00:00:00
+		$rdv   = new DateTime(date('Y-m-d', strtotime($dateRDV))); // RDV à 00:00:00
+
+		/* --- Calcul différence en jours --- */
+		$diff = $today->diff($rdv);
+		$jours = (int)$diff->days;
+
+		//RDV EXPIRÉ (date passée)
+		if ($today > $rdv) {
+			return [
+				'etat'    => 'expire',
+				'couleur' => 'red', // rouge
+				'badge' => 'badge badge-danger',
+				'libelle' => "Délai expiré depuis $jours jour(s)",
+				'jours'   => $jours
+			];
+		}
+
+		//RDV AUJOURD'HUI
+		if ($jours === 0) {
+			return [
+				'etat'    => 'ok',
+				'couleur' => '#f39c12', // vert
+				'badge' => 'badge badge-warning',
+				'libelle' => "Aujourd’hui",
+				'jours'   => 0
+			];
+		}
+
+		//RDV À VENIR
+		return [
+			'etat'    => 'prochain',
+			'couleur' => '#033f1f', // orange
+			'badge' => 'badge badge-success', // orange
+			'libelle' => "$jours jour(s) restant(s)",
+			'jours'   => $jours
+		];
+	}
+
+
 
 	function saveDocumentNSIL($fileName, $fileContent)
 	{
@@ -62,7 +137,7 @@ class Fonction
 
 	function getSelectTypePrestation()
 	{
-		global $connect;
+
 
 		$ind1 = '';
 		$ind2 = '';
@@ -96,14 +171,21 @@ class Fonction
 
 	function getSelectTypePrestationFiltre()
 	{
-		global $connect;
+
+		if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
+		else {
+
+			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
+			else $cible = " WHERE prestationlibelle != 'Autre' ";
+		}
+
 
 		$ind1 = '';
 		$ind2 = '';
 		$ind = '<select name="typePrestation" id="typePrestation" class="form-control" data-msg="Objet" data-rule="required" >
 													<option value="">...</option>';
 
-		$sqlQuery = "SELECT distinct(typeprestation) as libelle FROM " . Config::TABLE_PRESTATION . "  ";
+		$sqlQuery = "SELECT distinct(typeprestation) as libelle FROM " . Config::TABLE_PRESTATION . "  $cible ORDER BY id ";
 
 		$tab = $this->_Database->Select($sqlQuery);
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
@@ -122,9 +204,52 @@ class Fonction
 		return $ind . $ind1 . $ind3;
 	}
 
+
+	function getSelectPartenairePrestationFiltre()
+	{
+
+		if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
+		else {
+
+			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
+			else $cible = " WHERE prestationlibelle != 'Autre' ";
+		}
+
+
+		$ind1 = '';
+		$ind2 = '';
+		$ind = '<select name="partenaire" id="partenaire" class="form-control" data-msg="Objet" data-rule="required" >
+													<option value="">...</option>';
+
+		$sqlQuery = "SELECT distinct(partenaire) as libelle FROM " . Config::TABLE_PRESTATION . "  $cible ORDER BY id ";
+
+		$tab = $this->_Database->Select($sqlQuery);
+		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
+			$this->Logger->Handler(__function__, 'echec recuperation de la liste des details ');
+			return NULL;
+		} else {
+			for ($i = 0, $maxI = count($tab); $i < $maxI; $i++) {
+				if (empty($tab[$i]->libelle)) continue;
+				$donnees = $tab[$i];
+				$code = $donnees->libelle;
+				$libelle = $code;
+				if ($libelle == "LLV") {
+					$libelle = "YAKO AFRICA ASSURANCES VIE";
+				} elseif ($libelle == "092") {
+					$libelle = "BNI";
+				}
+
+				$values = $code;
+				$ind1 .= '<option value="' . $values . '">' . trim($libelle) . '</option>';
+			}
+		}
+		$ind3 = '</select>';
+		return $ind . $ind1 . $ind3;
+	}
+
 	function getSelectTypeEtapePrestation()
 	{
-		global $connect;
+
 
 		$ind1 = '';
 		$ind2 = '';
@@ -146,7 +271,6 @@ class Fonction
 
 	function getSelectTypeRDVFiltre()
 	{
-		global $connect;
 
 		$ind1 = '';
 		$ind2 = '';
@@ -174,7 +298,7 @@ class Fonction
 
 	function getSelectTypeEtapeRDV()
 	{
-		global $connect;
+
 
 		$ind1 = '';
 		$ind2 = '';
@@ -197,7 +321,7 @@ class Fonction
 
 	function getSelectTypeMtifRejetPrestation()
 	{
-		global $connect;
+
 
 		$ind1 = '';
 		$ind2 = '';
@@ -227,7 +351,7 @@ class Fonction
 
 	function getSelectTypeCompteUtilisateur()
 	{
-		global $connect;
+
 
 		$ind1 = '';
 		$ind2 = '';
@@ -275,6 +399,7 @@ class Fonction
 		$etapePrestation = (isset($_REQUEST["etapePrestation"]) ? trim($_REQUEST["etapePrestation"]) : null);
 		$motifRejet = (isset($_REQUEST["motifRejet"]) ? trim($_REQUEST["motifRejet"]) : null);
 		$migration = (isset($_REQUEST["migration"]) ? trim($_REQUEST["migration"]) : null);
+		$partenaire = (isset($_REQUEST["partenaire"]) ? trim($_REQUEST["partenaire"]) : null);
 
 
 		if ($nom != NULL) {
@@ -365,9 +490,13 @@ class Fonction
 			$par10 = " AND   TRIM(tbl_prestations.estMigree) ='" . $migration . "' ";
 			$libelle10 = " migration NSIL  : " . $lib_migration . '</br>';
 		}
+		if ($partenaire != NULL) {
+			$par11 = " AND   TRIM(tbl_prestations.partenaire) ='" . $partenaire . "' ";
+			$libelle11 = " partenaire : " . $partenaire . '</br>';
+		}
 
-		$libelle = $libelle1 . $libelle2 . $libelle3 . $libelle4 . $libelle5 . $libelle6 . $libelle7 . $libelle8 . $libelle9 . $libelle10;
-		$filtreuse = $par1 . $par2 . $par3 . $par4 . $par5 . $par6 . $par7 . $par8 . $par9 . $par10;
+		$libelle = $libelle1 . $libelle2 . $libelle3 . $libelle4 . $libelle5 . $libelle6 . $libelle7 . $libelle8 . $libelle9 . $libelle10 . $libelle11;
+		$filtreuse = $par1 . $par2 . $par3 . $par4 . $par5 . $par6 . $par7 . $par8 . $par9 . $par10 . $par11;
 		return array("filtre" => $filtreuse, "libelle" => $libelle);/**/
 	}
 
@@ -375,8 +504,8 @@ class Fonction
 	function getFiltreuseRDV()
 	{
 
-		$libelle1 = $libelle2 = $libelle3 = $libelle4 = $libelle5 = $libelle6 = $libelle7 = $libelle8 = $libelle9 = $libelle10 = $libelle11 = NULL;
-		$par1 = $par2 = $par3 = $par4 = $par5 = $par6 = $par7 = $par8 = $par9 = $par10 = $par11 = NULL;
+		$libelle1 = $libelle2 = $libelle3 = $libelle4 = $libelle5 = $libelle6 = $libelle7 = $libelle8 = $libelle9 = $libelle10 = $libelle11 = $libelle12 = NULL;
+		$par1 = $par2 = $par3 = $par4 = $par5 = $par6 = $par7 = $par8 = $par9 = $par10 = $par11 = $par12 = NULL;
 
 		$rdvSouhaitLe = (isset($_REQUEST["rdvSouhaitLe"]) ? trim($_REQUEST["rdvSouhaitLe"]) : null);
 		$rdvSouhaitAu = (isset($_REQUEST["rdvSouhaitAu"]) ? trim($_REQUEST["rdvSouhaitAu"]) : null);
@@ -386,6 +515,8 @@ class Fonction
 		$affecteAu = (isset($_REQUEST["affecteAu"]) ? trim($_REQUEST["affecteAu"]) : null);
 		$saisieLe = (isset($_REQUEST["saisieLe"]) ? trim($_REQUEST["saisieLe"]) : null);
 		$saisieAu = (isset($_REQUEST["saisieAu"]) ? trim($_REQUEST["saisieAu"]) : null);
+		$traiterAu = (isset($_REQUEST["traiterAu"]) ? trim($_REQUEST["traiterAu"]) : null);
+		$traiterLe = (isset($_REQUEST["traiterLe"]) ? trim($_REQUEST["traiterLe"]) : null);
 
 		$ListeGest = (isset($_REQUEST["ListeGest"]) ? trim($_REQUEST["ListeGest"]) : null);
 		$nom = (isset($_REQUEST["nom"]) ? trim($_REQUEST["nom"]) : null);
@@ -505,6 +636,20 @@ class Fonction
 			$libelle4 = "transmis Le : " . $DateFin4 . '</br>';
 		}
 
+		if ($traiterLe != NULL and $traiterAu != NULL) {
+			$DateDebut5 = @date('Y-m-d', strtotime($traiterLe));
+			$DateFin5 = @date('Y-m-d', strtotime($traiterAu));
+			$par12 = "AND  (date(" . Config::TABLE_RDV . ".`updatedAt`) BETWEEN '$DateDebut5' AND '$DateFin5')";
+			$libelle12 = "traiter Le : " . $DateDebut5 . '-' . $DateFin5 . '</br>';
+		} elseif ($traiterLe != NULL and $traiterAu == NULL) {
+			$DateDebut5 = @date('Y-m-d', strtotime($traiterLe));
+			$par12 = "AND  (  date(" . Config::TABLE_RDV . ".updatedAt) ='$DateDebut5' )";
+			$libelle12 = "traiter Le : " . $DateDebut . '</br>';
+		} else if ($traiterLe == NULL and $traiterAu != NULL) {
+			$DateFin5 = @date('Y-m-d', strtotime($traiterAu));
+			$par12 = "AND  (  date(" . Config::TABLE_RDV . ".updatedAt) = '$DateFin5' )";
+			$libelle12 = "traiter Le : " . $DateFin5 . '</br>';
+		}
 		/*SELECT *
 		FROM tblrdv
 		WHERE 
@@ -512,8 +657,8 @@ class Fonction
 		AND STR_TO_DATE(daterdv, '%d/%m/%Y') BETWEEN STR_TO_DATE('10/07/2024', '%d/%m/%Y') AND STR_TO_DATE('20/07/2024', '%d/%m/%Y');
 		*/
 
-		$libelle = $libelle1 . $libelle2 . $libelle3 . $libelle4 . $libelle5 . $libelle6 . $libelle7 . $libelle8 . $libelle9 . $libelle10 . $libelle11;
-		$filtreuse = $par1 . $par2 . $par3 . $par4 . $par5 . $par6 . $par7 . $par8 . $par9 . $par10 . $par11;
+		$libelle = $libelle1 . $libelle2 . $libelle3 . $libelle4 . $libelle5 . $libelle6 . $libelle7 . $libelle8 . $libelle9 . $libelle10 . $libelle11 . $libelle12;
+		$filtreuse = $par1 . $par2 . $par3 . $par4 . $par5 . $par6 . $par7 . $par8 . $par9 . $par10 . $par11 . $par12;
 		return array("filtre" => $filtreuse, "libelle" => $libelle);
 	}
 
@@ -604,6 +749,8 @@ class Fonction
 			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
 			else $cible = " AND prestationlibelle != 'Autre' ";
 		}
+		// echo Config::SqlSelect_ListPrestations . " WHERE etape ='$etape' $cible  $plus ORDER BY id DESC  ";
+		//  exit;
 
 		$tab = $this->_Database->Select(Config::SqlSelect_ListPrestations . " WHERE etape ='$etape' $cible  $plus ORDER BY id DESC  ");
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
@@ -944,12 +1091,12 @@ class Fonction
 	}
 
 
-	function _UpdatePrestationValiderNSIL(tbl_prestations $prestation, $traiterpar)
+	function _UpdatePrestationValiderNSIL(tbl_prestations $prestation, $traiterpar, $partenaire = null)
 	{
 
-		$sqlUpdatePrestation = "UPDATE " . Config::TABLE_PRESTATION . " SET etape=? , traiterpar=? , estMigree=? , updated_at=NOW() , traiterle = NOW() , migreele = NOW() WHERE id =?";
+		$sqlUpdatePrestation = "UPDATE " . Config::TABLE_PRESTATION . " SET etape=? , traiterpar=? , estMigree=? , updated_at=NOW() , traiterle = NOW() , migreele = NOW() , partenaire=? WHERE id =?";
 
-		$tab = $this->_Database->Update($sqlUpdatePrestation, array('2', $traiterpar, '1',  $prestation->id));
+		$tab = $this->_Database->Update($sqlUpdatePrestation, array('2', $traiterpar, '1', $partenaire,  $prestation->id));
 		$this->Logger->Handler(__function__, 'mise à jour du rejet de la prestation ' . json_encode($prestation->id) . ' par ' . json_encode($traiterpar) . ' pour ' .  ': ' . json_encode($tab));
 		return $tab;
 	}
@@ -1646,7 +1793,7 @@ class Fonction
 				} else {
 					$values = $statut["statut"] . ";" . $statut["libelle"];
 					$affiche_2 .= '<div class="col-xl-3 mb-30">
-							<a href="' . $statut["url"] . '">
+							<a href="liste-rdv?i=' . $statut["statut"] . '">
 							<div class="card-box height-100-p widget-style1 text-white"
 								style="background-color:' . trim($statut["color"]) . '; font-weight:bold; ">
 								<div class="d-flex flex-wrap align-items-center">
@@ -1664,7 +1811,7 @@ class Fonction
 			}
 			$affiche_3 .= '
 				<div class="col-xl-3 mb-30">
-					<a href="liste-rdv-nissa">
+					<a href="liste-rdv">
 						<div class="card-box height-100-p widget-style1"
 							style="background-color:whitesmoke; font-weight:bold; color:#033f1f ">
 							<div class="d-flex flex-wrap align-items-center">
@@ -1756,9 +1903,24 @@ class Fonction
 		}
 	}
 
-	public function getSelectRDVAfficher($etat)
+	public function getSelectRDVAfficher($etape = NULL)
 	{
-		$plus = " AND YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
+
+		if ($etape == NULL) $etape = "";
+		else $etape = " AND tblrdv.etat ='$etape' ";
+		// $plus = " AND YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
+		// $sqlSelect = "
+		// 	SELECT 
+		// 		tblrdv.*,
+		// 		CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
+		// 		TRIM(tblvillebureau.libelleVilleBureau) AS villes
+		// 	FROM tblrdv
+		// 	LEFT JOIN users ON tblrdv.gestionnaire = users.id
+		// 	LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+		// 	WHERE tblrdv.etat = '$etat' 
+		// 	$plus
+		// 	ORDER BY tblrdv.idrdv DESC	";
+		$plus = " YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
 		$sqlSelect = "
 			SELECT 
 				tblrdv.*,
@@ -1767,10 +1929,11 @@ class Fonction
 			FROM tblrdv
 			LEFT JOIN users ON tblrdv.gestionnaire = users.id
 			LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
-			WHERE tblrdv.etat = '$etat' 
-			$plus
-			ORDER BY tblrdv.idrdv DESC	";
+			WHERE   $plus  $etape
+			ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') DESC
+		";
 
+		//echo $sqlSelect; exit;
 		return  $this->_getSelectDatabases($sqlSelect);
 	}
 
@@ -2095,5 +2258,150 @@ class Fonction
 						</a>
 					</div>';
 		} else return false;
+	}
+
+
+
+	function retourneMoisCourant($formatJourSeulement = false)
+	{
+		$mois = date('m');
+		$annee = date('Y');
+
+		$nbJours = cal_days_in_month(CAL_GREGORIAN, $mois, $annee);
+		$dates = [];
+
+		for ($j = 1; $j <= $nbJours; $j++) {
+			$date = strtotime("$annee-$mois-$j");
+			$dates[] = $formatJourSeulement
+				? date("d", $date)
+				: date("Y-m-d", $date);
+		}
+
+		return $dates;   // du 1 au 31 selon le mois
+	}
+
+	function retourneSemaineCourante($formatJourSeulement = false)
+	{
+		$debutSemaine = strtotime("monday this week");
+		$jours = [];
+
+		for ($i = 0; $i < 7; $i++) {
+			$date = strtotime("+$i day", $debutSemaine);
+			$jours[] = $formatJourSeulement
+				? date("d", $date)
+				: date("Y-m-d", $date);
+		}
+
+		return $jours; // lundi → dimanche
+	}
+
+	function recapTraitementEffectue($jour)
+	{
+		$plus = "  YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
+		echo $sqlSelect = " SELECT * FROM " . Config::TABLE_RDV . " WHERE $plus ORDER BY idrdv  DESC  ";
+		//exit;
+		// $resultat  = $this->_getSelectDatabases($sqlSelect);
+		// if(isset($resultat) && $resultat != null){
+
+		// 	$nb_ligne_total = count($resultat);
+		// 	print_r($resultat);
+
+		// } 
+
+
+		// $tab = Config::tablo_statut_rdv;
+		// foreach ($tab as $key => $record) {
+
+		// 	//Array ( [lib_statut] => En attente [libelle] => EN ATTENTE [statut_traitement] => 1 [color_statut] => badge badge-secondary [color] => gray [url] => ) 
+
+		// 	$code = $record["statut_traitement"];
+		// 	$libelle = $record["libelle"];
+		// 	$lib_statut = $record["lib_statut"];
+		// 	$color_statut = $record["color_statut"];
+		// 	$color = $record["color"];
+		// 	$url = $record["url"];
+		// 	$etat = 'actif';
+		// }
+
+		// return $nb_ligne_total;
+	}
+
+	function compteur($tablo)
+	{
+
+		$total_en_attente = 0;
+		$total_transmis = 0;
+		$total_rejete = 0;
+		$total_traiter = 0;
+		$total_saisi_inacheve = 0;
+
+		if (!empty($tablo)) {
+			$total = count($tablo);
+			for ($i = 0; $i <= ($total - 1); $i++) {
+				$ligne = $tablo[$i];
+
+
+				if (!empty($ligne->etat)) {
+					if ($ligne->etat == 1) $total_en_attente = $total_en_attente + 1;
+					if ($ligne->etat == 2) $total_transmis = $total_transmis + 1;
+					if ($ligne->etat == 3) $total_rejete = $total_rejete + 1;
+					if ($ligne->etat == 4) $total_traiter = $total_traiter + 1;
+					if ($ligne->etat == 5) $total_saisi_inacheve = $total_saisi_inacheve + 1;
+				}
+			}
+
+			return array("en_attente" => $total_en_attente, "transmis" => $total_transmis, "rejeter" => $total_rejete, "traiter" => $total_traiter, "saisi_inacheve" => $total_saisi_inacheve, "result" => "OK", "total" => $i, "tablo" => NULL);
+		}
+		return null;
+	}
+
+	function getCompteurParJour($jour)
+	{
+
+		$plus = " YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE()) AND DATE(tblrdv.daterdveff) = '$jour' ";
+		$sql = "SELECT etat FROM " . Config::TABLE_RDV . " WHERE $plus";
+		$retour = $this->_getSelectDatabases($sql);
+		if (isset($retour) && $retour != null) {
+			return $this->compteur($retour);
+		}
+		return null;
+	}
+
+	function getCompteurParJour22($dateLundi, $dateDimanche)
+	{
+
+		$plus = " YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE()) AND ( DATE(tblrdv.daterdveff) BETWEEN '$dateLundi' AND '$dateDimanche') ";
+		$sql = "SELECT DATE(tblrdv.daterdveff) AS jour, etat AS statut FROM " . Config::TABLE_RDV . " WHERE $plus";
+		$retour = $this->_getSelectDatabases($sql);
+		if (isset($retour) && $retour != null) {
+			//return $this->compteur($retour);
+
+			return $retour;
+		}
+		return null;
+	}
+
+	function getStatsGenerales(array $rows, array $colonnes)
+	{
+		$stats = [];
+		$stats['total'] = count($rows);
+
+		foreach ($colonnes as $col) {
+			$stats[$col] = [];
+		}
+
+		foreach ($rows as $row) {
+			foreach ($colonnes as $col) {
+				$val = $row->$col ?? null;
+				if ($val === null) $val = '(NULL)';
+
+				if (!isset($stats[$col][$val])) {
+					$stats[$col][$val] = 0;
+				}
+				$stats[$col][$val]++;
+			}
+		}
+
+		return $stats;
 	}
 }

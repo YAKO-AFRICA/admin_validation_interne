@@ -46,7 +46,7 @@ if ($retourUsers != NULL) {
 							</div>
 							<nav aria-label="breadcrumb" role="navigation">
 								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="accueil-operateur.php">Accueil</a></li>
+									<li class="breadcrumb-item"><a href="intro">Accueil</a></li>
 									<li class="breadcrumb-item active" aria-current="page">Mon Profil</li>
 								</ol>
 							</nav>
