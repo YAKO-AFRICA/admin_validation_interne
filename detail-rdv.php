@@ -139,7 +139,7 @@ if (isset($_COOKIE["idrdv"])) {
                         </div>
                         <div class="col-md-6">
                             <p><span class="text-color">Traiter le :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->datetraitement ?? "--" ?></span></p>
-                            <p><span class="text-color">Traiter par :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= strtoupper($rdv->nomAdmin . " " . $rdv->prenomAdmin) ?? "--" ?></span></p>
+                            <p><span class="text-color">Traiter par :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= ($rdv->etat == "3") ? strtoupper($rdv->nomgestionnaire) :  strtoupper($rdv->nomAdmin . " " . $rdv->prenomAdmin) ?? "--" ?></span></p>
                             <p><span class="text-color">Motif du Rdv :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->motifrdv ?? "---" ?></span></p>
                             <p><span class="text-color">ID contrat / N° de police(s) :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->police ?? "---" ?></span></p>
                             <p><span class="text-color">Etat du rdv :</span> <span class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span></p>
@@ -175,41 +175,53 @@ if (isset($_COOKIE["idrdv"])) {
                             <div class="col-md-6">
                                 <p><span class="text-color">Transmis par :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->nomAdmin . " " . $rdv->prenomAdmin ?></span></p>
                                 <p><span class="text-color">Sms envoyé ? :</span> <span style="text-transform:uppercase; font-weight:bold;" class="<?php echo $color_etatSms; ?>"><?php echo $lib_etatSms ?></span></p>
-                                <p><span class="text-color">Issue apres Rdv :</span> <span class="text-infos"><?= $rdv->estPermit === 1 ? "<span class='btn btn-success btn-sm'>Accordé</span>" : ($rdv->estPermit === 0 ? "<span class='btn btn-danger '>Non Accordé</span>" : "") ?></span></p>
-                                <p><span class="text-color">Reponse Apres entretien :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->reponseGest ?? "--" ?></span></p>
+                                <p><span class="text-color">Issue apres Rdv :</span> <span class="text-infos"><?= $rdv->estPermit == 1 && $rdv->etatTraitement == 1 ? "<span class='btn btn-success btn-sm'>Accordé pour $rdv->motifrdv </span>" : ($rdv->estPermit == 1 && $rdv->etatTraitement != 1 ? "<span class='btn btn-danger '>Non Accordé pour $rdv->motifrdv</span>" : "") ?></span></p>
+                                <p><span class="text-color">Reponse Apres entretien :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->libelleTraitement ?? "--" ?></span></p>
                             </div>
+                        </div>
+                        <?php
+
+                        if (!empty($rdv->reponseGest)) {
+                        ?>
+                            <div class="row pd-20">
+                                <div class="col-md-12">
+                                    <p><span class="text-color">Observation :</span><span class="text-infos" style="font-weight:bold;"><?= $rdv->reponseGest ?? "" ?></span></p>
+                                </div>
+                            </div>
+                    </div>
+                <?php
+                        }
+                ?>
+                <?php
+                    if ($rdv->etatCourrier != "") {
+                ?>
+
+                    <div class="card-box mb-30">
+                        <div class="pd-20">
+                            <h4 class="text-blue h4" style="color:#033f1f!important;">Détail Courrier</h4>
+                            <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
+                        </div>
+                        <div class="row pl-20">
+                            <div class="col-md-6">
+                                <p><span class="text-color">Etat du courrier :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->etatCourrier == "-1" ? "Pas encore déposé" : ($rdv->etatCourrier == "0" ? "Réjété" : ($rdv->etatCourrier == "1" ? "En attente de traitement" : ($rdv->etatCourrier == "2" ? "Validé" : ""))) ?></span></p>
+                                <p><span class="text-color">Reponse apres traitement :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->reponseCourrier  ?></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><span class="text-color">Date de depôt de courrier :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->etatCourrier == "-1" ? ($rdv->createdCourrier == "" ? "" : date("d/m/Y", strtotime($rdv->createdCourrier))) : ($rdv->deposeCourrier == "" ? "" : date("d/m/Y", strtotime($rdv->deposeCourrier))) ?></span></p>
+                                <p><span class="text-color">Date de traitement de courrier :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->traiteCourrier == "" ? "" : date("d/m/Y", strtotime($rdv->traiteCourrier)) ?></span></p>
+                            </div>
+                        </div>
+                        <div class="row pd-20 d-flex justify-content-end">
+                            <button class="btn btn-warning" onclick="retour()">
+                                <i class="fa fa-arrow-left"></i> Retour
+                            </button>
                         </div>
                     </div>
-                    <?php
-                    if ($rdv->etatCourrier != "") {
-                    ?>
-
-                        <div class="card-box mb-30">
-                            <div class="pd-20">
-                                <h4 class="text-blue h4" style="color:#033f1f!important;">Détail Courrier</h4>
-                                <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
-                            </div>
-                            <div class="row pl-20">
-                                <div class="col-md-6">
-                                    <p><span class="text-color">Etat du courrier :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->etatCourrier == "-1" ? "Pas encore déposé" : ($rdv->etatCourrier == "0" ? "Réjété" : ($rdv->etatCourrier == "1" ? "En attente de traitement" : ($rdv->etatCourrier == "2" ? "Validé" : ""))) ?></span></p>
-                                    <p><span class="text-color">Reponse apres traitement :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->reponseCourrier  ?></span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><span class="text-color">Date de depôt de courrier :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->etatCourrier == "-1" ? ($rdv->createdCourrier == "" ? "" : date("d/m/Y", strtotime($rdv->createdCourrier))) : ($rdv->deposeCourrier == "" ? "" : date("d/m/Y", strtotime($rdv->deposeCourrier))) ?></span></p>
-                                    <p><span class="text-color">Date de traitement de courrier :</span> <span class="text-infos" style="text-transform:uppercase; font-weight:bold;"><?= $rdv->traiteCourrier == "" ? "" : date("d/m/Y", strtotime($rdv->traiteCourrier)) ?></span></p>
-                                </div>
-                            </div>
-                            <div class="row pd-20 d-flex justify-content-end">
-                                <button class="btn btn-warning" onclick="retour()">
-                                    <i class="fa fa-arrow-left"></i> Retour
-                                </button>
-                            </div>
-                        </div>
-                <?php
+            <?php
                     }
                 }
 
-                ?>
+            ?>
             </div>
 
             <div class="footer-wrap pd-20 mb-20">
