@@ -10,6 +10,7 @@ if (!isset($_SESSION['id'])) {
 include("autoload.php");
 
 $plus = "";
+$cible = "";
 if (isset($_REQUEST['filtreliste'])) {
 	$retourPlus = $fonction->getFiltreuse();
 	$filtre = $retourPlus["filtre"];
@@ -22,8 +23,14 @@ if (isset($_REQUEST['filtreliste'])) {
 } else {
 	$filtre = '';
 }
+if (isset($_SESSION['cible']) && $_SESSION['cible'] != "administratif") {
+	$cible = " AND prestationlibelle != 'Autre' ";
+} else {
+	$cible = " AND prestationlibelle = 'Autre' ";
+}
 
-$plus = " WHERE tbl_prestations.etape ='3' $filtre ";
+
+$plus = " WHERE tbl_prestations.etape ='3' $cible $filtre ";
 //echo $sqlSelect =  "SELECT DISTINCT tbl_prestations.*, tbl_motifrejetprestations.libelle as libellemotif ,tbl_motifrejetprestations.code as codemotif   FROM tbl_prestations INNER JOIN tbl_motifrejetprestations ON tbl_prestations.codemotifrejet = tbl_motifrejetprestations.code $plus ORDER BY `tbl_prestations`.`created_at` DESC ";
 //$sqlSelect =  "SELECT DISTINCT *  FROM tbl_prestations  $plus ORDER BY `tbl_prestations`.`created_at` DESC ";
 
@@ -282,6 +289,8 @@ else $effectue = 0;
 	<script src="vendors/scripts/datatable-setting.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 
 	<script>

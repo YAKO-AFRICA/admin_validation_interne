@@ -10,6 +10,7 @@ if (!isset($_SESSION['id'])) {
 include("autoload.php");
 
 $plus = "";
+$cible = "";
 if (isset($_REQUEST['filtreliste'])) {
 	$retourPlus = $fonction->getFiltreuse();
 	$filtre = $retourPlus["filtre"];
@@ -23,8 +24,15 @@ if (isset($_REQUEST['filtreliste'])) {
 	$filtre = '';
 }
 
+if (isset($_SESSION['cible']) && $_SESSION['cible'] != "administratif") {
+	$cible = " AND prestationlibelle != 'Autre' ";
+} else {
+	$cible = " AND prestationlibelle = 'Autre' ";
+}
 
-$plus = " WHERE etape ='2'  $filtre ";
+$plus = " WHERE etape ='2' $cible  $filtre";
+// echo $plus;
+// exit;
 //$liste_prestations = $fonction->_getRetournePrestation($plus);
 $liste_prestations = $fonction->_getRetourneListePrestation("2", $filtre);
 if ($liste_prestations != null) $effectue = count($liste_prestations);
@@ -77,9 +85,9 @@ else $effectue = 0;
 					</div>
 					<hr>
 				<?php
-				}else {?>
+				} else { ?>
 					<div class="card-box mb-10" id="myDIV"></div>
-					<?php 
+				<?php
 				}
 				?>
 
@@ -276,6 +284,8 @@ else $effectue = 0;
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 	<script>
 		var filtre = document.getElementById("myDIV");
 		filtre.style.display = "none";
@@ -324,7 +334,7 @@ else $effectue = 0;
 			// Traiter
 			$(document).on('click', '.traiter', function() {
 				const ind = this.id.split('-')[1];
-				
+
 				var idprestation = $("#id-" + ind).html()
 				var code = $("#code-" + ind).html()
 				var idcontrat = $("#idcontrat-" + ind).html()
@@ -368,7 +378,6 @@ else $effectue = 0;
 								else if (element.etape == "2") lib_statut =
 									"<?php echo Config::VALIDER ?>";
 								else lib_statut = "<?php echo Config::REJETE ?>";
-
 								plus += `<tr>
 								<td>${indx+1}</td>
 								<td>${element.code}</td>

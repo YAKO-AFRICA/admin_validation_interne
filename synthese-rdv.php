@@ -180,6 +180,8 @@ if ($idville !== null) {
     <script src="src/plugins/datatables/js/jquery.dataTables.min.js"></script>
     <script src="src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $('#tableStatut').DataTable();

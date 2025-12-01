@@ -269,6 +269,7 @@ if (isset($_COOKIE["rdvLe"]) && isset($_COOKIE["rdvAu"]) && isset($_COOKIE["vill
 	<!-- Datatable Setting js -->
 	<script src="vendors/scripts/datatable-setting.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 
 	<script>

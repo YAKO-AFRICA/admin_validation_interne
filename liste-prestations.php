@@ -233,6 +233,8 @@ else $effectue = 0;
 	<!-- Datatable Setting js -->
 	<script src="vendors/scripts/datatable-setting.js"></script>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 	<script>
 		var filtre = document.getElementById("myDIV");
 		filtre.style.display = "none";

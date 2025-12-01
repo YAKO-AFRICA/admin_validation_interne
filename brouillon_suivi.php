@@ -433,6 +433,8 @@ if ($resultat != NULL) $afficheuse = true;
 <script src="src/plugins/highcharts-6.0.7/code/highcharts-more.js"></script>
 <script src="vendors/scripts/highchart-setting.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 <script>
     function retour() {
         window.history.back();

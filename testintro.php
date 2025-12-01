@@ -134,6 +134,8 @@ include("autoload.php");
     <script src="src/plugins/datatables/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
     <script>
     $(document).ready(function() {
         // Preloader simulation

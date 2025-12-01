@@ -154,9 +154,9 @@ else $effectue = 0;
 					</div>
 
 					<div class="col" style="text-align: right;">
-						<input type="text" name="search" id="search" value="<?= $plus ?>" hidden />
+						<!-- <input type="text" name="search" id="search" value="<?= $plus ?>" hidden />
 						<button type="button" class="btn btn-info  bx bx-cloud-upload px-5" id="exportButton"
-							name="exportButton">Exporter vers excel</button>
+							name="exportButton">Exporter vers excel</button> -->
 					</div>
 
 					<div class="pb-20">

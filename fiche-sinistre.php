@@ -507,6 +507,8 @@ if (isset($_COOKIE["idsinistre"])) {
         <!-- JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 
         <script>
             let document_rejeter = [];
