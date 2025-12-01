@@ -106,17 +106,15 @@ if (!isset($_SESSION['typeCompte'])) {
                         <li>
                             <div class="dropdown-divider"></div>
                         </li>
-                        
-                        <li class="dropdown">
-                            <a href="bordereau-prestation" class="dropdown-toggle no-arrow" style="font-size:14px">
-                                <span class="micon dw dw-folder"></span><span class="mtext">Bordereau<br>prestation</span>
-                            </a>
-                        </li>
-
                     <?php
                     }
 
                     ?>
+                    <li class="dropdown">
+                        <a href="bordereau-prestation" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <span class="micon dw dw-folder"></span><span class="mtext">Bordereau<br>prestation</span>
+                        </a>
+                    </li>
                     <li>
                         <div class="sidebar-small-cap">Options</div>
                     </li>
@@ -159,10 +157,10 @@ if (!isset($_SESSION['typeCompte'])) {
                         <div class="dropdown-divider"></div>
                     </li>
                     <li class="dropdown">
-                            <a href="tableau-suivi-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
-                                <span class="micon fa fa-area-chart"></span><span class="mtext">Tableau de suivi</span>
-                            </a>
-                        </li>
+                        <a href="tableau-suivi-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <span class="micon fa fa-area-chart"></span><span class="mtext">Tableau de suivi</span>
+                        </a>
+                    </li>
                     <li class="dropdown">
                         <a href="recherche-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon dw dw-search"></span><span class="mtext">rechercher<br>un rdv</span>

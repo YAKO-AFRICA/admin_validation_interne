@@ -918,6 +918,29 @@ if ($request->action != null) {
             } else echo json_encode("-1");
             break;
 
+        case "tableauSuivi":
+            $service = GetParameter::FromArray($_REQUEST, 'service');
+            $filtreuse = GetParameter::FromArray($_REQUEST, 'filtreuse');
+
+            if ($service != null && $filtreuse != null) {
+
+                if ($service == "rdv") {
+
+                    $sqlSelect = " SELECT 	tblrdv.*, 	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
+				    TRIM(tblvillebureau.libelleVilleBureau) AS villes FROM tblrdv	LEFT JOIN users ON tblrdv.gestionnaire = users.id
+			        LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau 	 $filtreuse 	ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') DESC	";
+                    $tableauSuivi = $fonction->_getSelectDatabases($sqlSelect);
+                } else if ($service == "prestation") {
+                    $tableauSuivi = "";
+                } else if ($service == "sinistre") {
+                    $tableauSuivi = "";
+                } else {
+                    $tableauSuivi = "";
+                }
+                echo json_encode($tableauSuivi);
+                
+            } else echo json_encode("-1");
+            break;
 
         default:
             echo json_encode("0");
