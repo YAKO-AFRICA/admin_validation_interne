@@ -1219,6 +1219,7 @@ class Fonction
 	{
 		$sqlUpdatePrestation = "UPDATE " . Config::TABLE_USER . " SET password=?  WHERE id =?";
 
+		$password = md5($password);
 		$tab = $this->_Database->Update($sqlUpdatePrestation, array($password, $users->id));
 		$this->Logger->Handler(__function__, 'mise à jour du mot de pass user ' . json_encode($users->id) . ' par ' . json_encode($password) . ' pour ' .  ': ' . json_encode($tab));
 		return $tab;
@@ -1515,8 +1516,7 @@ class Fonction
 		} else {
 
 			foreach ($tab as $key => $record) {
-				//`id`, `nom`, `prenom`, `login`, `password`, `genre`, `date`, `telephone`, `adresse`, `ville`, `pays`, `modifiele`, `image`, `typeCompte`, `email`, `codeagent`, `etat` 
-
+				
 				$code = $record->id;
 				$idVilleBureau = $record->ville;
 				$nomuser = $record->nom . ' ' . $record->prenom;

@@ -3,9 +3,12 @@
 
 include("autoload.php");
 
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+$urlService = $protocol . $_SERVER['HTTP_HOST'];
+
 $services = "YAKO AFRICA ASSURANCES VIE";
 $lienYako = "www.yakoafricassur.com";
-$lienService =  "http://admin-prestation.test/";
+$lienService =  $urlService . "/";
 $mailSupport = "support.enov@yakoafricassur.com";
 
 // $lib = "recuperation-mail?i=" . trim($retour) . "&p=" . date('YmdHis');
@@ -24,7 +27,7 @@ if ($id != null && $dateUp != null) {
 
         $users = $fonction->_GetUsers(" AND id = '$id'  ");
         if ($users != NULL) {
-           
+
             $lienRecup = $lienService . "formulaire-recuperation?i=" . $users->id . "&p=mp";
             $libelleRecup = "Réinitialisation de votre mot de passe";
 
@@ -48,12 +51,12 @@ if ($id != null && $dateUp != null) {
                 </div>";
 
 
-            $subject = "Réinitialisation de votre mot de passe - " . $users->nom." " . $users->prenom;
+            $subject = "Réinitialisation de votre mot de passe - " . $users->nom . " " . $users->prenom;
         }
 
-        $subject = "Réinitialisation de votre mot de passe - " . $users->nom." " . $users->prenom;
-        $message = format_mail_by_NISSA($users->nom." " . $users->prenom, $text_form, $subject);
-        //print_r($message);
+        $subject = "Réinitialisation de votre mot de passe - " . $users->nom . " " . $users->prenom;
+        $message = format_mail_by_NISSA($users->nom . " " . $users->prenom, $text_form, $subject);
+        print_r($message);
         $to = $users->email;
         $mail = true;
     }

@@ -367,14 +367,6 @@ $afficheuse = true;
             let libelleFiltre = document.getElementById("libelleFiltre").value;
             let service2 = document.getElementById("service2").value;
 
-            if (service2 === "null") service = "rdv";
-
-            $('#service2').change(function() {
-                if ($(this).val() === "null") return;
-                service = $(this).val();
-            });
-
-            console.log("Afficher statistique de service : " + service + "  ");
 
             if (filtreuse != null) {
                 $('#libelleFiltreAffiche').html(libelleFiltre);
@@ -453,7 +445,13 @@ $afficheuse = true;
 
         })
 
+        $('#service2').change(function() {
 
+            if ($(this).val() === "null") return;
+
+            let service = $(this).val();
+            console.log("Afficher statistique de service : " + service + "  ");
+        });
 
 
         // Quand la ville change
@@ -508,8 +506,8 @@ $afficheuse = true;
 
 
         function retour() {
-            window.history.back();
-        }
+    window.history.back();
+}
 
 
         function getStatsGenerales(rows, colonnes) {
@@ -803,8 +801,8 @@ $afficheuse = true;
                         couleur: delai.couleur,
                         badge: delai.badge,
                         libelle: delai.libelle,
-                        jours: [], // liste des jours pour cet état
-                        lignes: [] // si tu veux lister les lignes associées
+                        jours: [],       // liste des jours pour cet état
+                        lignes: []       // si tu veux lister les lignes associées
                     };
                 }
 
@@ -812,7 +810,7 @@ $afficheuse = true;
                 stats[etat].jours.push(delai.jours);
                 stats[etat].lignes.push({
                     ...row,
-                    delai: delai // on ajoute toutes les infos du délai
+                    delai: delai        // on ajoute toutes les infos du délai
                 });
             });
 
@@ -879,7 +877,7 @@ $afficheuse = true;
             };
         }
 
-        function afficheuseDelaiRDV(tabloMotif) {
+       function afficheuseDelaiRDV(tabloMotif){
 
             console.log(tabloMotif);
 

@@ -156,11 +156,11 @@ if (!isset($_SESSION['typeCompte'])) {
                     <li>
                         <div class="dropdown-divider"></div>
                     </li>
-                    <li class="dropdown">
+                    <!-- <li class="dropdown">
                         <a href="tableau-suivi-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-area-chart"></span><span class="mtext">Tableau de suivi</span>
                         </a>
-                    </li>
+                    </li> -->
                     <li class="dropdown">
                         <a href="recherche-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon dw dw-search"></span><span class="mtext">rechercher<br>un rdv</span>
@@ -233,8 +233,6 @@ if (!isset($_SESSION['typeCompte'])) {
             <li>
                 <div class="dropdown-divider"></div>
             </li>
-
-
             <li class="dropdown">
                 <a href="deconnexion.php" class="dropdown-toggle no-arrow">
                     <span class="micon dw dw-logout"></span><span class="mtext">Deconnexion</span>
@@ -243,8 +241,6 @@ if (!isset($_SESSION['typeCompte'])) {
             <li>
                 <div class="dropdown-divider"></div>
             </li>
-
-
         </ul>
     </div>
 </div>

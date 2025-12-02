@@ -1,149 +1,301 @@
-<div class="row">
-    <div class="col-md-4">
-        <div class="card-body height-100-p pd-20">
-            <div class="card-body">
+<?php
+
+use PSpell\Config;
+
+session_start();
+
+if (!isset($_SESSION['id'])) {
+    header('Location: index.php');
+    exit;
+}
+
+include("autoload.php");
+
+$mois = $fonction->retourneMoisCourant();
+$tabSemaine = $fonction->retourneSemaineCourante();
+
+$tabloService = array("rdv" => "rdv", "prestation" => "prestation", "sinistre" => "sinistre");
+
+$plus = "";
+$afficheuse = false;
+
+if (isset($_REQUEST['filtreliste'])) {
+
+    $afficheuse = true;
+    $retourPlus = $fonction->getFiltreuseRDV();
+    $filtre = $retourPlus["filtre"];
+    $libelle = $retourPlus["libelle"];
+    if ($filtre) {
+        list(, $conditions) = explode('AND', $filtre, 2);
+        $plus = " WHERE $conditions ";
+    }
+} else {
+    // je veux les donnees du mois en cours
+    $plus = " WHERE YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE()) AND MONTH(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = MONTH(CURDATE()) ";
+    $libelle = "RDV du mois en cours";
+}
+
+$afficheuse = true;
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <?php include "include/entete.php"; ?>
+
+    <style>
+        .stat-box strong {
+            font-size: 18px;
+        }
+
+        .badge-auto {
+            padding: 4px 8px;
+            color: #fff;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .table td {
+            font-size: 13px;
+        }
+
+        .header-title {
+            background-color: #033f1f;
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <?php include "include/header.php"; ?>
+
+    <div class="main-container">
+        <div class="pd-ltr-20 xs-pd-20-10">
+
+            <div class="page-header">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="card-box mb-30 p-2" style="background-color:bisque ;color:white !important; font-weight:bold;">
-                            <h4 class="text-center p-2" style="color:#033f1f ; font-weight:bold;">Liste des documents joints</h4>
-
-                            <div class="text-center mb-2">
-                                <span id="compteur_valides" class="badge bg-success">Validés : 0</span>
-                                <span id="compteur_restants" class="badge bg-danger">Restants : <?= count($retour_documents); ?></span>
-                            </div>
-
-                            <div class="text-center mt-2">
-                                <span id="checking" class="text-success fw-bold"></span>
-                            </div>
-                            <hr>
-                            <?php
-                            $i = 0;
-                            if ($retour_documents != null) {
-                                for ($i = 0; $i <= count($retour_documents) - 1; $i++) {
-                                    $tablo = $retour_documents[$i];
-
-                                    $id_prestation = $tablo["idPrestation"];
-                                    $path_doc = trim($tablo["path"]);
-                                    $type_doc = trim($tablo["type"]);
-                                    $doc_name = trim($tablo["libelle"]);
-                                    $ref_doc = trim($tablo["id"]);
-                                    $datecreation_doc = trim($tablo["created_at"]);
-                                    $documents = Config::URL_PRESTATION_RACINE . $path_doc;
-
-                                    array_push($tablo_doc_attendu,  $ref_doc);
-
-                                    switch ($type_doc) {
-                                        case 'RIB':
-                                            $nom_document = "RIB";
-                                            break;
-                                        case 'Police':
-                                            $nom_document = "Police du contrat d'assurance";
-                                            break;
-                                        case 'bulletin':
-                                            $nom_document = "Bulletin de souscription";
-                                            break;
-                                        case 'AttestationPerteContrat':
-                                            $nom_document = "Attestation de déclaration de perte";
-                                            break;
-                                        case 'CNI':
-                                            $nom_document = "CNI";
-                                            break;
-                                        case 'etatPrestation':
-                                            $nom_document = "Fiche de demande de prestation";
-                                            break;
-                                        default:
-                                            $nom_document = "Fiche d'identification du numéro de paiement";
-                                            break;
-                                    }
-
-                                    $values = $id_prestation . "-" . $ref_doc . "-" . $nom_document . "-" . $doc_name;
-                            ?>
-                                    <div class="d-flex align-items-center mt-3 document-ligne">
-                                        <input type="text" class="val_doc" name="val_doc" value="<?php echo $values; ?>" hidden>
-                                        <input type="text" class="path_doc" name="path_doc" value="<?php echo $documents; ?>" hidden>
-
-                                        <div class="fm-file-box text-success p-2">
-                                            <i class="fa fa-file-pdf-o"></i>
-                                        </div>
-                                        <div class="flex-grow-1 ms-2">
-                                            <h6 class="mb-0" style="font-size: 12px;">
-                                                <a href="<?= $documents ?>" target="_blank"> <?= $nom_document ?> </a>
-                                            </h6>
-                                            <p class="mb-0 text-secondary" style="font-size: 0.8em;"> <?= $datecreation_doc ?> </p>
-                                        </div>
-                                        <button type="button" class="btn btn-warning bx bx-show" data-doc-id="<?= $documents; ?>"
-                                            data-path-doc="<?= $documents; ?>" style="background-color:#F9B233 !important;">
-                                            <i class="dw dw-eye"> voir</i>
-                                        </button>
-                                    </div>
-                            <?php
-                                }
-                            } else {
-                                echo '<div class="alert alert-danger" role="alert">  Attention ! <strong>Aucun document joint</strong>. </div>';
-                            }
-                            ?>
-
+                    <div class="col-md-6 col-sm-12">
+                        <div class="title">
+                            <h4>TABLEAU SUIVI</h4>
                         </div>
+                        <nav aria-label="breadcrumb" role="navigation">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="intro">Accueil</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Tableau suivi</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-md-6 col-sm-12 text-right">
+                        <select id="service2" name="service2" class="btn btn-outline-primary">
+                            <option value="" selected>Selectionnez un service</option>
+                            <option value="all">Tous</option>
+                            <option value="rdv">RDV</option>
+                            <option value="prestation">Prestations</option>
+                            <option value="sinistre">Sinistres</option>
+                        </select>
                     </div>
                 </div>
             </div>
+
+            <input type="hidden" id="afficheuse" name="afficheuse" value="<?php echo $afficheuse; ?>" hidden />
+            <input type="hidden" id="service" name="service" value="rdv" hidden />
+            <input type="hidden" id="filtreuse" name="filtreuse" value="<?php echo $plus; ?>" hidden />
+            <input type="hidden" id="libelleFiltre" name="libelleFiltre" value="<?php echo $libelle; ?>" hidden />
+
+            <i class="icon-copy ion-navicon-round" type="submit" onclick="myFunction()" title="FILTRE">FILTRE</i>
+            <div class="card-box mb-10" id="myDIV">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="card-box p-2 m-2" style="border:2px solid #F9B233; border-radius:10px;">
+                            <!-- Filtre date, statut, ville et gestionnaire -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <fieldset class="border rounded p-3">
+                                        <legend class="w-auto px-2 font-weight-bold">
+                                            Filtrer sur la date RDV
+                                        </legend>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="rdvLe" class="form-label">Date début ( <span style="color:red;">*</span> )</label>
+                                                <input type="date" class="form-control" id="rdvLe" name="rdvLe" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="rdvAu" class="form-label">Date fin ( <span style="color:red;">*</span> )</label>
+                                                <input type="date" class="form-control" id="rdvAu" name="rdvAu" required>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <!-- Autres filtres -->
+                        </div>
+                        <div class="modal-footer" id="footer">
+                            <button type="submit" name="filtreliste" id="filtreliste" class="btn btn-secondary" style="background:#033f1f; color: white">RECHERCHER</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <hr>
+            <?php if ($afficheuse) : ?>
+                <div class="card-box mb-30">
+                    <div class="pd-20 text-center">
+                        <h4 style="color:#033f1f;">Statistique des RDV </h4>
+                        <p style="color:#033f1f; font-weight: bold">
+                        <h6><span id="libelleFiltreAffiche"></span> (<span style="color:#F9B233;" id="totalResultat"></span>) </h6>
+                        </p>
+                    </div>
+                    <div class="card-body pb-20 radius-12 w-100 p-4">
+                        <div id="afficheuseEtat"></div>
+                        <hr>
+                        <div class="row mb-4">
+                            <div class="col-lg-5 col-md-6 col-sm-12 mb-3">
+                                <div id="afficheuseMotif"></div>
+                            </div>
+                            <div class="col-lg-7 col-md-6 col-sm-12 mb-3">
+                                <div class="bg-white pd-20 card-box mb-30">
+                                    <div id="chart1"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-4">
+                            <div class="col-lg-5 col-md-6 col-sm-12 mb-3">
+                                <div class="bg-white pd-20 card-box mb-30">
+                                    <div id="chart5"></div>
+                                </div>
+                            </div>
+                            <div class="col-lg-7 col-md-6 col-sm-12 mb-3">
+                                <div id="afficheuseVilles"></div>
+                            </div>
+                        </div>
+                        <div class="bg-white pd-20 card-box mb-30">
+                            <div id="chart7"></div>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
-</div>
 
-<script>
-let document_valider = [];
-let total_documents = <?= count($retour_documents); ?>;
+    <?php include "include/footer.php"; ?>
 
-function updateCompteurs() {
-    let nb_valides = document_valider.length;
-    let nb_restants = total_documents - nb_valides;
-    $("#compteur_valides").text("Validés : " + nb_valides);
-    $("#compteur_restants").text("Restants : " + nb_restants);
-}
+    <script src="vendors/scripts/core.js"></script>
+    <script src="vendors/scripts/script.min.js"></script>
+    <script src="src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
 
-$(".bx-show").click(function () {
-    let path_document = $(this).data("path-doc");
-    let val_doc = $(this).closest('.d-flex').find('.val_doc').val();
+    <script src="vendors/scripts/process.js"></script>
+    <script src="vendors/scripts/layout-settings.js"></script>
+    <script src="src/plugins/jQuery-Knob-master/jquery.knob.min.js"></script>
+    <script src="src/plugins/highcharts-6.0.7/code/highcharts.js"></script>
+    <script src="src/plugins/highcharts-6.0.7/code/highcharts-more.js"></script>
+    <script src="src/plugins/jvectormap/jquery-jvectormap-2.0.3.min.js"></script>
+    <script src="src/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <script src="vendors/scripts/dashboard2.js"></script>
+    <script src="vendors/scripts/highchart-setting.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="include/fonction.js"></script>
 
-    let html = `<iframe src="${path_document}" width="100%" height="500"></iframe>`;
-    $("#document").val(path_document);
-    $("#val_doc2").val(val_doc);
-    $("#iframeAfficheDocument").html(html);
-    $('#modaleAfficheDocument').modal("show");
-});
+    <script>
+        $(document).ready(function() {
 
-$("#modaleAfficheDocument").on("click", "#valid_download", function () {
-    let doc = $("#document").val();
-    let val_doc = $("#val_doc2").val();
+            var filtre = document.getElementById("myDIV");
+            filtre.style.display = "none";
 
-    let tab = val_doc.split('-');
-    let id_prestation = tab[0];
-    let ref_doc = tab[1];
-    let doc_name = tab[2];
-    let type_doc = tab[3];
+            let service = document.getElementById("service").value;
+            let filtreuse = document.getElementById("filtreuse").value;
+            let libelleFiltre = document.getElementById("libelleFiltre").value;
 
-    if (document_valider.includes(ref_doc)) {
-        alert(doc_name + " a déjà été validé");
-        $("#checking").html(`<i class="fa fa-check text-warning"> ${doc_name} a déjà été validé</i>`);
-    } else {
-        document_valider.push(ref_doc);
-        alert(doc_name + " validé avec succès");
+            if (filtreuse != null) {
+                $('#libelleFiltreAffiche').html(libelleFiltre);
+                $.ajax({
+                    url: "config/routes.php",
+                    data: {
+                        service: service,
+                        filtreuse: filtreuse,
+                        etat: "tableauSuivi"
+                    },
+                    dataType: "json",
+                    method: "post",
+                    success: function(response) {
+                        if (response != "-1") {
+                            $("#totalResultat").html(response.length);
 
-        $("#checking").html(`<i class="fa fa-check text-success"> ${doc_name} a bien été validé</i>`);
+                            if (service == "rdv") {
+                                const colonnes = ['etat', 'motifrdv', 'nomgestionnaire', 'villeEffective', 'villes'];
+                                const stats = getStatsGenerales(response, colonnes);
 
-        $(".val_doc").each(function () {
-            if ($(this).val().includes(ref_doc)) {
-                $(this).closest(".d-flex")
-                    .addClass("border border-success bg-light")
-                    .fadeOut(2000);
+                                afficheuseVilles(stats['villes']);
+                                afficheuseMotif(stats['motifrdv']);
+                                afficheuseEtat(stats['etat']);
+
+                                const statsD = getStatsDelaiRDV(response);
+                                afficheuseDelaiRDV(statsD);
+                            }
+                        }
+                    },
+                    error: function(response, status, etat) {
+                        console.log(response, status, etat);
+                    }
+                });
             }
+
+            $('#service2').change(function() {
+                if ($(this).val() === "null") return;
+                console.log("Afficher statistique de service : " + $(this).val());
+            });
         });
 
-        updateCompteurs();
-    }
-    $('#modaleAfficheDocument').modal("hide");
-});
-</script>
+        function myFunction() {
+            var x = document.getElementById("myDIV");
+            x.style.display = x.style.display === "none" ? "block" : "none";
+        }
 
-<!-- Placez ici la modale modaleAfficheDocument + inputs val_doc2 et document comme dans votre code d'origine -->
+        function getStatsGenerales(rows, colonnes) {
+            const stats = {};
+            stats.total = rows.length;
+            colonnes.forEach(col => { stats[col] = {}; });
+            rows.forEach(row => {
+                colonnes.forEach(col => {
+                    let val = row[col] ?? "NON RENSEIGNÉ";
+                    stats[col][val] = (stats[col][val] || 0) + 1;
+                });
+            });
+            return stats;
+        }
+
+        function getStatsDelaiRDV(rows) {
+            const stats = {};
+            rows.forEach(row => {
+                const delaiRdv1 = getDelaiRDV(row.daterdv);
+                const delaiRdv2 = row.daterdveff ? getDelaiRDV(row.daterdveff) : delaiRdv1;
+                [delaiRdv1, delaiRdv2].forEach(delai => {
+                    const etat = delai.etat;
+                    if (!stats[etat]) stats[etat] = { total: 0, couleur: delai.couleur, badge: delai.badge, libelle: delai.libelle, jours: [], lignes: [] };
+                    stats[etat].total++;
+                    stats[etat].jours.push(delai.jours);
+                    stats[etat].lignes.push({ ...row, delai });
+                });
+            });
+            return stats;
+        }
+
+        function getDelaiRDV(dateRDV) {
+            if (!dateRDV) return { etat: "indisponible", couleur: "gray", badge: "", libelle: "Date non disponible", jours: null };
+            if (dateRDV.includes("/")) { const [j,m,a] = dateRDV.split("/"); dateRDV = `${a}-${m}-${j}`; }
+            const today = new Date(); today.setHours(0,0,0,0);
+            const rdv = new Date(dateRDV); rdv.setHours(0,0,0,0);
+            const jours = Math.round((rdv - today) / (1000*60*60*24));
+            if (jours < 0) return { etat: "expire", couleur: "red", badge: "badge badge-danger", libelle: `Délai expiré depuis ${Math.abs(jours)} jour(s)`, jours: Math.abs(jours) };
+            if (jours === 0) return { etat: "ok", couleur: "#f39c12", badge: "badge badge-warning", libelle: "Aujourd’hui", jours: 0 };
+            return { etat: "prochain", couleur: "#033f1f", badge: "badge badge-success", libelle: `${jours} jour(s) restant(s)`, jours };
+        }
+    </script>
+</body>
+</html>

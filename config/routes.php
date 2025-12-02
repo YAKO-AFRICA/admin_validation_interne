@@ -20,9 +20,11 @@ if ($request->action != null) {
 
             $passW = GetParameter::FromArray($_REQUEST, 'passW');
             $login = GetParameter::FromArray($_REQUEST, 'login');
+            // $password = md5($passW);
 
             if ($passW != null && $login != null) {
-                $plus = " AND login = '$login' AND password='$passW'  ";
+                $password = md5($passW);
+                $plus = " AND login = '$login' AND password='$password'  ";
                 $retourUsers = $fonction->_GetUsers($plus);
                 if ($retourUsers != NULL) {
 
@@ -60,8 +62,8 @@ if ($request->action != null) {
                         $result = array("result" => "ERROR", "code" => '100', "data" =>  "Desolé ce compte est desactivé !!");
                     } else {
                         if (isset($users->email) && $users->email != null) {
-                            $url_notification = $url . "/recuperation-mail?i=" . trim($users->id) . "&p=rp-" . date('YmdHis');
-                            // file_get_contents($url_notification);
+                            echo $url_notification = $url . "/recuperation-mail?i=" . trim($users->id) . "&p=rp-" . date('YmdHis');
+                            file_get_contents($url_notification);
                             $result = array("result" => "SUCCESS", "code" => '0', "data" =>  "Merci de continuer le traitement en suivant le lien envoyé par mail a l'adresse " . $users->email . " !!");
                         } else {
                             $result = array("result" => "ERROR", "code" => '101', "data" =>  "Merci de contacter l'administrateur !!");
@@ -140,14 +142,13 @@ if ($request->action != null) {
                     if (isset($retourUsers->telephone) && $retourUsers->telephone != "") $newpasse =  substr($retourUsers->telephone, -8);
                     else $newpasse = "1234567";
 
+                    $newpasse = md5($newpasse);
                     $result = $fonction->_UpdateMotDePasse($retourUsers, $newpasse);
                 } else {
                     $newpasse = $retourUsers->password;
                 }
 
                 echo json_encode($retourUsers->userConnect);
-                //$url_notification = "http://localhost/mes-projets/yako-africa/admin-prestation/notification-mail.php?action=passeOublie&id=" . trim($retourUsers->id);
-                //file_get_contents($url_notification);
             } else {
                 echo json_encode("-1");
             }
@@ -1011,7 +1012,7 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
         $libelleTraitement = strtoupper($typeCompte) . 'S';
     }
     $motdepasse = "1234567";
-
+    $motdepasse = md5($motdepasse);
     if ($existe) {
 
         $sqlUpdatePrestation = "UPDATE " . Config::TABLE_USER . " SET etat= ?, nom=?, prenom=?, email=?, telephone =? , typeCompte =? , profil=? ,cible=?, codeagent=?, ville=? , reseaux=? , partenaire=? WHERE id = ?";

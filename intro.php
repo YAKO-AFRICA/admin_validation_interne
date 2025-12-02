@@ -188,7 +188,6 @@ include("autoload.php");
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <!-- Inclure Highcharts -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <script>
