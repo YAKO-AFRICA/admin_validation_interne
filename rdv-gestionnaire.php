@@ -143,13 +143,14 @@ else $effectue = 0;
 							<thead>
 								<tr>
 									<th class="table-plus datatable-nosort">#Ref</th>
-									<th hidden>Id</th>
+									<th>Id</th>
 									<th>Date</th>
 									<th>Nom & prénom(s)</th>
 									<th>Id contrat</th>
 									<th>Motif</th>
 									<th>Date RDV souhaité</th>
 									<th>lieu RDV</th>
+									<th hidden></th>
 									<th class="table-plus datatable-nosort">Etat</th>
 									<th class="table-plus datatable-nosort">Action</th>
 								</tr>
@@ -178,7 +179,7 @@ else $effectue = 0;
 								?>
 										<tr>
 											<td class="table-plus" id="ref-<?= $i ?>"><?php echo $i + 1; ?></td>
-											<td id="id-<?= $i ?>" hidden><?php echo $rdv->idrdv; ?></td>
+											<td id="id-<?= $i ?>"><?php echo $rdv->idrdv; ?></td>
 											<td><?php echo $rdv->dateajou; ?></td>
 											<td class="text-wrap"><?php echo $rdv->nomclient; ?>
 												<p class="mb-0 text-dark" style="font-size: 0.7em;">
@@ -188,21 +189,31 @@ else $effectue = 0;
 
 											<td class="text-wrap" id="idcontrat-<?= $i ?>"><?php echo $rdv->police; ?></td>
 
-											<td class="text-wrap"><?php echo $rdv->motifrdv; ?> </td>
+											<td id="motifrdv-<?= $i ?>" class="text-wrap"><?php echo $rdv->motifrdv; ?> </td>
 											<td id="daterdv-<?= $i ?>"><?php echo $rdv->daterdv; ?></td>
-											<td class="text-wrap" style="font-weight:bold; color:#F9B233!important;">
-												<?php echo $villes; ?></td>
-											<td>
-												<span
-													class="<?php echo $retourEtat["color_statut"]; ?>"><?php echo $retourEtat["libelle"] ?></span>
+											<td class="text-wrap" style="font-weight:bold; color:#F9B233!important;"><?php echo $villes; ?></td>
+											<td id="lieurdv-<?= $i ?>" hidden><?php echo $idTblBureau . ";" . $villes; ?></td>
+											<td class="text-wrap">
+												<?php if (!empty($rdv->etatTraitement) && $rdv->etatTraitement == "5") : ?>
+													<span class="badge badge-warning text-wrap text-white text-center mt-2"><?php echo $retourEtat["libelle"] ?></span><br>
+												<?php else : ?>
+													<span class="badge badge-success text-wrap text-white text-center mt-2"><?php echo $retourEtat["libelle"] ?></span><br>
+												<?php endif; ?>
+												<?php if ($rdv->etat == "3"): ?>
+												<span class="badge badge-secondary text-wrap text-white text-center mt-2"><?php echo $rdv->libelleTraitement; ?> </span>
+												<?php endif; ?>
 											</td>
 
 
-											<td class="table-plus">
+											<td class="table-plus text-center">
 
 												<button class="btn btn-warning btn-sm view" id="view-<?= $i ?>" style="background-color:#F9B233;color:white"><i class="fa fa-eye"></i> Détail</button>
 												<?php if ($rdv->etat == "2"): ?>
 													<button class="btn btn-success btn-sm traiter" id="traiter-<?= $i ?> " style="background-color:#033f1f; color:white"><i class="fa fa-mouse-pointer"></i> Traiter</button>
+												<?php endif; ?>
+
+												<?php if ($rdv->etatTraitement == "5"): ?>
+													<button class="btn btn-primary btn-sm modifier" id="modifier-<?= $i ?> " style="background-color:blue; color:white"><i class="fa fa-edit"></i> Modifier rdv</button>
 												<?php endif; ?>
 
 											</td>
@@ -229,33 +240,61 @@ else $effectue = 0;
 	</div>
 
 
-	<div class="modal fade" id="confirmation-modal22" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal fade" id="modifierRDV-modal" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
-				<div class="modal-body text-center font-18">
-					<h4 class="padding-top-30 mb-30 weight-500">Voulez vous supprimer la demande n° : <span
-							id="a_afficher3" style="color: #F9B233;"> </span>?</h4>
-					<input type="text" hidden class="form-control" name="idobjet" id="idobjet">
 
-					<div class="padding-bottom-30 row" style="max-width: 170px; margin: 0 auto;">
-						<div class="col-6">
-							<button type="button" id="validerSuprime"
-								class="btn btn-danger border-radius-100 btn-block confirmation-btn"
-								data-dismiss="modal"><i class="fa fa-check"></i></button>
-							OUI
-						</div>
-						<div class="col-6">
-							<button type="button" id="annulerSuprime"
-								class="btn btn-secondary border-radius-100 btn-block confirmation-btn"
-								data-dismiss="modal"><i class="fa fa-times"></i></button>
-							NON
-						</div>
-
-					</div>
+				<div class="modal-header">
+					<h5 class="modal-title text-info font-weight-bold">Information sur la demande de RDV</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
+
+				<div class="modal-body">
+
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label>N° RDV :</label>
+							<input type="text" class="form-control" id="idrdv" name="idrdv" readonly>
+						</div>
+
+						<div class="form-group col-md-8">
+							<label>ID contrat / N° police(s) :</label>
+							<input type="text" class="form-control" id="idcontrat" name="idcontrat" readonly>
+						</div>
+					</div>
+
+					<div class="form-row">
+						<div class="form-group col-md-8">
+							<label>Ville choisie :</label>
+							<input type="text" class="form-control" id="villesR" name="villesR" readonly>
+						</div>
+
+						<div class="form-group col-md-4">
+							<label>Motif :</label>
+							<input type="text" class="form-control" id="motifrdv" name="motifrdv" readonly>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label>Date RDV <span class="text-danger">*</span> :</label>
+						<input class="form-control" type="date" id="daterdveff" name="daterdveff" onchange="verifierReceptionRDV()" min="<?= date('Y-m-d') ?>" required>
+						<span id="errorDate" class="text-danger"></span>
+					</div>
+					<input type="hidden" id="idTblBureau" name="idTblBureau">
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button type="submit" name="modifierRDV" id="modifierRDV" class="btn btn-warning" >Modifier RDV</button>
+				</div>
+
 			</div>
 		</div>
 	</div>
+
 
 	<div class="modal fade" id="confirmation-modal" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
@@ -395,6 +434,29 @@ else $effectue = 0;
 				location.href = "traitement-rdv-gestionnaire";
 			});
 
+			//modifier
+			$(document).on('click', '.modifier', function() {
+				const index = this.id.split('-')[1];
+				const idrdv = $("#id-" + index).html();
+				const idcontrat = $("#idcontrat-" + index).html();
+				const lieurdv = $("#lieurdv-" + index).html();
+				const motifrdv = $("#motifrdv-" + index).html();
+
+
+				const tablo = lieurdv.split(";");
+				const idTblBureau = tablo[0];
+				const villes = tablo[1];
+
+				//alert(lieurdv + "  --  " + motifrdv)
+				$("#idrdv").val(idrdv);
+				$("#idcontrat").val(idcontrat);
+				$("#villesR").val(villes);
+				$("#idTblBureau").val(idTblBureau);
+				$("#motifrdv").val(motifrdv);
+
+				$("#modifierRDV-modal").modal('show');
+			})
+
 
 
 			$(".fa-trash").click(function(evt) {
@@ -411,6 +473,59 @@ else $effectue = 0;
 
 
 		})
+
+
+
+		$("#modifierRDV").click(function() {
+
+			const idrdv = document.getElementById("idrdv").value;
+			const idcontrat = document.getElementById("idcontrat").value;
+			const idVilleEff = document.getElementById("idTblBureau").value;
+			const daterdveff = document.getElementById("daterdveff").value;
+
+			const dateStr = daterdveff; // format YYYY-MM-DD
+			if(!dateStr) {
+				alert("Veuillez renseigner la date du RDV SVP !!");
+				document.getElementById("daterdveff").focus();
+				return false;
+			}else{
+				console.log(dateStr);
+
+				$.ajax({
+					url: "config/routes.php",
+					method: "POST",
+					dataType: "json",
+					data: {
+						idrdv:idrdv,
+						idcontrat:idcontrat,
+						idVilleEff:idVilleEff,
+						daterdveff:dateStr,
+						etat:"modifierRDVByGestionnaire"
+					},
+					success: function(response) {
+						console.log(response);
+
+						if (response !== '-1' && response !== '0') {
+							const msg = `<div class="alert alert-success" role="alert"><h2>Le RDV <span class="text-success">${idrdv}</span> a bien été modifiée !</h2></div>`;
+							$("#msgEchec").html(msg);
+							$('#notificationValidation').modal("show");
+						}
+						else {
+							const msg = `<div class="alert alert-danger" role="alert"><h2>Le RDV <span class="text-danger">${idrdv}</span> n'a pas été modifiée !</h2></div>`;
+							$("#msgEchec").html(msg);
+							$('#notificationValidation').modal("show");
+						}
+					},
+					error: function(response, status, etat) {
+						console.log(response, status, etat);
+					}
+				});
+			}
+
+
+		});
+
+
 
 		$("#validerRejet").click(function() {
 			const idrdv = $("#idprestation").val();
@@ -458,6 +573,78 @@ else $effectue = 0;
 				idcontrat: $("#idcontrat-" + index).html(),
 				daterdv: $("#daterdv-" + index).html()
 			};
+		}
+
+
+		function getJoursReception(idVilleEff, callback) {
+			$.ajax({
+				url: "config/routes.php",
+				type: "POST",
+				dataType: "json",
+				data: {
+					idVilleEff: idVilleEff,
+					etat: "receptionJourRdv"
+				},
+				success: function(response) {
+					console.log("Jours autorisés reçus :", response);
+
+					// Nettoyage : tableau de nombres
+					const joursAutorises = response.map(j => Number(j));
+
+					callback(joursAutorises);
+				},
+				error: function(xhr, status, error) {
+					console.error("Erreur AJAX :", error);
+					callback([]); // Aucun jour autorisé si erreur
+				}
+			});
+		}
+
+		function verifierReceptionRDV() {
+
+			const idVilleEff = document.getElementById("idTblBureau").value;
+			const villesR = document.getElementById("villesR").value;
+			const dateStr = document.getElementById("daterdveff").value;
+
+			if (!dateStr) {
+				alert("Veuillez choisir une date.");
+				return;
+			}
+
+			// Récupération du numéro du jour
+			const parts = dateStr.split("-");
+			const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+			const dayNumber = dateObj.getDay(); // 0=Dim, 6=Sam
+
+			const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+			const jourNom = jours[dayNumber];
+
+			console.log("Date sélectionnée :", dateStr);
+			console.log("Jour :", jourNom, "| Numéro :", dayNumber);
+
+			// Bloquer weekend
+			if (dayNumber === 0 || dayNumber === 6) {
+				alert("❌ Les rendez-vous ne peuvent pas être pris le week-end.");
+				$("#errorDate").html("❌ Les rendez-vous ne peuvent pas etre pris le week-end.");
+				return;
+			}
+
+			// Récupérer les jours autorisés depuis l'API
+			getJoursReception(idVilleEff, function(joursAutorises) {
+
+				//console.log("Jours autorisés :", joursAutorises);
+				
+				// Vérification : est-ce que dayNumber est dans les jours autorisés ?
+				const autorise = joursAutorises.includes(dayNumber);
+
+				if (autorise) {
+					//alert("✅ Le jour " + jourNom + " est autorisé pour la réception !");
+					$("#errorDate").html("✅ <span style='color:green;'> Le " + jourNom + " est autorisé pour la réception pour la ville de <b>" + villesR + "</b>!</span>");
+				} else {
+					//alert("❌ Le jour " + jourNom + " n’est pas autorisé pour la réception.");
+					$("#errorDate").html("❌ <span style='color:red;'> Le " + jourNom + " n’est pas autorisé pour la réception pour la ville de <b>" + villesR + "</b>.</span>");
+				}
+			});
 		}
 	</script>
 

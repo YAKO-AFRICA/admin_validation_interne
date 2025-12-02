@@ -228,7 +228,7 @@ if ($request->action != null) {
                     "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partiel", "operation" => "Rachat partiel"),
                     "avance" => array("etat" => "2", "libelle" => "Le client a demandé une avance / pret", "operation" => "Avance ou prêt"),
                     "renonce" => array("etat" => "3", "libelle" => "Le client décide de conserver son contrat", "operation" => "Renonce"),
-                    "absent" => array("etat" => "3", "libelle" => "Le client ne c'est pas presenté", "operation" => "Absent"),
+                    "absent" => array("etat" => "5", "libelle" => "Le client ne c'est pas presenté", "operation" => "Absent"),
                     "transformation" => array("etat" => "4", "libelle" => "Le client a demandé une transformation", "operation" => "transformation"),
                     "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres")
                 );
@@ -606,6 +606,7 @@ if ($request->action != null) {
                         $telGestionnaire = $retourGestionnaire->telephone;
                         $emailGestionnaire = $retourGestionnaire->email;
                         $nomGestionnaire = $retourGestionnaire->gestionnairenom;
+                        $codeagent = $retourGestionnaire->codeagent;
 
                         $message = "Votre RDV est prévu le $dateeffective à $VilleEff. Un conseiller client vous recevra. Pour plus d'informations, Consultez votre espace client: urlr.me/9ZXGSr . ";
                     } else {
@@ -618,9 +619,10 @@ if ($request->action != null) {
 
                     $sms_envoi = new SMSService();
                     if (strlen($message) > 160) $message = substr($message, 0, 160);
-                    $retour = $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
+                    $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
+                    //$retour = "fff";
 
-                    $sqlUpdatePrestation = "UPDATE tblrdv SET etatSms =? WHERE idrdv = ?";
+                    $sqlUpdatePrestation = "UPDATE tblrdv SET etatSms =?  WHERE idrdv = ?";
                     $queryOptions = array(
                         '1',
                         intval($idrdv)
@@ -653,17 +655,15 @@ if ($request->action != null) {
                 $idmotif = "";
                 $etat = "0";
 
-                $sqlUpdatePrestation = "UPDATE tblrdv SET etat= ?, reponse=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? WHERE idrdv = ?";
+                $sqlUpdatePrestation = "UPDATE tblrdv SET etat= ?, reponse=?, datetraitement=?, gestionnaire=?,  traiterLe=now() , updatedAt=now(), etatSms =? WHERE idrdv = ?";
                 $queryOptions = array(
                     $etat,
                     addslashes(htmlspecialchars(trim(ucfirst(strtolower($observation))))),
                     $maintenant,
                     $gestionnaire,
-                    $maintenant,
                     '1',
                     intval($idrdv)
                 );
-
 
                 $result = $fonction->_Database->Update($sqlUpdatePrestation, $queryOptions);
                 if ($result != null) {
@@ -676,7 +676,7 @@ if ($request->action != null) {
                     $message = "Cher client(e), votre demande de rdv n° " . $rdv->codedmd . "  du " . $rdv->daterdv . " a été rejetée." . PHP_EOL . "Consultez les détails du rejet sur votre espace personnel : urlr.me/9ZXGSr";
                     $sms_envoi = new SMSService();
                     if (strlen($message) > 160) $message = substr($message, 0, 160);
-                    $retour = $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
+                    $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
 
                     //$url_notification = "https://admin.prestations.yakoafricassur.com/notification-mail.php?action=confirmerRejetRDV&idrdv=" . trim($idrdv);
                     $url_notification = $lienEnvoiMail . "action=confirmerRejetRDV&data=[idrdv:" . trim($idrdv) . "]";
@@ -775,7 +775,6 @@ if ($request->action != null) {
 
 
             $result = $fonction->_insertInfosBordereauRDV($idVilleGest, $VilleGest, $idGest, $nomGest, $rdvLe, $rdvAu, $reference, $etat);
-
             if ($result) {
 
                 $dataATraiter = GetParameter::FromArray($_REQUEST, 'params');
@@ -938,8 +937,54 @@ if ($request->action != null) {
                     $tableauSuivi = "";
                 }
                 echo json_encode($tableauSuivi);
-                
             } else echo json_encode("-1");
+            break;
+
+        case "modifierRDVByGestionnaire":
+
+
+            $idrdv = GetParameter::FromArray($_REQUEST, 'idrdv');
+            $idcontrat = GetParameter::FromArray($_REQUEST, 'idcontrat');
+            $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
+            $daterdveff = GetParameter::FromArray($_REQUEST, 'daterdveff');
+            $telGestionnaire = "";
+
+            //$sqlSelect = "SELECT tblrdv.* ,  TRIM(libelleVilleBureau) as villes  FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '" . $idrdv . "' ";
+            $sqlSelect = " SELECT tblrdv.*, CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, users.email AS emailgestionnaire, users.codeagent AS codeagentgestionnaire,
+				    TRIM(tblvillebureau.libelleVilleBureau) AS villes FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id
+			        LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '$idrdv' ";
+
+            $retour = $fonction->_getSelectDatabases($sqlSelect);
+            if ($retour != null) {
+                $rdv = $retour[0];
+
+                $retourGestionnaire = $fonction->getRetourneContactInfosGestionnaire($rdv->codeagentgestionnaire);
+                $telGestionnaire = $retourGestionnaire["telephone"];
+
+
+                $sqlUpdate = "UPDATE tblrdv SET daterdveff = ? , etat='2' , etatTraitement='' , libelleTraitement='' , estPermit=null , reponseGest=? , traiterLe=now() , updatedAt=now()  WHERE idrdv = ? ";
+                $queryOptions = array(
+                    $daterdveff,
+                    "La date du RDV prevu le " . date("d/m/Y", strtotime($rdv->daterdveff)) . "  .  a ete modifier par le gestionnaire pour la ville de " . $rdv->villes . " le " . $daterdveff,
+                    $idrdv
+                );
+                $result = $fonction->_Database->Update($sqlUpdate, $queryOptions);
+                if ($result != null) {
+
+
+                    $message = "Votre RDV prévu le " . date("d/m/Y", strtotime($rdv->daterdveff)) . " a ete modifier pour le " . date("d/m/Y", strtotime($daterdveff)) . " à " . $rdv->villes . ". Merci de contacter le " . $telGestionnaire . " pour toute information complémentaire.";
+                    $numero = "225" . substr($rdv->tel, -10);
+                    $ref_sms = "RDV-" . $idrdv;
+
+                    $sms_envoi = new SMSService();
+                    if (strlen($message) > 160) $message = substr($message, 0, 160);
+                    $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
+                    echo json_encode($idrdv);
+                } else echo json_encode("-1");
+            } else {
+                echo json_encode("-1");
+            }
+
             break;
 
         default:
@@ -1035,7 +1080,7 @@ function traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $obs
 {
     global $fonction, $maintenant, $lienEnvoiMail;
 
-    $sqlUpdatePrestation = "UPDATE tblrdv SET etat = ?, etatTraitement=?, libelleTraitement=?, reponseGest=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? WHERE idrdv = ?";
+    $sqlUpdatePrestation = "UPDATE tblrdv SET etat = ?, etatTraitement=?, libelleTraitement=?, reponseGest=?, datetraitement=?, gestionnaire=?,  traiterLe=now() , updatedAt=now(), etatSms =? WHERE idrdv = ?";
     $queryOptions = array(
         "3",
         $etat,
@@ -1043,7 +1088,6 @@ function traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $obs
         addslashes(htmlspecialchars(trim(ucfirst(strtolower($observation))))),
         $maintenant,
         $rdv->gestionnaire,
-        $maintenant,
         '1',
         intval($rdv->idrdv)
     );

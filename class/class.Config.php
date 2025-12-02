@@ -15,6 +15,7 @@ class Config
     //const DatabaseName = 'laloyale_bdweb';
     const DatabaseUser = 'laloyale_masterdev';
     const DatabasePass = '1Mot2Passe.DSI';
+    
     // laloyale_masterdev
     // 1Mot2Passe.DSI
     // const DatabaseUser = 'laloyale_llvweb';
@@ -159,8 +160,15 @@ class Config
     const TYPE_SERVICE_COURRIER = "courrier";
 
 
+    const URL_API_OTP_PAYS = "https://apiotp.yakoafricassur.com/api/getAllCountries/";
+
+    // en production
+    // const URL_PRESTATION_RACINE = "https://web.yakoafricassur.com/";
+    // const URL_DOC_PRESTATION = "https://web.yakoafricassur.com/api/getPrestationsDoc/";
+    // const URL_DOC_SINISTRE = "https://web.yakoafricassur.com/api/getSinistreDoc/";
+
+    // en test
     const URL_PRESTATION_RACINE = "https://testsite.yakoafricassur.com/";
     const URL_DOC_PRESTATION = "https://testsite.yakoafricassur.com/api/getPrestationsDoc/";
-    const URL_API_OTP_PAYS = "https://apiotp.yakoafricassur.com/api/getAllCountries/";
     const URL_DOC_SINISTRE = "https://testsite.yakoafricassur.com/api/getSinistreDoc/";
 }

@@ -34,6 +34,7 @@ if (isset($_COOKIE["idrdv"])) {
     }
 
     $rdv = $retour_rdv[0];
+    
 
     /*if ($rdv->etat != "1") {
         header('Location: detail-rdv');
@@ -41,6 +42,7 @@ if (isset($_COOKIE["idrdv"])) {
     }*/
 
     $daterdv = isset($rdv->daterdv) ? date('Y-m-d', strtotime(str_replace('/', '-', $rdv->daterdv))) : '';
+    $daterdveff = isset($rdv->daterdveff) ? date('Y-m-d', strtotime($rdv->daterdveff)) : '';
 
     $reply = $fonction->getRetourneVillesBureau($rdv->idTblBureau);
 
@@ -163,7 +165,7 @@ if (isset($_COOKIE["idrdv"])) {
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label>Date RDV Effective <span class="text-danger">*</span> :</label>
-                                        <input type="date" class="form-control" id="daterdveff" name="daterdveff" onblur="checkDate('1')" value="<?= $daterdv ?>" readonly>
+                                        <input type="date" class="form-control" id="daterdveff" name="daterdveff" onblur="checkDate('1')" value="<?= $daterdveff ?>" readonly>
 
                                     </div>
                                     <div class="form-group col-md-12" hidden>

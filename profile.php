@@ -20,6 +20,12 @@ if ($retourUsers != NULL) {
 } else header("Location:deconnexion.php");
 
 
+$sqlQuery = "SELECT  u.*,  TRIM(CONCAT(u.nom, ' ', u.prenom)) AS gestionnairenom, u.adresse as localisation ,   v.libelleVilleBureau AS villes_reception
+                FROM  users u  LEFT JOIN  tblvillebureau v ON v.idVilleBureau = u.ville   WHERE     u.etat = '1' AND u.id = '$id'  ORDER BY   id DESC ";
+$resultat = $fonction->_getSelectDatabases($sqlQuery);
+if ($resultat != NULL) {
+	$retourUsers =  new users($resultat[0]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -115,7 +121,7 @@ if ($retourUsers != NULL) {
 							<!-- ======================= -->
 							<!-- SECTION RECEPTION RDV -->
 							<!-- ======================= -->
-							<?php if ($_SESSION["typeCompte"] == "rdv") : ?>
+							<?php if ($_SESSION["typeCompte"] == "gestionnaire") : ?>
 								<hr class="my-4">
 								<h5 class="mb-3 h5 text-blue">
 									<i class="bi bi-calendar-week me-1"></i> Informations Réception Rendez-vous
@@ -138,7 +144,7 @@ if ($retourUsers != NULL) {
 
 								<div class="text-start d-inline-block">
 									<p><strong>Villes :</strong>
-										<span class="badge bg-info text-white"><?= $user->ville_nom ?: "--"; ?></span>
+										<span class="badge bg-info text-white"><?= $retourUsers->villes_reception ?: "--"; ?></span>
 									</p>
 									<p><strong>Jour(s) de réception :</strong>
 										<span class="badge bg-success text-white"><?= $jourReception ?: "--"; ?></span>
@@ -150,7 +156,7 @@ if ($retourUsers != NULL) {
 										<span class="text-dark fw-bold"><?= $nbreParReception ?: "--"; ?></span>
 									</p>
 									<p><strong>Lieu de réception :</strong>
-										<span class="text-dark fw-bold"><?= $user->localisation ?: "--"; ?></span>
+										<span class="text-dark fw-bold"><?= $retourUsers->localisation ?: "--"; ?></span>
 									</p>
 								</div>
 							<?php endif; ?>

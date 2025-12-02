@@ -3,11 +3,15 @@
 
 include("autoload.php");
 
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+$urlService = $protocol . $_SERVER['HTTP_HOST'];
+
 $services = "YAKO AFRICA ASSURANCES VIE";
 $lienYako = "www.yakoafricassur.com";
 $lienService =  "";
 $mail = false;
 $subject = "";
+$mailCopie = "";
 
 $action = (isset($_REQUEST["action"]) ? trim($_REQUEST["action"]) : NULL);
 $data = (isset($_REQUEST["data"]) ? trim($_REQUEST["data"]) : NULL);
@@ -160,21 +164,14 @@ if ($refchamp != null && $champ == "idprestation") {
                 break;
             case "transmettreRDV":
 
+                $result = $fonction->getRetourneContactInfosGestionnaire($rdv->codeagentgestionnaire);
+                $email_final = trim($result["email_final"]);
+                $telephoneGestionnaire = trim($result["telephone"]);
+                $contactGestionnaire = trim($result["contacts_html"]);
+                $emailgestionnaire = $rdv->emailgestionnaire;
+                if(empty($email_final)) $email_final = $emailgestionnaire;
 
-                $retour_detail_agent = get_detail_agent($rdv->codeagentgestionnaire);
-
-                $contactGestionnaire = '';
-                $telephone = '';
-                $i = 0;
-                foreach ($retour_detail_agent->mescontacts ?? [] as $contact) {
-                    if (!empty($contact->Contact)) {
-                        $i++;
-                        if (in_array($contact->CodeTypeContact, ['CEL', 'TEL'])) $telephone = $contact->Contact;
-                        $contactGestionnaire .= '<li><strong>' . htmlspecialchars($contact->typeContact) . $i . ' :</strong> ' . htmlspecialchars($contact->Contact) . '</li>';
-                    }
-                    //
-                }
-
+                $mailCopie = ", " . $rdv->nomgestionnaire . " <" . $email_final . ">";
 
                 $subject = "RDV -  " . strtoupper($rdv->codedmd) . " du  " . $rdv->daterdv;
                 $titre = "<label style='color:green'> La demande de Rendez-vous <b>" . $rdv->codedmd . " - n° " . $idrdv . "</b>  a ete transmise</label>,</br>";
@@ -187,7 +184,7 @@ if ($refchamp != null && $champ == "idprestation") {
                                                " . $titre . " <br>                                
                                         Resume de la demande  :<br>
                                         <ul>
-                                            <li>Date RDV : <b>" . $rdv->daterdveff . "</b></li>
+                                            <li>Date RDV : <b>" . date('d/m/Y', strtotime($rdv->daterdveff)) . "</b></li>
                                             <li>Motif : <b>" . $rdv->motifrdv . "</b></li>
                                             <li>Code RDV : <b>" . $rdv->codedmd . "</b></li>
                                             <li>Id du contrat : <b>" . $rdv->police . "</b></li>
@@ -199,16 +196,19 @@ if ($refchamp != null && $champ == "idprestation") {
                                         <h2 class='text-center p-4' style='color:#033f1f ; font-weight:bold;'> Contact du gestionnaire </h2> <hr>
                                         <ul>
                                             <li>Gestionnaire : <b>" . $rdv->nomgestionnaire . "</b></li>
-                                            " . $contactGestionnaire . "
-                                            
+                                            <li>Telephone : <b>" . $telephoneGestionnaire . "</b></li>
                                         </ul>
                                         </div>                          
                                 </div>
                                 ";
 
                 $message = format_mail_by_NISSA($rdv->nomclient, $text_form, $titre);
+
+                print_r($message);
                 $to = $rdv->email;
                 $mail = true;
+
+                //getByNissa($rdv, $idrdv, $email_final, $telephoneGestionnaire);
                 break;
         }
     }
@@ -261,14 +261,13 @@ if ($refchamp != null && $champ == "idprestation") {
 
 
 
-
 if ($mail && $to != "") {
 
     $boundary = md5(uniqid(microtime(), TRUE));
 
     // Headers
     $headers = 'From: ' . $services . ' <support.enov@yakoafricassur.com>' . "\r\n";
-    $headers .= 'Cc: HELP DESK YAKO AFRICA <support.enov@yakoafricassur.com> , SUPPORT YNOV <no-reply@yakoafricassur.com>';
+    $headers .= 'Cc: HELP DESK YAKO AFRICA <support.enov@yakoafricassur.com> , SUPPORT YNOV <no-reply@yakoafricassur.com>' . $mailCopie;
     $headers .= 'Mime-Version: 1.0' . "\r\n";
     $headers .= 'Content-Type: multipart/mixed;boundary=' . $boundary . "\r\n";
     $headers .= "\r\n";
@@ -309,45 +308,7 @@ if ($mail && $to != "") {
 }
 
 
-function get_detail_agent($codeagent)
-{
 
-    if ($codeagent != null) {
-
-        $tabloCritere = [
-            'codeagent' => $codeagent,
-            'myinfo' => 'PERSO'
-            //'typeReseau' => $codInfo
-        ];
-
-        $api_detail_agent = getAPI($tabloCritere, "https://api.laloyalevie.com/enov/fiche-detaille-agent-bis");
-        return $api_detail_agent;
-    }
-    return null;
-}
-
-function getAPI($tabloCritere, $url_api)
-{
-    try {
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url_api);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TCP_KEEPALIVE, 1);
-        curl_setopt($ch, CURLOPT_TCP_KEEPIDLE, 2);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($tabloCritere));
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 60000);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array("cache-control: no-cache", "content-type: application/json",));
-        $data = curl_exec($ch);
-        $data = json_decode($data);
-        return $data;
-    } catch (Exception $e) {
-        echo 'Exception reçue : ', $e->getMessage(), "\n";
-        return 0;
-    }
-}
 
 function getRetourneListeDocumentPrestation($retour_documents)
 {
@@ -674,293 +635,54 @@ function format_mail(tbl_prestations $prestation, $message, $docs = null)
 
     return $message;
 }
-?>
-
-
-
-<!--!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
-    xmlns:o="urn:schemas-microsoft-com:office:office">
-
-
-<head>
-    <title><?= $subject ?>
-    </title>
-    <link rel="apple-touch-icon" sizes="180x180" href="vendors/images/logo-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="vendors/images/logo-icon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="vendors/images/logo-icon.png">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style type="text/css">
-        #outlook a {
-            padding: 0;
-        }
-
-        .ReadMsgBody {
-            width: 100%;
-        }
-
-        .ExternalClass {
-            width: 100%;
-        }
-
-        .ExternalClass * {
-            line-height: 100%;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-        }
-
-        table,
-        td {
-            border-collapse: collapse;
-            mso-table-lspace: 0pt;
-            mso-table-rspace: 0pt;
-        }
-
-        img {
-            border: 0;
-            height: auto;
-            line-height: 100%;
-            outline: none;
-            text-decoration: none;
-            -ms-interpolation-mode: bicubic;
-        }
-
-        p {
-            display: block;
-            margin: 13px 0;
-        }
-    </style>
-   
-    <style type="text/css">
-        @media only screen and (max-width:480px) {
-            @-ms-viewport {
-                width: 320px;
-            }
-
-            @viewport {
-                width: 320px;
-            }
-        }
-    </style>
-
-    <style type="text/css">
-        @media only screen and (min-width:480px) {
-            .mj-column-per-100 {
-                width: 100% !important;
-            }
-        }
-    </style>
-
-
-    <style type="text/css">
-    </style>
-
-</head>
-
-<body style="background-color:#f9f9f9;">
-
-
-    <div style="background-color:#f9f9f9;">
-
-        <div style="background:#f9f9f9;background-color:#f9f9f9;Margin:0px auto;max-width:600px;">
-
-            <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
-                style="background:#f9f9f9;background-color:#f9f9f9;width:100%;">
-                <tbody>
-                    <tr>
-                        <td
-                            style="border-bottom:#333957 solid 5px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;">
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-        <div style="background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;">
-
-            <div class="row">
-                <div class="card-box mb-30">
-                    <div class="row center-block">
-                        <div class="col-lg-3"></div>
-
-                        <div class="col-lg-6">
-                            <center>
-                                <img src="vendors/images/entete-yako-africa.png" width="100%" alt="" srcset="">
-                            </center>
-                        </div>
-                        <div class="col-lg-3"></div>
-                    </div>
-                </div>
-            </div>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
-                style="background:#fff;background-color:#fff;width:100%;">
-                <tbody>
-                    <tr>
-                        <td
-
-                            style="border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;">
-                            <div class="mj-column-per-100 outlook-group-fix"
-                                style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;">
-
-
-                                <table border="0" cellpadding="0" cellspacing="0" role="presentation"
-                                    style="vertical-align:bottom;" width="100%">
-
-                                    <tr>
-                                        <td align="center"
-                                            style="font-size:0px;padding:10px 25px;word-break:break-word;">
-
-                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                                role="presentation"
-                                                style="border-collapse:collapse;border-spacing:0px; background-color:#033f1f;">
-                                                <tbody>
-                                                    <tr>
-
-
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td align="center"
-                                            style="font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;">
-                                            <div
-                                                style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;">
-                                                Chèr(e) Client(e)&nbsp; <?= $utilisateur ?> !!
-
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-
-                                            <div
-                                                style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;">
-                                                <?= $message ?>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-
-                                    <tr>
-                                        <td align="center"
-                                            style="font-size:0px;padding:10px 25px;padding-top:30px;padding-bottom:50px;word-break:break-word;">
-
-                                            <table align="center" border="0" cellpadding="0" cellspacing="0"
-                                                role="presentation" style="border-collapse:separate;line-height:100%;">
-                                                <tr>
-                                                    <td align="center" bgcolor="#033f1f" role="presentation"
-                                                        style="border:none;border-radius:3px;color:#ffffff;cursor:auto;padding:15px 25px;"
-                                                        valign="middle">
-                                                        <a href="https://yakoafricassur.com/espace-client/login.php">
-                                                            <p
-                                                                style="background:#033f1f;color:#ffffff;font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:normal;line-height:120%;Margin:0;text-decoration:none;text-transform:none;">
-                                                                Retour espace client
-                                                            </p>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-
-                                        </td>
-                                    </tr>
 
 
 
 
-                                    <tr>
-                                        <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-
-                                            <div
-                                                style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;">
-                                                Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
-                                                <a href="https://www.yakoafricassur.com"
-                                                    style="color:#2F67F6">yakoafricassur.com</a>
-                                            </div>
-
-                                        </td>
-                                    </tr>
-
-                                </table>
-
+function getByNissa($rdv, $idrdv, $email_final, $telephoneGestionnaire)
+{
+    global $urlService;
+    $subjectGestionnaire = "Affectation RDV -  " . strtoupper($rdv->codedmd) . " du  " .  date('d/m/Y', strtotime($rdv->daterdveff));
+    $titreGestionnaire = " <label style='color:green'> La demande de Rendez-vous <b>" . $rdv->codedmd . " - n° " . $idrdv . "</b>  vous a été affecté </label>,";
+    $text_formGestionnaire = "
+                            <div style='font-family: \"Helvetica Neue\", Arial, sans-serif; font-size:16px; line-height:22px; text-align:left; color:#555;'>
+                                <div class='content'>
+                                    <div class='card-body p-2' style='font-size:20px; font-weight:bold; margin-bottom:10px;'>
+                                        Bonjour <span class='important'>" . strtoupper(htmlspecialchars($rdv->nomgestionnaire)) . "</span> !
+                                    </div>
+                                    <br>
+                                    <label style='color:green; font-size:16px;'>
+                                        La demande de Rendez-vous 
+                                        <b>" . htmlspecialchars($rdv->codedmd) . " - n° " . htmlspecialchars($idrdv) . " du " .  date('d/m/Y', strtotime($rdv->daterdveff)) . "</b>
+                                        vous a été affectée
+                                    </label>
+                                    <br><br>
+                                    Résumé de la demande :
+                                    <br>
+                                    <ul>
+                                        <li>Nom et Prenom  : <b>" . htmlspecialchars($rdv->nomclient) . "</b></li>
+                                        <li>Contact  : <b>" . htmlspecialchars($rdv->tel) . "</b></li>
+                                        <li>Date RDV : <b>" . htmlspecialchars(date('d/m/Y', strtotime($rdv->daterdveff))) . "</b></li>
+                                        <li>Motif : <b>" . htmlspecialchars($rdv->motifrdv) . "</b></li>
+                                        <li>Code RDV : <b>" . htmlspecialchars($rdv->codedmd) . "</b></li>
+                                        <li>Id du contrat : <b>" . htmlspecialchars($rdv->police) . "</b></li>
+                                        <li>Ville RDV : <b>" . htmlspecialchars($rdv->villes) . "</b></li>
+                                    </ul>
+                                    <br>
+                                    <div class='card-body p-2 text-center' 
+                                        style='background-color: bisque; font-weight:bold; padding:15px; text-align:center;'>
+                                        Merci de vous connecter à la plateforme de gestion des RDV pour le traitement.
+                                        <br><br>
+                                        <a href='$urlService' target='_blank'
+                                        style='color:#d35400; text-decoration:underline; font-size:16px;'>
+                                            Plateforme de gestion des RDV
+                                        </a>
+                                        <br>
+                                    </div>
+                                </div>
                             </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-
-        <div style="Margin:0px auto;max-width:600px;">
-
-            <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;">
-                            <div class="mj-column-per-100 outlook-group-fix"
-                                style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;">
-
-                                <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
-                                    <tbody>
-                                        <tr>
-                                            <td style="vertical-align:bottom;padding:0;">
-
-                                                <table border="0" cellpadding="0" cellspacing="0" role="presentation"
-                                                    width="100%">
-
-                                                    <tr>
-                                                        <td align="center"
-                                                            style="font-size:0px;padding:0;word-break:break-word;">
-
-                                                            <div
-                                                                style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:300;line-height:1;text-align:center;color:#575757;">
-                                                                ----------
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td align="center"
-                                                            style="font-size:0px;padding:10px;word-break:break-word;">
-
-                                                            <div
-                                                                style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:300;line-height:1;text-align:center;color:#575757;">
-                                                                <a href="https://yakoafricassur.com/desabonnement-ynov" style="color:#575757">Unsubscribe</a> from
-                                                                our emails
-                                                            </div>
-
-                                                        </td>
-                                                    </tr>
-
-                                                </table>
-
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
-
-    </div>
-
-</body>
-
-</html-->
+                            ";
+    $messageMail = formulaireMail($rdv->nomclient, $text_formGestionnaire, $titreGestionnaire);
+    notificationMail($subjectGestionnaire, $rdv->nomgestionnaire, $email_final, $messageMail);
+    print_r($messageMail);
+}

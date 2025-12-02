@@ -2367,19 +2367,7 @@ class Fonction
 		return null;
 	}
 
-	function getCompteurParJour22($dateLundi, $dateDimanche)
-	{
 
-		$plus = " YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE()) AND ( DATE(tblrdv.daterdveff) BETWEEN '$dateLundi' AND '$dateDimanche') ";
-		$sql = "SELECT DATE(tblrdv.daterdveff) AS jour, etat AS statut FROM " . Config::TABLE_RDV . " WHERE $plus";
-		$retour = $this->_getSelectDatabases($sql);
-		if (isset($retour) && $retour != null) {
-			//return $this->compteur($retour);
-
-			return $retour;
-		}
-		return null;
-	}
 
 	function getStatsGenerales(array $rows, array $colonnes)
 	{
@@ -2403,5 +2391,142 @@ class Fonction
 		}
 
 		return $stats;
+	}
+
+
+	function getRecupereInfosGestionnaire($codeagent)
+	{
+
+		$sql = "SELECT * FROM laloyale_bduser.membre WHERE codeagent = '$codeagent' AND memberok='1' AND typ_membre IN ('2','3')  ";
+		$retour = $this->_getSelectDatabases($sql);
+		if (isset($retour) && $retour != null) {
+			return $retour[0];
+		}
+		return null;
+	}
+
+	function getRetourneContactInfosGestionnaire($codeagent)
+	{
+
+		// Initialisation
+		$contactsGestionnaireHTML = '';
+		$telephone = '';
+		$email_agent = '';
+		$email_membre = '';
+		$i = 0;
+
+		// Récupération gestionnaire
+		$retour_detail_agent = $this->get_detail_agent($codeagent);
+		$retour_membre = $this->getRecupereInfosGestionnaire($codeagent);
+		// Email membre (fallback si agent sans email)
+		if ($retour_membre && !empty($retour_membre->email)) {
+			$email_membre = trim($retour_membre->email);
+		}
+
+		// Sécurisation du tableau des contacts
+		$contacts = $retour_detail_agent->mescontacts ?? [];
+
+		foreach ($contacts as $contact) {
+
+			// Sécurisation des champs
+			$value       = trim($contact->Contact ?? '');
+			$valueAnc    = trim($contact->Contact_anc ?? '');
+			$type        = strtoupper(trim($contact->CodeTypeContact ?? ''));
+			$label       = $contact->typeContact ?? 'Contact';
+
+			// Si rien dans les deux champs → ignorer
+			if ($value === '' && $valueAnc === '') {
+				continue;
+			}
+
+			// Valeur finale (priorité au contact principal)
+			$finalValue = $value !== '' ? $value : $valueAnc;
+
+			$i++; // compteur propre
+
+			/** --------------------------------
+			 *   GESTION EMAIL
+			 * -------------------------------- */
+			if (in_array($type, ['EMAIL', 'MAIL'], true)) {
+				$email_agent = $finalValue; // toujours dernier email valable
+			}
+
+			/** --------------------------------
+			 *   GESTION TÉLÉPHONE
+			 * -------------------------------- */
+			if (in_array($type, ['TEL', 'CEL', 'MOBILE'], true)) {
+				$telephone = $finalValue;
+			}
+
+			/** --------------------------------
+			 *   CONSTRUCTION LISTE HTML
+			 * -------------------------------- */
+			$contactsGestionnaireHTML .= sprintf(
+				'<li><strong>%s %d :</strong> %s</li>',
+				htmlspecialchars($label),
+				$i,
+				htmlspecialchars($finalValue)
+			);
+		}
+
+
+		// ------------------------------------
+		// Fallback email final
+		// ------------------------------------
+		$email_final = $email_agent !== '' ? $email_agent : $email_membre;
+
+
+		// ------------------------------------
+		// Résultat final structuré (PRODUCTION)
+		// ------------------------------------
+		$result = [
+			'email_agent'     => $email_agent,
+			'email_membre'    => $email_membre,
+			'email_final'     => $email_final,
+			'telephone'       => $telephone,
+			'contacts_html'   => $contactsGestionnaireHTML
+		];
+		return $result;
+	}
+
+
+	function get_detail_agent($codeagent)
+	{
+
+		if ($codeagent != null) {
+
+			$tabloCritere = [
+				'codeagent' => $codeagent,
+				'myinfo' => 'PERSO'
+				//'typeReseau' => $codInfo
+			];
+
+			$api_detail_agent = $this->getAPI($tabloCritere, "https://api.laloyalevie.com/enov/fiche-detaille-agent-bis");
+			return $api_detail_agent;
+		}
+		return null;
+	}
+
+	function getAPI($tabloCritere, $url_api)
+	{
+		try {
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url_api);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_TCP_KEEPALIVE, 1);
+			curl_setopt($ch, CURLOPT_TCP_KEEPIDLE, 2);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($tabloCritere));
+			curl_setopt($ch, CURLOPT_TIMEOUT_MS, 60000);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array("cache-control: no-cache", "content-type: application/json",));
+			$data = curl_exec($ch);
+			$data = json_decode($data);
+			return $data;
+		} catch (Exception $e) {
+			echo 'Exception reçue : ', $e->getMessage(), "\n";
+			return 0;
+		}
 	}
 }

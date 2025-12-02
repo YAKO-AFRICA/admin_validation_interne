@@ -237,51 +237,16 @@ function formulaireMail($demandeur, $message)
                     </div>
                 </div>
             </div>
-            <div class="body-card">
+            <div class="body-card ">
             ' . $message . '
             
-            <div class="card-body text-center p-2">
-
-                <div class="download">
-                    <span style="font-size:18px;">T&#233;l&#233;charger l\'application YNOV</span>
-                    <a href="https://bit.ly/3xdzhcq" title="Télécharger l\' application YNOV" target="_blank">
-                        <img src="https://yakoafricassur.com/storage/demande-compte/images/mail/playstore.png" alt="HTML tutorial">
-                    </a>
-                </div>
-
-                <p class="mb-0 text-center" style="font-size:14px;color:#033f1f">
-                    <i>Si vous souhaitez vous desinscrire des services YNOV ,</i>
-                    <a     class="text-white"
-                        href="https://yakoafricassur.com/desabonnement-ynov"
-                        title="Pour vous desabonner de l\' Application YNOV cliquez ici"
-                        target="_blank"
-                    >
-                        <span style="color:#F9B233;font-size:14px;font-weight:bold;">CLIQUEZ ICI</span>
-                    </a>
-                </p>
-            </div>
+           
             </div>
             <div class="footer-wrap pd-20 mb-20 text-center" >
                 <div class="footer-wrap pd-20 mb-20 card-box footerStyle" >
                     <div class="row" >
                         <div class="col-lg-3"></div>
                         <div class="col-lg-6">
-                            <p class="mb-0 text-center" style="font-size:14px;color:white">
-                                <a
-                                    href="https://yakoafricassur.com/conditions-generales-utilisation-ynov.html"
-                                    title="Politique de confidentialite de l\'application YNOV"
-                                    target="_blank"
-                                    style="color: white;"
-                                >Politique de confidentialit&#233; de l \'application YNOV</a>
-                            </p>
-                            <p class="mb-0 text-center" style="font-size:14px;color:white">
-                                <a
-                                    href="https://yakoafricassur.com/conditions-generales-utilisation-ynov.html"
-                                    title="Conditions générales utilisation Application Ynov"
-                                    target="_blank"
-                                    style="color: white;"
-                                >Conditions g&#233;n&#233;rales utilisation Application YNOV</a>
-                            </p>
                             <p class="mb-0 text-center" style="font-size:14px;">
                                 Copyright © 2022
                                 <a

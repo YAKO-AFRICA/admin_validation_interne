@@ -34,6 +34,8 @@ class users
     var $email = null;
     var $codeagent = null;
     var $cible = null;
+    var $villes_reception=null;
+    var $localisation = null;
 
 
     public function __construct($infos)
