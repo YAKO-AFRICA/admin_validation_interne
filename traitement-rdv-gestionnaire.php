@@ -29,7 +29,8 @@ if (isset($_COOKIE["idrdv"])) {
     $sqlSelect = "SELECT tblrdv.* , TRIM(libelleVilleBureau) as villes , concat(users.nom,' ',users.prenom) as nomgestionnaire , users.codeagent as codeagent FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau INNER JOIN users ON tblrdv.gestionnaire = users.id WHERE tblrdv.idrdv = '" . $idrdv . "'";
     $retour_rdv = $fonction->_getSelectDatabases($sqlSelect);
     if ($retour_rdv == null) {
-        header('Location: liste-rdv-attente');
+        // header('Location: liste-rdv-attente');
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
 
