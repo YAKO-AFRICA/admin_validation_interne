@@ -240,18 +240,48 @@ if ($request->action != null) {
                 $libelleTraitement = $rrr["libelle"];
                 $operation = $rrr["operation"];
 
+                // if (strtolower($resultatOpe) == "partielle" || strtolower($resultatOpe) == "avance") {
+
+                //     $retour = traitementApresReceptionRDV($rdv, $etat, $libelleTraitement, $observation, $operation);
+                //     echo json_encode($retour);
+                // } elseif (strtolower($resultatOpe) == "transformation") {
+
+                //     $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+                //     echo json_encode($resultatOpe);
+                // } elseif (strtolower($resultatOpe) == "renonce" || strtolower($resultatOpe) == "absent" || strtolower($resultatOpe) == "autres") {
+
+                //     $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+                //     echo json_encode($retour);
+                // } else {
+                //     $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+                //     echo json_encode($retour);
+                // }
+                
                 switch (strtolower($resultatOpe)) {
 
-                    case "transformation":
-                        $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
-                        echo json_encode($resultatOpe);
-                        break;
-                    case "partielle" || "avance":
+                    case "partielle":
+                    case "avance":
+                        // Traitement spécifique
                         $retour = traitementApresReceptionRDV($rdv, $etat, $libelleTraitement, $observation, $operation);
                         echo json_encode($retour);
                         break;
 
+                    case "transformation":
+                        // Cas particulier (renvoie directement le résultat brut)
+                        $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+                        echo json_encode($resultatOpe);
+                        break;
+
+                    case "renonce":
+                    case "absent":
+                    case "autres":
+                        // Traitement classique
+                        $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+                        echo json_encode($retour);
+                        break;
+
                     default:
+                        // Cas par défaut similaire aux autres
                         $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
                         echo json_encode($retour);
                         break;

@@ -405,7 +405,7 @@ if (isset($_COOKIE["idrdv"])) {
                 },
                 success: function(response) {
 
-                    console.log(response);
+                    console.log("response",response);
 
                     if (response != '-1' && response != '0') {
                         let code = response;
@@ -413,10 +413,9 @@ if (isset($_COOKIE["idrdv"])) {
                         if(code == "transformation"){
                             a_afficher = `<div class="alert alert-success" role="alert">
 								<h2> Merci de vous connecter a la plateforme de <span class="text-success">` + code + `</span> afin de poursuivre le traitement !!</h2></div>`
-                        }
-                        else{
+                        }else {
                             a_afficher = `<div class="alert alert-success" role="alert">
-								<h2>La demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
+								<h2>Traitement de la demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
                         }
 
                     } else {
@@ -495,7 +494,7 @@ if (isset($_COOKIE["idrdv"])) {
                         let code = response;
 
                         a_afficher = `<div class="alert alert-success" role="alert">
-								<h2>La demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
+								<h2>Traitement de la demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
 
                     } else {
                         a_afficher = `<div class="alert alert-danger" role="alert">
