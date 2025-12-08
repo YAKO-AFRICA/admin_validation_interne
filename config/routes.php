@@ -229,7 +229,7 @@ if ($request->action != null) {
                     "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partiel", "operation" => "Rachat partiel"),
                     "avance" => array("etat" => "2", "libelle" => "Le client a demandé une avance / pret", "operation" => "Avance ou prêt"),
                     "renonce" => array("etat" => "3", "libelle" => "Le client décide de conserver son contrat", "operation" => "Renonce"),
-                    "absent" => array("etat" => "5", "libelle" => "Le client ne c'est pas presenté", "operation" => "Absent"),
+                    "absent" => array("etat" => "5", "libelle" => "Le client ne s'est pas presenté", "operation" => "Absent"),
                     "transformation" => array("etat" => "4", "libelle" => "Le client a demandé une transformation", "operation" => "transformation"),
                     "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres")
                 );
@@ -256,7 +256,7 @@ if ($request->action != null) {
                 //     $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
                 //     echo json_encode($retour);
                 // }
-                
+
                 switch (strtolower($resultatOpe)) {
 
                     case "partielle":

@@ -549,8 +549,8 @@ if (isset($_COOKIE["idrdv"])) {
                                             <option value="transformation">Transformations</option>
                                             <option value="partielle">Le client a demandé un rachat partiel</option>
                                             <option value="avance">Le client a demandé une avance / pret</option>
-                                            <option value="renonce">Le client a decider de conserver son contrat</option>
-                                            <option value="absent">Le client ne c'est pas presenté</option>
+                                            <option value="renonce">Le client a decidé de conserver son contrat</option>
+                                            <option value="absent">Le client ne s'est pas presenté</option>
                                             <option value="autres">Autres</option>
                                         </select>
                                 </div>
