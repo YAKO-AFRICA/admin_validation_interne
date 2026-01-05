@@ -56,7 +56,7 @@ if (!isset($_SESSION['typeCompte'])) {
                             <div class="sidebar-small-cap"><?= strtoupper($_SESSION['profil'] . " " . $_SESSION['typeCompte'] . "s") ?></div>
                         </li>
                         <li class="dropdown">
-                            <a href="tableau-suivi-prestations" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <a href="tableau-suivi-prestation" class="dropdown-toggle no-arrow" style="font-size:14px">
                                 <span class="micon fa fa-area-chart"></span><span class="mtext">Tableau de suivi</span>
                             </a>
                         </li>
@@ -111,6 +111,11 @@ if (!isset($_SESSION['typeCompte'])) {
 
                     ?>
                     <li class="dropdown">
+                        <a href="tableau-suivi-prestation" class="dropdown-toggle no-arrow" style="font-size:14px">
+                            <span class="micon fa fa-area-chart"></span><span class="mtext">Tableau de suivi Prestation</span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
                         <a href="bordereau-prestation" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon dw dw-folder"></span><span class="mtext">Bordereau<br>prestation</span>
                         </a>
@@ -156,11 +161,12 @@ if (!isset($_SESSION['typeCompte'])) {
                     <li>
                         <div class="dropdown-divider"></div>
                     </li>
-                    <!-- <li class="dropdown">
+                    <li class="dropdown">
                         <a href="tableau-suivi-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-area-chart"></span><span class="mtext">Tableau de suivi</span>
                         </a>
-                    </li> -->
+                    </li>
+
                     <li class="dropdown">
                         <a href="recherche-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon dw dw-search"></span><span class="mtext">rechercher<br>un rdv</span>
@@ -182,7 +188,7 @@ if (!isset($_SESSION['typeCompte'])) {
 
                     <li class="dropdown">
                         <a href="rdv-gestionnaire?i=2" class="dropdown-toggle no-arrow" style="font-size:14px">
-                            <span class="micon dw dw-edit"></span><span class="mtext">rdv<br>transmis</span>
+                            <span class="micon dw dw-edit"></span><span class="mtext"> Mes rdvs<br>transmis</span>
                         </a>
                     </li>
                     <li class="dropdown">

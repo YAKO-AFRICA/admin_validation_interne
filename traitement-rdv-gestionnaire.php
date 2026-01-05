@@ -1,5 +1,7 @@
 <?php
 
+use PSpell\Config;
+
 session_start();
 
 
@@ -34,17 +36,13 @@ if (isset($_COOKIE["idrdv"])) {
     }
 
     $rdv = $retour_rdv[0];
-    
-
-    /*if ($rdv->etat != "1") {
-        header('Location: detail-rdv');
-        exit;
-    }*/
 
     $daterdv = isset($rdv->daterdv) ? date('Y-m-d', strtotime(str_replace('/', '-', $rdv->daterdv))) : '';
     $daterdveff = isset($rdv->daterdveff) ? date('Y-m-d', strtotime($rdv->daterdveff)) : '';
+    $minDate = date('Y-m-d', strtotime($daterdveff . ' +1 day'));
+    $maxDate = date('Y-m-d', strtotime($daterdveff . ' +14 days'));
 
-    $reply = $fonction->getRetourneVillesBureau($rdv->idTblBureau);
+    $infosBordereaux = $fonction->getRetourneInfosBordereaux(" WHERE NumeroRdv = '" . $rdv->idrdv . "'");
 
     $afficheuse = TRUE;
 } else {
@@ -108,7 +106,7 @@ if (isset($_COOKIE["idrdv"])) {
 
                 <div class="row">
                     <!-- Informations RDV -->
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="card mb-4 bg-light">
                             <div class="card-header bg-white">
                                 <h4 class="text-center text-info font-weight-bold" style="color:#033f1f!important;">Information sur la demande de RDV</h4>
@@ -151,7 +149,7 @@ if (isset($_COOKIE["idrdv"])) {
                                 <div class="row">
                                     <div class="form-group col-md-3">
                                         <label>Ville choisie :</label>
-                                        <input type="text" class="form-control" value="<?= $rdv->villes ?? '' ?>" disabled>
+                                        <input type="text" class="form-control" id="villes" name="villes" value="<?= $rdv->villes ?? '' ?>" disabled>
                                         <input type="hidden" id="idVilleBureau" name="idVilleBureau" value="<?= $rdv->idVilleBureau ?>">
                                     </div>
                                     <div class="form-group col-md-3">
@@ -180,65 +178,151 @@ if (isset($_COOKIE["idrdv"])) {
                     </div>
 
                     <!-- Contrat NSIL -->
-                    <div class="col-md-4">
-                        <div class="card mb-4 bg-light">
-                            <div class="card-header bg-white">
-                                <h4 class="text-center font-weight-bold" style="color:#033f1f!important;">Information sur le contrat via NSIL</h4>
+                    <div class="col-md-6">
+                        <div class="card mb-4 bg-light" style="background-color:#f2f2f2">
+                            <div class="card-header" style="background-color: #033f1f;">
+                                <h4 class="text-center font-weight-bold" style="color:white!important;">Information bordereau sur le contrat</h4>
                             </div>
-                            <div class="card-body" style="color:#033f1f!important;">
+                            <div class="card-body" style="color:#033f1f!important; background-color:#f2f2f2" style="font: size 14px; font-weight:bold;">
                                 <div class="row" id="infos-contrat"></div>
+                                <?php if ($infosBordereaux != null) : ?>
+                                    <?php foreach ($infosBordereaux as $bordereau) : ?>
+
+                                        <div class="row w-100">
+                                            <div class="form-group col-md-7">
+                                                <p class="mb-0">
+                                                    Souscripteur : <span class="text-info font-weight-bold"> <?= empty($bordereau->souscripteur) ? "" : $bordereau->souscripteur ?> </span>
+                                                </p>
+                                            </div>
+                                            <div class="form-group col-md-5">
+                                                <p class="mb-0">
+                                                    Assuré : <span class="text-info font-weight-bold"> <?= empty($bordereau->assure) ? "" : $bordereau->assure ?> </span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row w-100">
+                                            <div class="form-group col-md-7">
+                                                <p class="mb-0">
+                                                    Produit : <span class="text-info font-weight-bold"><?= empty($bordereau->produit) ? "" : $bordereau->produit ?></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    Type d’opération : <span class="text-info font-weight-bold"><?= empty($bordereau->typeOperation) ? "" : $bordereau->typeOperation ?></span>
+                                                </p>
+
+                                                <p class="mb-0">
+                                                    Durée du contrat : <span class="text-info font-weight-bold"> <?= empty($bordereau->dureeContrat) ? "" : $bordereau->dureeContrat ?></span>
+                                                </p>
+                                            </div>
+                                            <div class="form-group col-md-5">
+                                                <p class="mb-0">
+                                                    Date d’effet : <span class="text-info font-weight-bold"><?= empty($bordereau->dateEffet) ? "" : date("d/m/Y", strtotime($bordereau->dateEffet)) ?></span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    Date d’échéance : <span class="text-info font-weight-bold"><?= empty($bordereau->dateEcheance) ? "" : date("d/m/Y", strtotime($bordereau->dateEcheance)) ?></span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row w-100">
+                                            <div class="form-group col-md-7">
+                                                <p class="mb-0">
+                                                    Valeur de rachat : <span class="text-info font-weight-bold"><?= empty($bordereau->valeurRachat) ? "" : number_format($bordereau->valeurRachat, 0, ',', ' ') ?> FCFA</span>
+                                                    <input type="text" class="form-control" id="valeurRachat" name="valeurRachat" value="<?= $bordereau->valeurRachat ?? '0' ?>" hidden>
+                                                </p>
+                                                <p class="mb-0">
+                                                    Provision nette : <span class="text-info font-weight-bold"><?= empty($bordereau->provisionNette) ? "" : number_format($bordereau->provisionNette, 0, ',', ' ') ?> FCFA</span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    Cumul rachats partiels : <span class="text-info font-weight-bold"><?= empty($bordereau->cumulRachatsPartiels) ? "" : number_format($bordereau->cumulRachatsPartiels, 0, ',', ' ') ?> FCFA</span>
+                                                </p>
+                                            </div>
+
+                                            <div class="form-group col-md-5">
+                                                <p class="mb-0">
+                                                    Cumul avances : <span class="text-info font-weight-bold"><?= empty($bordereau->cumulAvances) ? "" : number_format($bordereau->cumulAvances, 0, ',', ' ') ?> FCFA</span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    Valeur max avance : <span class="text-info font-weight-bold"><?= empty($bordereau->valeurMaxAvance) ? "" : number_format($bordereau->valeurMaxAvance, 0, ',', ' ') ?> FCFA</span>
+                                                </p>
+                                                <p class="mb-0">
+                                                    Montant transformation : <span class="text-info font-weight-bold"> <?= empty($bordereau->MontantTransformation) ? "" : number_format($bordereau->MontantTransformation, 0, ',', ' ') ?> FCFA </span>
+                                                    <input type="text" class="form-control" id="valeurTransformation" name="valeurTransformation" value="<?= $bordereau->MontantTransformation ?? '0' ?>" hidden>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row w-100">
+                                            <div class="form-group col-md-7">
+                                                <p class="mb-0">
+                                                    Auteur : <span class="text-info font-weight-bold"> <?= empty($bordereau->auteur) ? "" : $bordereau->auteur ?> </span>
+                                                </p>
+                                            </div>
+                                            <div class="form-group col-md-5">
+                                                <p class="mb-0">
+                                                    Date création : <span class="text-info font-weight-bold"> <?= empty($bordereau->created_at) ? "" : date("d/m/Y", strtotime($bordereau->created_at)) ?></span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <p class="text-center">Aucun bordereau pour ce RDV</p>
+
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Traitement RDV -->
-                <div class="card mb-4">
-                    <div class="card-header text-center bg-white">
-                        <h4 class="font-weight-bold" style="border:1px solid gray;background:#033f1f!important; color:white;">Traitement du RDV</h4>
-                    </div>
-                    <div class="card-body bg-light">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p>Traité le : <span id="dateheure" class="font-weight-bold"> <?= date('d/m/Y H:i:s') ?> </span></p>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <p>Traité par : <span class="font-weight-bold"><?= $_SESSION['utilisateur'] ?></span></p>
-                            </div>
+                <?php if ($infosBordereaux != null): ?>
+                    <!-- Traitement RDV -->
+                    <div class="card mb-4">
+                        <div class="card-header text-center bg-white">
+                            <h4 class="font-weight-bold" style="border:1px solid gray;background:#033f1f!important; color:white;">Traitement du RDV</h4>
                         </div>
-                        <input type="hidden" id="valideur" value="<?= $_SESSION['utilisateur'] ?>">
-
-                        <div class="row card-body" style="color: #033f1f;">
-                            <div class=" offset-md-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="message" class="col-form-label" style="font-size:18px; font-weight:bold;">Voulez vous autoriser le client à déposer son courrier ? </label>
+                        <div class="card-body bg-light">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>Traité le : <span id="dateheure" class="font-weight-bold"> <?= date('d/m/Y H:i:s') ?> </span></p>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="custom-control custom-radio mb-5 col">
-                                        <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" value="3" style="color:red">
-                                        <label class="custom-control-label" for="customRadio1" style="color:red; font-weight:bold">NON</label>
-                                    </div>
-                                    <div class="custom-control custom-radio mb-5 col">
-                                        <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" value="1">
-                                        <label class="custom-control-label" for="customRadio2" style="color:gray!important; font-weight:bold;">En attente</label>
-                                    </div>
-                                    <div class="custom-control custom-radio mb-5 col">
-                                        <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input" value="2">
-                                        <label class="custom-control-label" for="customRadio3" style="color: #033f1f; font-weight:bold;">OUI , le client est permit à déposer son courrier pour <span style="color:red"> <?= strtoupper($rdv->motifrdv) ?> </span> </label>
-                                    </div>
+                                <div class="col-md-6 text-right">
+                                    <p>Traité par : <span class="font-weight-bold"><?= $_SESSION['utilisateur'] ?></span></p>
                                 </div>
                             </div>
-                        </div>
+                            <input type="hidden" id="valideur" value="<?= $_SESSION['utilisateur'] ?>">
 
-                        <div id="afficheuseusers"></div>
-                        <div id="afficheuse" class="mt-3"></div>
+                            <div class="row card-body" style="color: #033f1f;">
+                                <div class=" offset-md-6 col-md-6">
+                                    <div class="form-group">
+                                        <label for="message" class="col-form-label" style="font-size:18px; font-weight:bold;">Voulez vous autoriser le client à déposer son courrier pour <span style="color:red"> <?= strtoupper($rdv->motifrdv) ?> </span> ? </label>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="custom-control custom-radio mb-5 col">
+                                            <input type="radio" id="customRadio1" name="customRadio" class="custom-control-input" value="3" style="color:red">
+                                            <label class="custom-control-label" for="customRadio1" style="color:red; font-weight:bold">NON</label>
+                                        </div>
+                                        <div class="custom-control custom-radio mb-5 col">
+                                            <input type="radio" id="customRadio2" name="customRadio" class="custom-control-input" value="1">
+                                            <label class="custom-control-label" for="customRadio2" style="color:gray!important; font-weight:bold;">En attente</label>
+                                        </div>
+                                        <div class="custom-control custom-radio mb-5 col">
+                                            <input type="radio" id="customRadio3" name="customRadio" class="custom-control-input" value="2">
+                                            <label class="custom-control-label" for="customRadio3" style="color: #033f1f; font-weight:bold;">OUI , le client est permit à déposer son courrier </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="modal-footer mt-4">
-                            <label id="lib"></label>
-                            <div id="optionTraitement"></div>
+                            <div id="afficheuseusers"></div>
+                            <div id="afficheuse" class="mt-3"></div>
+
+                            <div class="modal-footer mt-4">
+                                <label id="lib"></label>
+                                <div id="optionTraitement"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php endif; ?>
             </div>
 
             <div class="footer-wrap pd-20 mb-20">
@@ -337,7 +421,61 @@ if (isset($_COOKIE["idrdv"])) {
 
 
     <script>
+        const tabloResulatOperation = {
+            partielle: {
+                etat: "2",
+                libelle: "Le client a demandé un rachat partiel",
+                operation: "Rachat partiel",
+                permission: "1",
+                resultat: "conservation"
+            },
+            avance: {
+                etat: "2",
+                libelle: "Le client a demandé une avance / prêt",
+                operation: "Avance ou prêt",
+                permission: "1",
+                resultat: "conservation"
+            },
+            renonce: {
+                etat: "3",
+                libelle: "Le client décide de conserver son contrat",
+                operation: "Renonce",
+                permission: "1",
+                resultat: "conservation"
+            },
+            absent: {
+                etat: "5",
+                libelle: "Le client ne s'est pas présenté",
+                operation: "Absent",
+                permission: "0",
+                resultat: "absent"
+            },
+            transformation: {
+                etat: "4",
+                libelle: "Le client a demandé une transformation",
+                operation: "Transformation",
+                permission: "1",
+                resultat: "transformation"
+            },
+            autres: {
+                etat: "3",
+                libelle: "Autre observation",
+                operation: "Autres",
+                permission: "0",
+                resultat: "autres"
+            }
+        };
+
+        const montantTotal = <?= intval($infosBordereaux[0]->valeurRachat ?? 0); ?>;
+        const montantMaxAvance = <?= intval($infosBordereaux[0]->valeurMaxAvance ?? 0); ?>;
+
+
+        // const $mtTransformation = $('#montanttransformation');
+        // const $mtClient = $('#motantclient');
+
         $(document).ready(function() {
+
+
 
             const etape = <?= $rdv->etat ?>;
             const idcontrat = "<?= $rdv->police ?>";
@@ -345,10 +483,12 @@ if (isset($_COOKIE["idrdv"])) {
 
             var objetRDV = document.getElementById("villesRDV").value;
             var dateRDVEffective = document.getElementById("daterdveff").value;
+            var valeurTransformation = document.getElementById("valeurTransformation").value;
+            var valeurRachat = document.getElementById("valeurRachat").value;
 
-            if (idcontrat !== "") {
-                remplirModalEtatComtrat(idcontrat);
-            }
+            // if (idcontrat !== "") {
+            //     remplirModalEtatComtrat(idcontrat);
+            // }
 
 
             console.log(objetRDV + " " + dateRDVEffective);
@@ -361,7 +501,7 @@ if (isset($_COOKIE["idrdv"])) {
                 } else if (valeur === '2') {
                     getMenuRejeter();
                 } else {
-                    alert('Le RDV est en attente.');
+                    //alert('Le RDV est en attente.');
                     $("#afficheuse").empty();
                     $("#color_button").text("#F9B233");
                     $("#optionTraitement").empty();
@@ -379,11 +519,38 @@ if (isset($_COOKIE["idrdv"])) {
 
             const resultatOpe = $('#resultatOpe').val();
             const obervation = $('#obervation').val();
+
+            let date_report_rdv = '';
+            let produittransformation = '';
+            let montanttransformation = '';
+            let motantclient = '';
+            let optionadditif = resultatOpe;
             //const gestionnaire = $('#ListeGest').val();
 
+            if (resultatOpe == 'absent') {
+                var optradio = document.getElementsByName("action_absent");
+                let action_absent = getRecupRadio(optradio);
+                if (action_absent == "reprogrammer") {
+                    date_report_rdv = $('#nouvelle_date_rdv').val();
+                    // console.log("date rdv ===> " + dateRDV + " <==== nouvelle date rdv " + date_report_rdv);
+                    optionadditif += "|" + action_absent + "|" + date_report_rdv;
+                }
+            } else if (resultatOpe == 'transformation') {
+                produittransformation = document.getElementById("produittransformation").value;
+                montanttransformation = document.getElementById("montanttransformation").value;
+                motantclient = document.getElementById("motantclient").value;
+                //console.log("transformation ====> " + produittransformation + " m1 ====> " + montanttransformation + " m2 ====> " + motantclient);
+                optionadditif += "|" + produittransformation + "|" + montanttransformation + "|" + motantclient;
+            } else if (resultatOpe == 'avance') {
+                let montantsouhaiteAvance = document.getElementById("montantsouhaiteAvance").value;
+                optionadditif += "|" + montantsouhaiteAvance;
+            } else if (resultatOpe == 'partiel') {
+                let montantsouhaitePartiel = document.getElementById("montantsouhaitePartiel").value;
+                optionadditif += "|" + montantsouhaitePartiel;
+            }
 
-            console.log(" ===> " + objetRDV + " " + dateRDV + " " + etat + " // " + resultatOpe);
 
+            console.log(" ===> " + objetRDV + " " + dateRDV + " " + etat + " // " + resultatOpe + " //==> " + optionadditif);
             //const [idgestionnaire, nomgestionnaire, idvilleGestionnaire, villesGestionnaire] = gestionnaire.split("|");
             //console.log(" valider rdv " + objetRDV + " " + dateRDV + " " + etat + " " + gestionnaire);
 
@@ -400,6 +567,7 @@ if (isset($_COOKIE["idrdv"])) {
                     daterdveff: dateRDV,
                     resultatOpe: resultatOpe,
                     obervation: obervation,
+                    optionadditif: optionadditif,
                     etat: "operationRDVReception",
                 },
                 success: function(response) {
@@ -409,11 +577,10 @@ if (isset($_COOKIE["idrdv"])) {
                     if (response != '-1' && response != '0') {
                         let code = response;
 
-                        if(code == "transformation"){
+                        if (code == "transformation") {
                             a_afficher = `<div class="alert alert-success" role="alert">
 								<h2> Merci de vous connecter a la plateforme de <span class="text-success">` + code + `</span> afin de poursuivre le traitement !!</h2></div>`
-                        }
-                        else{
+                        } else {
                             a_afficher = `<div class="alert alert-success" role="alert">
 								<h2>La demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
                         }
@@ -519,6 +686,204 @@ if (isset($_COOKIE["idrdv"])) {
 
         })
 
+        $(document).on('change', 'input[name="action_absent"]', function() {
+
+            if ($(this).val() === 'reprogrammer') {
+                $('#blocReprogrammation').slideDown();
+            } else {
+                $('#blocReprogrammation').slideUp();
+            }
+        });
+
+        // Quand le montant de la transformation est modifié "montanttransformation"
+        $(document).on('input', '#montanttransformation', function() {
+
+            const mtTransformation = parseFloat($(this).val()) || 0;
+
+            if (mtTransformation > montantTotal) {
+                alert("Le montant de la transformation ne peut pas depasser le montant total : " + montantTotal);
+                $('#montanttransformation').val(montantTotal);
+                $('#motantclient').val('0');
+            }
+            const reste = montantTotal - mtTransformation;
+            if (reste >= 0) {
+                $('#motantclient').val(reste);
+            }
+        });
+
+        // Quand le montant client est modifié "motantclient"
+        $(document).on('input', '#motantclient', function() {
+
+            const mtClient = parseFloat($(this).val()) || 0;
+            const reste = montantTotal - mtClient;
+
+            if (mtClient > montantTotal) {
+                alert("Le montant du client ne peut pas depasser le montant total : " + mtClient);
+                $('#motantclient').val(montantTotal);
+                $('#montanttransformation').val('0');
+            }
+            if (reste >= 0) {
+                $('#montanttransformation').val(reste);
+            }
+        });
+
+        // Quand le montant souhaité est modifié "montantsouhaite"
+        $(document).on('input', '#montantsouhaiteAvance', function() {
+
+            const montantsouhaite = parseFloat($(this).val()) || 0;
+            const reste = montantMaxAvance - montantsouhaite;
+
+            if (montantsouhaite > montantMaxAvance) {
+                alert("Le montant shouhaite ne peut pas depasser le montant total : " + montantMaxAvance);
+                //$('#montantsouhaite').val(montantMaxAvance);
+                $("#valider").prop("disabled", true);
+            } else {
+                $("#valider").prop("disabled", false);
+            }
+        });
+
+        // Quand le montant souhaité est modifié "montantsouhaitePartiel"
+        $(document).on('input', '#montantsouhaitePartiel', function() {
+
+            const montantsouhaite = parseFloat($(this).val()) || 0;
+            const reste = montantTotal - montantsouhaite;
+
+            if (montantsouhaite > montantTotal) {
+                alert("Le montant shouhaite ne peut pas depasser la valeur de rachat : " + montantTotal);
+                //$('#montantsouhaite').val(montantMaxAvance);
+                $("#valider").prop("disabled", true);
+            } else {
+                $("#valider").prop("disabled", false);
+            }
+        });
+
+
+
+        // Quand un resultatOp est sélectionné
+        $(document).on('change', '#resultatOpe', function() {
+            let resultatOp = $(this).val();
+            if (resultatOp == "transformation") {
+                let htmlTransformation = `
+                    <!-- Le reste de ton contenu ici -->
+                    <h4 class="text-center p-2" style="color:#033f1f;  font-weight:bold; "> Operation de transformation </h4>
+                            <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
+                            <div class="row">
+                                <div class="form-group col-md-6 col-sm-12">
+                                    <label for="tel" class="col-form-label">Veuillez selectionnez le produit de transformation :</label>
+                                    <select class="form-control" id="produittransformation" name="produittransformation">
+                                        <option value="" selected disabled >Veuillez selectionnez le produit de transformation</option>
+                                        <option value="invest">Invest +</option>
+                                        <option value="gagnant">100% GAGNANT</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3 col-sm-12">
+                                    <label for="tel" class="col-form-label">Motant de la transformation :</label>
+                                    <input type="number" class="form-control" id="montanttransformation" name="montanttransformation" placeholder="Montant de la transformation" value="<?php echo intval($infosBordereaux[0]->MontantTransformation); ?>">
+                                </div>
+                                <div class="form-group col-md-3 col-sm-12">
+                                    <label for="tel" class="col-form-label">Motant a payer au client :</label>
+                                    <input type="number" class="form-control" id="motantclient" name="motantclient" placeholder="Montant a payer au client">
+                                </div>
+                            </div>
+                    `
+                $('#resultatEntretienClient').html(htmlTransformation);
+            } else if (resultatOp == "avance") {
+                let tabloOperation = tabloResulatOperation[resultatOp];
+                console.log(tabloOperation)
+                let htmlAvance = `
+                    <!-- Le reste de ton contenu ici -->
+                    <h4 class="text-center p-2" style="color:#033f1f;  font-weight:bold; "> Operation ${tabloOperation.operation} </h4>
+                    <p>Le montant maximum ${tabloOperation.operation} est de : <span class="text-danger font-weight-bold"><?php echo number_format($infosBordereaux[0]->valeurMaxAvance, 0, ',', ' '); ?> FCFA </span> </p>
+                            <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
+                            <div class="row">
+                                <div class="form-group col-md-12 col-sm-12">
+                                    <label for="tel" class="col-form-label">Motant souhaité de ${tabloOperation.operation} :</label>
+                                    <input type="number" class="form-control" id="montantsouhaiteAvance" name="montantsouhaiteAvance" placeholder="Montant souhaité de ${tabloOperation.operation}" value="<?php echo intval($infosBordereaux[0]->valeurMaxAvance); ?>" max="<?php echo intval($infosBordereaux[0]->valeurMaxAvance); ?>">
+                                </div>
+                            </div>
+                    `
+                $('#resultatEntretienClient').html(htmlAvance);
+
+            } else if (resultatOp == "partielle") {
+                let tabloOperation = tabloResulatOperation[resultatOp];
+                console.log(tabloOperation)
+                let htmlAvance = `
+                    <!-- Le reste de ton contenu ici -->
+                    <h4 class="text-center p-2" style="color:#033f1f;  font-weight:bold; "> Operation ${tabloOperation.operation} </h4>
+                    <p>Le montant maximum ${tabloOperation.operation} est de : <span class="text-danger font-weight-bold"><?php echo number_format($infosBordereaux[0]->valeurRachat, 0, ',', ' '); ?> FCFA </span> </p>
+                            <div style="border-top: 4px solid #033f1f;width : 100%;text-align: center;"></div>
+                            <div class="row">
+                                <div class="form-group col-md-12 col-sm-12">
+                                    <label for="tel" class="col-form-label">Motant souhaité de ${tabloOperation.operation} :</label>
+                                    <input type="number" class="form-control" id="montantsouhaitePartiel" name="montantsouhaitePartiel" placeholder="Montant souhaité de ${tabloOperation.operation}" value="<?php echo intval($infosBordereaux[0]->valeurRachat); ?>" max="<?php echo intval($infosBordereaux[0]->valeurRachat); ?>">
+                                </div>
+                            </div>
+                    `
+                $('#resultatEntretienClient').html(htmlAvance);
+
+            } else if (resultatOp == "absent") {
+                let htmlAbsent = `
+                    <!-- Le reste de ton contenu ici -->
+                   <h4 class="text-center p-2" style="color:#033f1f; font-weight:bold;">Issu de l'absence</h4>
+                   <div style="border-top:4px solid #033f1f; width:100%; margin-bottom:15px;"></div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <div class="custom-control custom-radio mb-3">
+                                <input
+                                    type="radio"
+                                    id="absent_annuler"
+                                    name="action_absent"
+                                    class="custom-control-input"
+                                    value="annuler"
+                                >
+                                <label class="custom-control-label font-weight-bold text-danger" for="absent_annuler">
+                                    Annuler le rendez-vous
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-radio mb-3">
+                                <input
+                                    type="radio"
+                                    id="absent_reprogrammer"
+                                    name="action_absent"
+                                    class="custom-control-input"
+                                    value="reprogrammer"
+                                >
+                                <label class="custom-control-label font-weight-bold text-success" for="absent_reprogrammer">
+                                    Reprogrammer le rendez-vous
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="custom-control custom-radio mb-3">
+                                <input
+                                    type="radio"
+                                    id="absent_attente"
+                                    name="action_absent"
+                                    class="custom-control-input"
+                                    value="attente"
+                                >
+                                <label class="custom-control-label font-weight-bold text-warning" for="absent_attente">
+                                    Mettre en attente le rendez-vous
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="blocReprogrammation" class="mt-3" style="display:none;">
+                        <label>Nouvelle date du RDV</label>
+                        <input type="date" class="form-control" name="nouvelle_date_rdv" id="nouvelle_date_rdv" min="<?php echo $minDate; ?>" max="<?php echo $maxDate; ?>" onchange="checkDate('1')"  required>
+                        <small id="errorDate2" class="text-danger"></small>
+                    </div>
+                    `
+                $('#resultatEntretienClient').html(htmlAbsent);
+            } else {
+                $('#resultatEntretienClient').html('');
+            }
+
+        });
+
         // Quand un gestionnaire est sélectionné
         $(document).on('change', '#ListeGest', function() {
             verifierActivationBouton();
@@ -528,7 +893,7 @@ if (isset($_COOKIE["idrdv"])) {
             window.history.back();
         }
 
-
+        // Génère le formulaire de validation
         function getMenuValider() {
 
             let notif = `
@@ -543,14 +908,14 @@ if (isset($_COOKIE["idrdv"])) {
                                     <input type="text" class="form-control" id="idcontrat" name="idcontrat" value="<?php echo $rdv->police; ?>" disabled>
                                     </div>
                                 <div class="form-group col-md-4 col-sm-12">
-                                    <label for="validationTextarea" class="form-label" style="font-size:16px; font-weight:bold;">Resultat de l\'opération (<span style="color:red;">*</span>)</label>
+                                    <label for="validationTextarea" class="form-label" style="font-size:16px; font-weight:bold;">Resultat apres entretien du client (<span style="color:red;">*</span>)</label>
                                         <select name="resultatOpe" id="resultatOpe" class="form-control "  data-rule="required">
                                             <option value="">...</option>
-                                            <option value="transformation">Transformations</option>
+                                            <option value="transformation">Le client souhaite effectuer une Transformation</option>
                                             <option value="partielle">Le client a demandé un rachat partiel</option>
                                             <option value="avance">Le client a demandé une avance / pret</option>
-                                            <option value="renonce">Le client a decider de conserver son contrat</option>
-                                            <option value="absent">Le client ne c'est pas presenté</option>
+                                            <option value="renonce">Le client décide de conserver son contrat</option>
+                                            <option value="absent">Le client ne s'est pas présenté</option>
                                             <option value="autres">Autres</option>
                                         </select>
                                 </div>
@@ -559,7 +924,9 @@ if (isset($_COOKIE["idrdv"])) {
                                     <textarea class="form-control" id="obervation" name="obervation"></textarea>
                                 </div>
                                 
-                            </div>`;
+                            </div>
+                            
+                            <div id="resultatEntretienClient"></div>`;
 
             let bouton_valider = `<button type="submit" name="valider" id="valider" class="btn btn-success" style="background:#033f1f;font-weight:bold; color:white"> Enregistrer le traitement</button> 
                 <div id="spinner" style="display: none; margin-top: 10px;">
@@ -575,56 +942,6 @@ if (isset($_COOKIE["idrdv"])) {
             $("#afficheuse").html(notif)
             $("#optionTraitement").html(bouton_valider)
 
-        }
-        // Génère le formulaire de validation
-        function getMenuValiderold() {
-
-            const objetRDV = $("#villesRDV").val();
-            const dateRDVEffective = $("#daterdveff").val();
-            const motifrdv = $("#motifrdv").val();
-            const gestionnaire = $("#gestionnaire").val();
-
-            const [idvillesRDV, villesRDV] = objetRDV.split(";");
-
-            const [idgestionnaire, nomgestionnaire, idvilleGestionnaire, villesRDVGestionnaire] = gestionnaire.split("|");
-
-            const notif = `
-                <div id="afficheuseCompteurUsers"></div>
-                <h4 class="text-center p-2" style="color:#033f1f; font-weight:bold;">Vous autorisez le client a faire son depot de courrier : <br>Libelle du courrier : ${motifrdv} </h4>
-                <div style="border-top: 4px solid #033f1f;width: 100%;text-align: center;"></div>
-                <div class="row">
-                    <div class="form-group col-md-2 col-sm-12">
-                        <label class="col-form-label">id contrat / police :</label>
-                        <input type="text" class="form-control" name="actionType" value="valider" hidden>
-                        <input type="text" class="form-control" name="idcontrat" value="<?php echo $rdv->police; ?>" disabled>
-                    </div>
-                    <div class="form-group col-md-3 col-sm-12">
-                        <label class="col-form-label">Date RDV effective :</label>
-                        <input type="date" class="form-control" id="dateRDVEffective" value="${dateRDVEffective}" disabled>
-                    </div>
-                    <div class="form-group col-md-3 col-sm-12">
-                        <label class="col-form-label">Ville RDV Effective :</label>
-                        <input type="text" class="form-control" id="villesRDVEffective" value="${villesRDV}" disabled>
-                    </div>
-                    <div class="form-group col-md-4 col-sm-12">
-                        <label class="form-label" style="font-size:16px; font-weight:bold;">gestionnaires RDV (<span style="color:red;">*</span>)</label>
-                        <input type="text" class="form-control" id="gestionnaire" name="gestionnaire" value="${nomgestionnaire}" disabled>
-                    </div>
-                    <div class="form-group col-md-6 col-sm-12">
-                        <label class="form-label" style="font-size:16px; font-weight:bold;">Libelle du courrier</label>
-                        <input type="text" class="form-control" id="motifrdv" name="motifrdv" value="${motifrdv}" disabled>
-                    </div>
-                </div>`;
-
-            const bouton_valider = `<button type="submit" name="valider" id="valider" class="btn btn-success" style="background:#033f1f;font-weight:bold; color:white" disabled>Transmettre le RDV </button>`;
-
-            $("#color_button").text(`#033f1f`);
-            $("#nom_button").text(`Enregistrer le traitement`);
-            $("#afficheuse").html(notif);
-            $("#optionTraitement").html(bouton_valider);
-
-            //getListCompteurGestionnaire();
-            getListeSelectAgentTransformations(idvillesRDV, villesRDV);
         }
 
 
@@ -769,10 +1086,11 @@ if (isset($_COOKIE["idrdv"])) {
             const [idgestionnaire, nomgestionnaire, idvilleGestionnaire, villesRDVGestionnaire] = gestionnaire.split("|");
 
             let notif = `
-                <h4 class="text-center p-2" style="color:#033f1f; font-weight:bold;">Vous autorisez le client a faire son depot de courrier : <br>Libelle du courrier : ${motifrdv} </h4>
+                <h4 class="text-center p-2" style="color:#033f1f; font-weight:bold;">Vous autorisez le client a faire son depot de courrier : <br>Libelle du courrier : <span style="color:red"> ${motifrdv} </span>  </h4>
                 
                 <div class="row">
                     <input type="hidden" class="form-control" id="actionType" name="actionType" value="rejeter">
+                    <input type="hidden" class="form-control" id="resultatOpe" name="resultatOpe" value="${motifrdv}">
                     <div class="form-group col-md-12 col-sm-12">
                         <label for="obervation" class="col-form-label">
                             Veuillez renseigner le motif après reception <span style="color:red;">*</span> :
@@ -789,6 +1107,104 @@ if (isset($_COOKIE["idrdv"])) {
             $("#afficheuse").html(notif);
             $("#color_button").text("red");
             $("#optionTraitement").html(bouton_rejet);
+        }
+
+        function getRecupRadio(radios) {
+
+            var found = 1;
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    found = 0;
+                    return radios[i].value;
+                    break;
+                }
+            }
+            if (found == 1) {
+                return "1";
+            }
+        }
+
+        function checkDate() {
+
+            const objetRDV = $('#villesRDV').val();
+            const dateStr = $('#nouvelle_date_rdv').val();
+
+            console.log(objetRDV)
+            let tablo = objetRDV.split(";");
+            var idVilleEff = tablo[0];
+            var villesR = tablo[1];
+
+
+            if (!dateStr) {
+                alert("Veuillez choisir une date.");
+                return;
+            }
+
+            // Récupération du numéro du jour
+            const parts = dateStr.split("-");
+            const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            const dayNumber = dateObj.getDay(); // 0=Dim, 6=Sam
+
+            const jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+            const jourNom = jours[dayNumber];
+
+            console.log("Date sélectionnée :", dateStr);
+            console.log("Jour :", jourNom, "| Numéro :", dayNumber);
+
+            // Bloquer weekend
+            if (dayNumber === 0 || dayNumber === 6) {
+
+                alert("❌ Les rendez-vous ne peuvent pas être pris le week-end.");
+                $("#errorDate2").html("❌ Les rendez-vous ne peuvent pas etre pris le week-end.");
+                //	desactiver le bouton modifierRDV
+                $("#valider").prop("disabled", true);
+                return;
+            }
+
+            // Récupérer les jours autorisés depuis l'API
+            getJoursReception(idVilleEff, function(joursAutorises) {
+
+                console.log("Jours autorisés :", joursAutorises);
+                // Vérification : est-ce que dayNumber est dans les jours autorisés ?
+                const autorise = joursAutorises.includes(dayNumber);
+
+                if (autorise) {
+                    //	activer le bouton modifierRDV
+                    $("#valider").prop("disabled", false);
+                    //alert("✅ Le jour " + jourNom + " est autorisé pour la réception !");
+                    $("#errorDate2").html("✅ <span style='color:green;'> Le " + jourNom + " est autorisé pour la réception pour la ville de <b>" + villesR + "</b>!</span>");
+                } else {
+
+                    //alert("❌ Le jour " + jourNom + " n’est pas autorisé pour la réception.");
+                    $("#errorDate2").html("❌ <span style='color:red;'> Le " + jourNom + " n’est pas autorisé pour la réception pour la ville de <b>" + villesR + "</b>.</span>");
+                    //	desactiver le bouton modifierRDV
+                    $("#valider").prop("disabled", true);
+                }
+            });
+        }
+
+        function getJoursReception(idVilleEff, callback) {
+            $.ajax({
+                url: "config/routes.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    idVilleEff: idVilleEff,
+                    etat: "receptionJourRdv"
+                },
+                success: function(response) {
+                    console.log("Jours autorisés reçus :", response);
+
+                    // Nettoyage : tableau de nombres
+                    const joursAutorises = response.map(j => Number(j));
+
+                    callback(joursAutorises);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erreur AJAX :", error);
+                    callback([]); // Aucun jour autorisé si erreur
+                }
+            });
         }
     </script>
 

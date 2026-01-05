@@ -107,7 +107,7 @@ if (isset($_COOKIE["idrdv"])) {
 
                 <div class="row">
                     <!-- Informations RDV -->
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <div class="card mb-4 bg-light">
                             <div class="card-header bg-white">
                                 <h4 class="text-center text-info font-weight-bold" style="color:#033f1f!important;">Information sur la demande de RDV</h4>
@@ -159,7 +159,7 @@ if (isset($_COOKIE["idrdv"])) {
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label>Ville effective :</label>
-                                        <?= $fonction->getVillesBureau($rdv->idTblBureau, "disabled") ?>
+                                        <?= $fonction->getVillesBureau($rdv->idTblBureau, "") ?>
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label>Date RDV Effective <span class="text-danger">*</span> :</label>
@@ -176,7 +176,7 @@ if (isset($_COOKIE["idrdv"])) {
                     </div>
 
                     <!-- Contrat NSIL -->
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                         <div class="card mb-4 bg-light">
                             <div class="card-header bg-white">
                                 <h4 class="text-center font-weight-bold" style="color:#033f1f!important;">Information sur le contrat via NSIL</h4>
@@ -185,7 +185,7 @@ if (isset($_COOKIE["idrdv"])) {
                                 <div class="row" id="infos-contrat"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- Traitement RDV -->
@@ -344,9 +344,9 @@ if (isset($_COOKIE["idrdv"])) {
             var dateRDVEffective = document.getElementById("daterdveff").value;
 
 
-            if (idcontrat !== "") {
-                remplirModalEtatComtrat(idcontrat);
-            }
+            // if (idcontrat !== "") {
+            //     remplirModalEtatComtrat(idcontrat);
+            // }
 
 
             checkDate('0');
@@ -373,10 +373,10 @@ if (isset($_COOKIE["idrdv"])) {
 
                 if ($(this).val() === "null") return;
 
-                const dateRDVEffective = $(this).val();
+                //const dateRDVEffective = $(this).val();
                 const [idvillesRDV, villesRDV] = $(this).val().split(";");
 
-                //console.log("Nouvelle ville RDV Effective sélectionnée :", villesRDV + " (" + idvillesRDV + ")  " + dateRDVEffective);
+                //console.log("Nouvelle ville RDV Effective sélectionnée :", villesRDV + " (" + idvillesRDV + ")  ");
 
                 const valeur = $('input[name="customRadio"]:checked').val();
                 if (valeur === '2') {
@@ -768,9 +768,18 @@ if (isset($_COOKIE["idrdv"])) {
             } else {
                 //$("#infos-compteurRDV").text("").hide();
 
-                getRetourneReceptionJour(idVilleEff, dayNumber, function(existe) {
+                //getRetourneReceptionJour(idVilleEff, dayNumber, function(existe) {
+                getRetourneReceptionJour2(idVilleEff, dayNumber, function(result) {
 
-                    if (existe) {
+                    // if (result.existe) {
+                    //     console.log("✅ Le jour existe :", result.day);
+                    // } else {
+                    //     console.log("❌ Le jour n'existe pas :", result.day);
+                    // }
+                    // console.log("Données complètes :", result.data);
+
+
+                    if (result.existe) {
                         //alert("✅ Le jour " + dayNumber + " est autorisé pour la réception !");
                         //$("#errorDate").html("✅ Le jour <span style='color: red; font-weight: bold;'>" + jourNom + "</span> est autorisé pour la reception </span>");
 
@@ -843,13 +852,29 @@ if (isset($_COOKIE["idrdv"])) {
                         })
 
                     } else {
+                        let retourJourReception = result.data
+
+                        let a_afficher_jour_reception = ' LES JOURS DE RECEPTION POUR LA VILLE : <span style="color:#033f1f ; font-weight: bold;">' + villesRDV + '</span> <br>';
+                        let optionR = "";
                         customRadio2Checked.checked = true;
                         $("#afficheuse").html('');
                         optionAffectationGestionnaire.disabled = true;
+
+                        if (retourJourReception.length > 0) {
+                            $.each(retourJourReception, function(key, value) {
+                                optionR = optionR + jours[value] + " - "
+                                maxRDV = value.nbmax
+                            })
+                            optionR = optionR.substring(0, optionR.length - 2);
+
+                        }
                         alert("❌ Le jour " + jourNom + " n'est pas autorisé pour cette ville.");
                         $("#errorDate").html("❌ Le jour <span style='color: red; font-weight: bold;'>" + jourNom + "</span> n'est pas autorisé pour la reception  </span>");
-
+                        $("#infos-jourReception").html(`<div class="alert alert-warning" role="alert"> <h4>` + a_afficher_jour_reception + `<br> </h4>
+                        <span style="color:#033f1f ; font-weight: bold;">` + optionR + `</span></div>`);
+                        $("#infos-compteurRDV").html(``);
                     }
+
                 });
 
 
@@ -887,7 +912,7 @@ if (isset($_COOKIE["idrdv"])) {
                 dataType: "json",
                 method: "POST",
                 success: function(response) {
-                    //console.log("Réponse reçue :", response);
+                    // console.log("Réponse reçue :", response);
 
                     // Vérifie si dayNumber eXiste dans le tableau
                     // let existe = response.includes(dayNumber);
@@ -904,6 +929,45 @@ if (isset($_COOKIE["idrdv"])) {
                 }
             });
         }
+
+        function getRetourneReceptionJour2(idVilleEff, dayNumber, callback) {
+            $.ajax({
+                url: "config/routes.php",
+                data: {
+                    idVilleEff: idVilleEff,
+                    etat: "receptionJourRdv"
+                },
+                dataType: "json",
+                method: "POST",
+                success: function(response) {
+                    //console.log("Réponse reçue :", response);
+
+                    // Vérifie si dayNumber existe dans la réponse
+                    let existe = response.map(Number).includes(Number(dayNumber));
+
+                    // Objet de retour standardisé
+                    let retour = {
+                        existe: existe,
+                        data: response,
+                        day: dayNumber
+                    };
+
+                    callback(retour);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erreur AJAX :", error);
+
+                    // Même structure même en cas d’erreur
+                    callback({
+                        existe: false,
+                        data: null,
+                        day: dayNumber,
+                        error: error
+                    });
+                }
+            });
+        }
+
 
 
         function number_format(number, decimals = 0, dec_point = '.', thousands_sep = ',') {
@@ -1000,15 +1064,38 @@ if (isset($_COOKIE["idrdv"])) {
             }
         }
 
-        function verifierActivationBouton() {
+        function verifierActivationBouton2() {
             const objetRDV = $('#villesRDV').val();
             const dateRDV = $('#daterdveff').val();
             const etat = $('input[name="customRadio"]:checked').val();
             const gestionnaire = $('#ListeGest').val();
 
             const toutRempli = objetRDV && objetRDV !== "null" && dateRDV && gestionnaire && etat === "2";
-            $("#valider").prop("disabled", !toutRempli);
+
+            console.log(" valider rdv " + objetRDV + " " + dateRDV + " " + etat + " " + gestionnaire);
+            if (gestionnaire != null) {
+                // afficher le bouton valider
+                $("#valider").prop("disabled", !toutRempli);
+            } else {
+                // afficher le bouton rejeter
+                $("#rejeter").prop("disabled", !toutRempli);
+            }
+            //$("#valider").prop("disabled", !toutRempli);
+
         }
+
+        function verifierActivationBouton() {
+            const etat = $('input[name="customRadio"]:checked').val();
+
+            const champsOK =
+                $('#villesRDV').val() && $('#villesRDV').val() !== "null" &&
+                $('#daterdveff').val() &&
+                $('#ListeGest').val();
+
+            $("#valider").prop("disabled", !(etat === "2" && champsOK));
+            $("#rejeter").prop("disabled", !(etat !== "2" && champsOK));
+        }
+
 
         function getMenuRejeter() {
 

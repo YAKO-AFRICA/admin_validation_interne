@@ -216,47 +216,98 @@ if ($request->action != null) {
             $daterdveff = GetParameter::FromArray($_REQUEST, 'daterdveff');
             $resultatOpe = GetParameter::FromArray($_REQUEST, 'resultatOpe');
             $observation = GetParameter::FromArray($_REQUEST, 'obervation');
+            $optionadditif = GetParameter::FromArray($_REQUEST, 'optionadditif');
 
 
-            //$retour = $fonction->_getRetournePrestation(" WHERE id='" . trim($idrdv) . "'");
-            $sqlSelect = "SELECT tblrdv.* ,  TRIM(libelleVilleBureau) as villes  FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '" . $idrdv . "' ";
-            $retour = $fonction->_getSelectDatabases($sqlSelect);
-            if ($retour != null) {
-                $rdv = $retour[0];
+            $sqlSelect = "SELECT tblrdv.* , TRIM(libelleVilleBureau) as villes , concat(users.nom,' ',users.prenom) as nomgestionnaire , users.codeagent as codeagent FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau INNER JOIN users ON tblrdv.gestionnaire = users.id WHERE tblrdv.idrdv = '" . $idrdv . "'";
+            $retour_rdv = $fonction->_getSelectDatabases($sqlSelect);
+            if ($retour_rdv != null) {
+                $rdv = $retour_rdv[0];
+
                 //print_r($rdv);
 
-                $tablo = array(
-                    "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partiel", "operation" => "Rachat partiel"),
-                    "avance" => array("etat" => "2", "libelle" => "Le client a demandé une avance / pret", "operation" => "Avance ou prêt"),
-                    "renonce" => array("etat" => "3", "libelle" => "Le client décide de conserver son contrat", "operation" => "Renonce"),
-                    "absent" => array("etat" => "5", "libelle" => "Le client ne c'est pas presenté", "operation" => "Absent"),
-                    "transformation" => array("etat" => "4", "libelle" => "Le client a demandé une transformation", "operation" => "transformation"),
-                    "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres")
-                );
+                if ($optionadditif != null) {
 
+                    $tablo_issue_rdv = explode("|", $optionadditif);
+                    $resultatOpe = $tablo_issue_rdv[0];
+                    $tabloOperation = Config::tablo_resultat_entretien_rdv[$resultatOpe];
 
-                $rrr = $tablo[strtolower($resultatOpe)];
-                $etat = $rrr["etat"];
-                $libelleTraitement = $rrr["libelle"];
-                $operation = $rrr["operation"];
+                    $etat = $tabloOperation["etat"];
+                    $libelleTraitement = $tabloOperation["libelle"];
+                    $operation = $tabloOperation["operation"];
+                    $resultat = $tabloOperation["resultat"];
+                    $permission = $tabloOperation["permission"];
 
-                switch (strtolower($resultatOpe)) {
+                    if ($resultatOpe == "transformation") {
+                        $produitTransformation = $tablo_issue_rdv[1];
+                        $montantTransformation = $tablo_issue_rdv[2];
+                        $montantClient = $tablo_issue_rdv[3];
 
-                    case "transformation":
-                        $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
-                        echo json_encode($resultatOpe);
-                        break;
-                    case "partielle" || "avance":
-                        $retour = traitementApresReceptionRDV($rdv, $etat, $libelleTraitement, $observation, $operation);
-                        echo json_encode($retour);
-                        break;
+                        print $libelleTraitement . "  ===> " . $produitTransformation . " " . $montantTransformation . " " . $montantClient . PHP_EOL;
+                    } elseif ($resultatOpe == "avance" || $resultatOpe == "partielle") {
+                        $montantSouhaite = $tablo_issue_rdv[1];
+                        print $libelleTraitement . "  ===> " . $montantSouhaite . PHP_EOL;
+                    } elseif ($resultatOpe == "absent") {
+                        if (count($tablo_issue_rdv) > 2) {
+                            $etat_absent = $tablo_issue_rdv[1];
+                            $nouvelle_date_rdv = $tablo_issue_rdv[2];
 
-                    default:
-                        $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
-                        echo json_encode($retour);
-                        break;
+                            print $libelleTraitement . "  ===> " . $etat_absent . " " . $nouvelle_date_rdv . PHP_EOL;
+
+                            //print_r($rdv);
+                            $retour = reprogrammerRDV($rdv, $nouvelle_date_rdv, $observation);
+                            echo json_encode($retour);
+                        }
+                    }
+                    //print_r($tabloOperation);
                 }
             }
+
+
+
+
+            // echo json_encode($tabloOperation);
+
+            // //$retour = $fonction->_getRetournePrestation(" WHERE id='" . trim($idrdv) . "'");
+            // $sqlSelect = "SELECT tblrdv.* ,  TRIM(libelleVilleBureau) as villes  FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '" . $idrdv . "' ";
+            // $retour = $fonction->_getSelectDatabases($sqlSelect);
+            // if ($retour != null) {
+            //     $rdv = $retour[0];
+            //     //print_r($rdv);
+
+            //     $tablo = array(
+            //         "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partiel", "operation" => "Rachat partiel"),
+            //         "avance" => array("etat" => "2", "libelle" => "Le client a demandé une avance / pret", "operation" => "Avance ou prêt"),
+            //         "renonce" => array("etat" => "3", "libelle" => "Le client décide de conserver son contrat", "operation" => "Renonce"),
+            //         "absent" => array("etat" => "5", "libelle" => "Le client ne c'est pas presenté", "operation" => "Absent"),
+            //         "transformation" => array("etat" => "4", "libelle" => "Le client a demandé une transformation", "operation" => "transformation"),
+            //         "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres")
+            //     );
+
+
+            //     $rrr = $tablo[strtolower($resultatOpe)];
+            //     $etat = $rrr["etat"];
+            //     $libelleTraitement = $rrr["libelle"];
+            //     $operation = $rrr["operation"];
+
+            //     switch (strtolower($resultatOpe)) {
+
+            //         case "transformation":
+            //             $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+            //             echo json_encode($resultatOpe);
+            //             break;
+            //         case "partielle" || "avance":
+            //             $retour = traitementApresReceptionRDV($rdv, $etat, $libelleTraitement, $observation, $operation);
+            //             echo json_encode($retour);
+            //             break;
+
+            //         default:
+            //             $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+            //             echo json_encode($retour);
+            //             break;
+            //     }
+            // }
+
             break;
 
         case "listeMotifRejet":
@@ -419,7 +470,7 @@ if ($request->action != null) {
         case "afficherGestionnaire":
 
             $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
-            $sqlQuery = "SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='$idVilleEff'  ORDER BY users.id ASC";
+           echo $sqlQuery = "SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='$idVilleEff'  ORDER BY users.id ASC";
             $resultat = $fonction->_getSelectDatabases($sqlQuery);
             if ($resultat != NULL) {
                 echo json_encode($resultat);
@@ -689,6 +740,18 @@ if ($request->action != null) {
             } else echo json_encode("-1");
 
             break;
+        case "rechercherRDV":
+
+            $idrdv = GetParameter::FromArray($_REQUEST, 'idrdv');
+            //$sqlSelect = "SELECT tblrdv.* ,  TRIM(libelleVilleBureau) as villes  FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '" . $idrdv . "' ";
+            $sqlSelect = "SELECT tblrdv.*,	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, users.email AS emailgestionnaire, users.codeagent AS codeagentgestionnaire, TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id LEFT JOIN tblvillebureau 	ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+			WHERE tblrdv.idrdv= '" . trim($idrdv) . "'  ";
+            $retour = $fonction->_getSelectDatabases($sqlSelect);
+            if ($retour != null) {
+                echo json_encode($retour[0]);
+            } else echo json_encode("-1");
+            break;
 
         case "getTraitementAjoutUtilisateur":
 
@@ -928,10 +991,34 @@ if ($request->action != null) {
 
                     $sqlSelect = " SELECT 	tblrdv.*, 	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
 				    TRIM(tblvillebureau.libelleVilleBureau) AS villes FROM tblrdv	LEFT JOIN users ON tblrdv.gestionnaire = users.id
-			        LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau 	 $filtreuse 	ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') DESC	";
+			        LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau 	 $filtreuse ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') DESC	";
                     $tableauSuivi = $fonction->_getSelectDatabases($sqlSelect);
                 } else if ($service == "prestation") {
-                    $tableauSuivi = "";
+                    // if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
+                    // else {
+                    //     if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+                    //     else $cible = " AND prestationlibelle != 'Autre' ";
+                    // }
+
+                    $sqlSelectAdminstratif = "SELECT * FROM " . Config::TABLE_PRESTATION . " $filtreuse AND prestationlibelle = 'Autre'  ";
+                    $tableauSuiviAdminstratif = $fonction->_getSelectDatabases($sqlSelectAdminstratif);
+
+                    $sqlSelectNonAdminstratif = "SELECT * FROM " . Config::TABLE_PRESTATION . " $filtreuse AND prestationlibelle != 'Autre' ";
+                    $tableauSuiviNonAdminstratif = $fonction->_getSelectDatabases($sqlSelectNonAdminstratif);
+
+                    $sqlSelectPrestationRDV = "SELECT tbl_prestations.* , tblrdv.motifrdv FROM `tbl_prestations` INNER JOIN tblrdv  WHERE YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())   AND tblrdv.idCourrier = tbl_prestations.id AND tbl_prestations.etape !='-1';";
+                    $tableauSuiviPrestationRDV = $fonction->_getSelectDatabases($sqlSelectPrestationRDV);
+
+
+                    $sqlSelectTotal = Config::SqlSelect_ListPrestations . " $filtreuse   ORDER BY id DESC  ";
+                    $tableauSuiviTotal = $fonction->_getSelectDatabases($sqlSelectTotal);
+
+                    $tableauSuivi = array(
+                        "tableauSuiviAdminstratif" => $tableauSuiviAdminstratif,
+                        "tableauSuiviNonAdminstratif" => $tableauSuiviNonAdminstratif,
+                        "tableauSuiviPrestationRDV" => $tableauSuiviPrestationRDV,
+                        "tableauSuivi" => $tableauSuiviTotal
+                    );
                 } else if ($service == "sinistre") {
                     $tableauSuivi = "";
                 } else {
@@ -948,6 +1035,7 @@ if ($request->action != null) {
             $idcontrat = GetParameter::FromArray($_REQUEST, 'idcontrat');
             $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
             $daterdveff = GetParameter::FromArray($_REQUEST, 'daterdveff');
+            $motifmodif = GetParameter::FromArray($_REQUEST, 'motifmodif');
             $telGestionnaire = "";
 
             //$sqlSelect = "SELECT tblrdv.* ,  TRIM(libelleVilleBureau) as villes  FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '" . $idrdv . "' ";
@@ -966,7 +1054,7 @@ if ($request->action != null) {
                 $sqlUpdate = "UPDATE tblrdv SET daterdveff = ? , etat='2' , etatTraitement='' , libelleTraitement='' , estPermit=null , reponseGest=? , traiterLe=now() , updatedAt=now()  WHERE idrdv = ? ";
                 $queryOptions = array(
                     $daterdveff,
-                    "La date du RDV prevu le " . date("d/m/Y", strtotime($rdv->daterdveff)) . "  .  a ete modifier par le gestionnaire pour la ville de " . $rdv->villes . " le " . $daterdveff,
+                    "La date du RDV prevu le " . date("d/m/Y", strtotime($rdv->daterdveff)) . "  .  a ete modifier par le gestionnaire " . $rdv->nomgestionnaire . " pour la ville de " . $rdv->villes . " le " . $daterdveff . ".  Motif de modification : " . $motifmodif,
                     $idrdv
                 );
                 $result = $fonction->_Database->Update($sqlUpdate, $queryOptions);
@@ -995,6 +1083,42 @@ if ($request->action != null) {
 }
 
 
+
+function reprogrammerRDV($rdv, $dateAProgrammer, $motifmodif = null)
+{
+    global $fonction;
+
+
+    if ($motifmodif == null) $addmodif = "";
+    else $addmodif = ". Motif de modification : " . $motifmodif;
+    // $retourGestionnaire = $fonction->getRetourneContactInfosGestionnaire($rdv->codeagentgestionnaire);
+    // $telGestionnaire = $retourGestionnaire["telephone"];
+
+    $telGestionnaire = "";
+
+
+    $sqlUpdate = "UPDATE tblrdv SET daterdveff = ? , etat='2' , etatTraitement='' , libelleTraitement='' , estPermit=null , reponseGest=? , traiterLe=now() , updatedAt=now()  WHERE idrdv = ? ";
+    $queryOptions = array(
+        $dateAProgrammer,
+        "La date du RDV prevu le " . date("d/m/Y", strtotime($rdv->daterdveff)) . "  .  a ete modifier par le gestionnaire " . $rdv->nomgestionnaire . " pour la ville de " . $rdv->villes . " le " . $dateAProgrammer . $addmodif,
+        $rdv->idrdv
+    );
+
+    $result = $fonction->_Database->Update($sqlUpdate, $queryOptions);
+    if ($result != null) {
+
+
+       print $message = "Votre RDV prévu le " . date("d/m/Y", strtotime($rdv->daterdveff)) . " a ete modifier pour le " . date("d/m/Y", strtotime($dateAProgrammer)) . " à " . $rdv->villes . ". Merci de contacter le " . $telGestionnaire . " pour toute information complémentaire.";
+        $numero = "225" . substr($rdv->tel, -10);
+        $ref_sms = "RDV-" . $rdv->idrdv;
+
+        $sms_envoi = new SMSService();
+        if (strlen($message) > 160) $message = substr($message, 0, 160);
+        $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");
+
+        return $rdv->idrdv;
+    } else return "-1";
+}
 
 function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id, $provenance, $codePartenaire)
 {
@@ -1154,7 +1278,7 @@ function traitementApresReceptionRDV($rdv, $etat, $typeOperation, $obervation, $
     $idprestation = $rrr["LastInsertId"];
 
 
-    $sqlUpdatePrestation = "UPDATE tblrdv SET etat = ?, etatTraitement= ?, libelleTraitement=?, reponseGest=?, datetraitement=?, gestionnaire=?, updatedAt =? , etatSms =? , idCourrier=? , estPermit=? WHERE idrdv = ?";
+    $sqlUpdatePrestation = "UPDATE tblrdv SET etat = ?, etatTraitement= ?, libelleTraitement=?, reponseGest=?, datetraitement=?, traiterLe=?, gestionnaire=?, updatedAt =? , etatSms =? , idCourrier=? , estPermit=? WHERE idrdv = ?";
     $queryOptions = array(
         "3",
         $etat,
@@ -1162,6 +1286,7 @@ function traitementApresReceptionRDV($rdv, $etat, $typeOperation, $obervation, $
         addslashes(htmlspecialchars(trim(ucfirst(strtolower($obervation))))),
         $maintenant,
         $rdv->gestionnaire,
+        $maintenant,
         $maintenant,
         '1',
         intval($idprestation),

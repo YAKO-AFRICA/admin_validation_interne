@@ -20,11 +20,10 @@ $tabSemaine = $fonction->retourneSemaineCourante();
 $tabloService = array("rdv" => "rdv", "prestation" => "prestation", "sinistre" => "sinistre");
 
 $plus = "";
-$afficheuse = false;
+$afficheuse = true;
 
 if (isset($_REQUEST['filtreliste'])) {
 
-    $afficheuse = true;
     $retourPlus = $fonction->getFiltreuseRDV();
     $filtre = $retourPlus["filtre"];
     $libelle = $retourPlus["libelle"];
@@ -39,12 +38,7 @@ if (isset($_REQUEST['filtreliste'])) {
     $libelle = "RDV du mois en cours";
 }
 
-// $sqlSelect = " SELECT 	tblrdv.*, 	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
-// 				TRIM(tblvillebureau.libelleVilleBureau) AS villes FROM tblrdv	LEFT JOIN users ON tblrdv.gestionnaire = users.id
-// 			LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau 	 $plus 	ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') DESC	";
-// $resultat = $fonction->_getSelectDatabases($sqlSelect);
-// if ($resultat != NULL) $afficheuse = true;
-$afficheuse = true;
+
 ?>
 
 <!DOCTYPE html>
@@ -97,11 +91,9 @@ $afficheuse = true;
 
     <div class="main-container">
         <div class="pd-ltr-20 xs-pd-20-10">
-
             <div class="page-header">
-
                 <div class="row">
-                    <div class="col-md-6 col-sm-12">
+                    <div class="col-md-12 col-sm-12">
                         <div class="title">
                             <h4>TABLEAU SUIVI</h4>
                         </div>
@@ -112,71 +104,8 @@ $afficheuse = true;
                             </ol>
                         </nav>
                     </div>
-                    <div class="col-md-6 col-sm-12 text-right">
-                        <!-- <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownService" data-toggle="dropdown" aria-expanded="false">
-                                    Services
-                                </button>
-
-                            <div class="dropdown-menu dropdown-menu-right p-3" aria-labelledby="dropdownService" style="min-width: 240px;">
-                                <select id="service2" name="service2" class="form-control">
-                                    <option value="" selected>Selectionnez un service</option>
-                                    <option value="all">Tous</option>
-                                    <option value="rdv">RDV</option>
-                                    <option value="prestation">Prestations</option>
-                                    <option value="sinistre">Sinistres</option>
-                                </select>
-                            </div>
-
-                        </div> -->
-
-                        <select id="service2" name="service2" class="btn btn-outline-primary">
-                            <option value="" selected>Selectionnez un service</option>
-                            <option value="all">Tous</option>
-                            <option value="rdv">RDV</option>
-                            <option value="prestation">Prestations</option>
-                            <option value="sinistre">Sinistres</option>
-                        </select>
-
-                    </div>
                 </div>
             </div>
-
-
-
-            <div class="card-box mb-30" hidden>
-                <div class="dropdown">
-                    <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                        January 2020
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#">Export List</a>
-                        <a class="dropdown-item" href="#">Policies</a>
-                        <a class="dropdown-item" href="#">View Assets</a>
-                    </div>
-                </div>
-
-                <div class="bg-white pd-20 card-box mb-30">
-                    <div id="chart8"></div>
-                </div>
-
-                <div class="bg-white pd-20 card-box mb-30">
-                    <div id="chart4"></div>
-                </div>
-
-
-                <div class="bg-white pd-20 card-box mb-30">
-                    <div id="chart2"></div>
-                </div>
-                <div class="bg-white pd-20 card-box mb-30">
-                    <div id="chart3"></div>
-                </div>
-
-                <div class="col-md-6 table-responsive" style="height:500px;">
-                    <canvas id="chartRDV_delai" height="150"></canvas>
-                </div>
-            </div>
-
 
             <input type="hidden" id="afficheuse" name="afficheuse" value="<?php echo $afficheuse; ?>" hidden />
             <input type="hidden" id="service" name="service" value="rdv" hidden />
@@ -211,11 +140,11 @@ $afficheuse = true;
                                             <div class="col-md-6">
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
-                                                        <label for="rdvLe" class="form-label">Date début traitement ( <span style="color:red;">*</span> )</label>
+                                                        <label for="rdvLe" class="form-label">Date début traitement </label>
                                                         <input type="date" class="form-control" id="traiterLe" name="traiterLe">
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label for="rdvAu" class="form-label">Date fin traitement ( <span style="color:red;">*</span> )</label>
+                                                        <label for="rdvAu" class="form-label">Date fin traitement</label>
                                                         <input type="date" class="form-control" id="traiterAu" name="traiterAu">
                                                     </div>
                                                 </div>
@@ -286,37 +215,75 @@ $afficheuse = true;
                     </div>
                     <div class="card-body pb-20 radius-12 w-100 p-4">
 
-
-                        <div id="afficheuseEtat">
-                        </div>
-                        <hr>
-                        <div class="row mb-4">
-                            <div class="col-lg-5 col-md-6 col-sm-12 mb-3">
-                                <div id="afficheuseMotif">
-                                </div>
-                            </div>
-                            <div class="col-lg-7 col-md-6 col-sm-12 mb-3">
-                                <div class="bg-white pd-20 card-box mb-30">
-                                    <div id="chart1"></div>
-                                </div>
+                        <div class="card-body pb-20 radius-12 w-100 p-4">
+                            <div class="mt-2">
+                                <button class="btn btn-sm" style="background:#033f1f; color:white; text-decoration:none;" id="telechargerExcel">
+                                    Telecharger le rapport Excel
+                                </button>
                             </div>
                         </div>
-                        <hr>
-
-                        <div class="row mb-4">
-                            <div class="col-lg-5 col-md-6 col-sm-12 mb-3">
-                                <div class="bg-white pd-20 card-box mb-30">
-                                    <div id="chart5"></div>
-                                </div>
-                            </div>
-                            <div class="col-lg-7 col-md-6 col-sm-12 mb-3">
-                                <div id="afficheuseVilles">
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="bg-white pd-20 card-box mb-30">
-                            <div id="chart7"></div>
+                            <div id="afficheuseEtat">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="bg-white pd-20 card-box mb-30">
+                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Statistique par Delai de Rendez-vous </h4>
+                            <div class="row mb-4">
+                                <div class="col-lg-5 col-md-6 col-sm-12 mb-3">
+                                    <div id="afficheuseDelai"></div>
+                                </div>
+                                <div class="col-lg-7 col-md-6 col-sm-12 mb-3">
+                                    <div id="chart7"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="bg-white pd-20 card-box mb-30">
+                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Statistique Rendez-vous par Motif</h4>
+                            <div class="row mb-4">
+                                <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                    <div id="afficheuseMotif">
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 col-md-6 col-sm-12 mb-3">
+                                    <div class="bg-white pd-20 card-box mb-30">
+                                        <div id="chartMotif"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="bg-white pd-20 card-box mb-30">
+                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Statistique Rendez-vous par Ville</h4>
+                            <div class="row mb-4">
+                                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                    <div class="bg-white pd-20 card-box mb-30">
+                                        <div id="chartVilles"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                    <div id="afficheuseVilles">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="bg-white pd-20 card-box mb-30">
+                            <h4 class="mb-20 p-2" style="background-color:#033f1f;color:white;font-weight:bold;">Statistique Rendez-vous par Gestionnaire</h4>
+                            <div class="row mb-4">
+                                <div class="col-lg-7 col-md-6 col-sm-12 mb-3">
+                                    <div class="bg-white pd-20 card-box mb-30">
+                                        <div id="chartRDVGestionnaire"></div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-md-6 col-sm-12 mb-3">
+                                    <div id="afficheuseRDVGestionnaire">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -353,30 +320,60 @@ $afficheuse = true;
     <script src="src/plugins/highcharts-6.0.7/code/highcharts-more.js"></script>
     <script src="vendors/scripts/highchart-setting.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="include/fonction.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+
+
+    <!-- <script src="include/fonction.js"></script> -->
 
     <script>
+        let service = document.getElementById("service").value;
+        let filtreuse = document.getElementById("filtreuse").value;
+        let libelleFiltre = document.getElementById("libelleFiltre").value;
+
+        console.log(filtreuse);
+
+        let resultatRecherche = [];
+
         $(document).ready(function() {
 
             var filtre = document.getElementById("myDIV");
             filtre.style.display = "none";
 
             // let afficheuse = document.getElementById("afficheuse").value;
-            let service = document.getElementById("service").value;
-            let filtreuse = document.getElementById("filtreuse").value;
-            let libelleFiltre = document.getElementById("libelleFiltre").value;
-            let service2 = document.getElementById("service2").value;
-
-            if (service2 === "null") service = "rdv";
-
-            $('#service2').change(function() {
-                if ($(this).val() === "null") return;
-                service = $(this).val();
-            });
-
-            console.log("Afficher statistique de service : " + service + "  ");
 
             if (filtreuse != null) {
+
+                let colors = [
+                    "#3b82f6", // blue
+                    "#ef4444", // red
+                    "#22c55e", // green
+                    "#eab308", // yellow
+                    "#a855f7", // purple
+                    "#14b8a6", // teal
+                    "#f97316", // orange
+                    "#10b981", // emerald
+                    "#6366f1", // indigo
+                    "#84cc16", // lime
+                    "#f43f5e", // pink/red
+                    "#0ea5e9", // sky blue
+                    "#475569", // slate
+                    "#d946ef", // magenta
+                    "#059669", // dark green
+                    "#941010ff", // dark red
+                    "#7c3aed", // deep purple
+                    "#be123c", // crimson
+                    "#38bdf8", // light blue
+                    "#4ade80", // soft green
+                    "#facc15", // bright yellow
+                    "#fb923c", // light orange
+                    "#1e40af", // dark blue
+                    "#6b7280" // gray
+                ];
+
+
                 $('#libelleFiltreAffiche').html(libelleFiltre);
                 $.ajax({
                     url: "config/routes.php",
@@ -389,43 +386,29 @@ $afficheuse = true;
                     method: "post",
                     success: function(response, status) {
                         //console.log(response);
-
+                        resultatRecherche = response;
                         if (response != "-1") {
+
                             $("#totalResultat").html(response.length);
 
+                            const colonnes = ['etat', 'motifrdv', 'nomgestionnaire', 'villeEffective', 'villes', 'idCourrier'];
+                            const stats = getStatsGenerales(response, colonnes);
+                            const statsDelai = getStatsDelaiRDV(response, "daterdveff");
 
-                            if (service == "rdv") {
-                                const colonnes = ['etat', 'motifrdv', 'nomgestionnaire', 'villeEffective', 'villes'];
-                                const stats = getStatsGenerales(response, colonnes);
+                            const tabloEtat = stats['etat'];
+                            const tabloMotif = stats['motifrdv'];
+                            const tabloNomGestionnaire = stats['nomgestionnaire'];
+                            const tabloVilleEffective = stats['villeEffective'];
+                            const tabloVilles = stats['villes'];
+                            const tabloCourrier = stats['idCourrier'];
 
-                                const tabloEtat = stats['etat'];
-                                const tabloMotif = stats['motifrdv'];
-                                const tabloNomGestionnaire = stats['nomgestionnaire'];
-                                const tabloVilleEffective = stats['villeEffective'];
-                                const tabloVilles = stats['villes'];
-
-                                afficheuseVilles(tabloVilles);
-                                afficheuseMotif(tabloMotif);
-                                afficheuseEtat(tabloEtat);
-
-                                console.log(tabloNomGestionnaire);
-
-                                const statsD = getStatsDelaiRDV(response, "daterdveff");
-                                console.log(statsD);
-                                afficheuseDelaiRDV(statsD);
-                                const tableauData = response.map(r => {
-                                    const d = getDelaiRDV(r.date_rdv);
-                                    return {
-                                        nom: r.nom,
-                                        service: r.service,
-                                        date_rdv: r.date_rdv ?? "—",
-                                        etat_html: `<span class="${d.badge}" style="font-size:14px">${d.libelle}</span>`,
-                                        jours: d.jours ?? ""
-                                    };
-                                });
-
-
-                            }
+                            console.log(tabloNomGestionnaire);
+                            console.log(tabloCourrier);
+                            afficheuseEtat(tabloEtat);
+                            afficheuseDelaiRDV(statsDelai);
+                            afficheuseMotif(tabloMotif, colors);
+                            afficheuseVilles(tabloVilles, colors);
+                            afficheuseRDVGestionnaire(tabloNomGestionnaire, colors);
                         }
 
 
@@ -436,6 +419,8 @@ $afficheuse = true;
                 });
 
             }
+
+
 
             // if (afficheuse == 1) {
             //     var filtre = document.getElementById("myDIV");
@@ -448,10 +433,31 @@ $afficheuse = true;
             const [idvillesRDV, villesRDV] = objetRDV.split(";");
 
             getListeSelectAgentTransformations(idvillesRDV, villesRDV);
-            //var dateRDVEffective = document.getElementById("daterdveff").value;
-            //alert(objetRDV)
-
         })
+
+        $('#telechargerExcel').click(function() {
+            console.log("Afficher statistique de service : " + libelleFiltre + "  ");
+            console.log("Afficher statistique de service : " + filtreuse + "  ");
+
+
+            if (resultatRecherche != "-1" && resultatRecherche.length > 0) {
+
+                let data = JSON.stringify(resultatRecherche);
+                //console.log(data);
+                //formater le nom du fichier excel avec date et heure actuelle
+                let date = new Date();
+                let jour = date.getDate();
+                let mois = date.getMonth() + 1;
+                let annee = date.getFullYear();
+                let heure = date.getHours();
+                let minute = date.getMinutes();
+                let second = date.getSeconds();
+                let nomFichier = "tableau-suivi-rdv-" + annee + "-" + mois + "-" + jour + "-" + heure + minute + second + ".xlsx";
+                exportExcelFormat(resultatRecherche, nomFichier);
+            }
+
+
+        });
 
 
 
@@ -460,10 +466,8 @@ $afficheuse = true;
         $('#villesRDV').change(function() {
 
             if ($(this).val() === "null") return;
-
             const [idvillesRDV, villesRDV] = $(this).val().split(";");
-
-            console.log("Nouvelle ville RDV Effective sélectionnée :", villesRDV + " (" + idvillesRDV + ")  ");
+            //console.log("Nouvelle ville RDV Effective sélectionnée :", villesRDV + " (" + idvillesRDV + ")  ");
             getListeSelectAgentTransformations(idvillesRDV, villesRDV);
 
         });
@@ -471,7 +475,7 @@ $afficheuse = true;
 
         function getListeSelectAgentTransformations(idVilleEff, villesRDV) {
 
-            console.log("selction de gestionnaire de transformation", idVilleEff, villesRDV)
+            //console.log("selction de gestionnaire de transformation", idVilleEff, villesRDV)
             $.ajax({
                 url: "config/routes.php",
                 data: {
@@ -481,14 +485,20 @@ $afficheuse = true;
                 dataType: "json",
                 method: "post",
                 success: function(response, status) {
-                    let html = `<option value="">[Les agents de Transformations de ${villesRDV}]</option>`;
 
-                    $.each(response, function(indx, data) {
-                        let agent = data.gestionnairenom;
-                        html += `<option value="${data.id}|${agent}|${idVilleEff}|${villesRDV}" id="ob-${indx}">${agent}</option>`;
-                    });
+                    //console.log("Liste des agents de transformation", response);
+                    if (response != "-1") {
+                        let html = `<option value="">[Les agents de Transformations de ${villesRDV}]</option>`;
 
-                    $("#ListeGest").html(html);
+                        $.each(response, function(indx, data) {
+                            let agent = data.gestionnairenom;
+                            html += `<option value="${data.id}|${agent}|${idVilleEff}|${villesRDV}" id="ob-${indx}">${agent}</option>`;
+                        });
+
+                        $("#ListeGest").html(html);
+                    } else {
+                        $("#ListeGest").html("");
+                    }
                     //verifierActivationBouton(); // Vérifie après chargement
                 },
                 error: function(response, status, etat) {
@@ -511,6 +521,89 @@ $afficheuse = true;
             window.history.back();
         }
 
+
+
+
+        function exportExcelFormat(tablo, fileName = "export.xlsx") {
+
+            const ws = XLSX.utils.json_to_sheet(tablo);
+
+            // Largeurs automatiques
+            ws['!cols'] = Object.keys(tablo[0]).map(col => ({
+                wch: 20
+            }));
+
+            // Style en-têtes
+            Object.keys(tablo[0]).forEach((k, i) => {
+                let cell = ws[XLSX.utils.encode_cell({
+                    r: 0,
+                    c: i
+                })];
+                cell.s = {
+                    font: {
+                        bold: true,
+                        color: {
+                            rgb: "FFFFFF"
+                        }
+                    },
+                    fill: {
+                        fgColor: {
+                            rgb: "4F81BD"
+                        }
+                    },
+                    alignment: {
+                        horizontal: "center"
+                    }
+                };
+            });
+
+            // Bordures
+            const range = XLSX.utils.decode_range(ws['!ref']);
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+
+                    let cellAddr = XLSX.utils.encode_cell({
+                        r: R,
+                        c: C
+                    });
+                    let cell = ws[cellAddr];
+                    if (!cell) continue;
+
+                    cell.s = cell.s || {};
+                    cell.s.border = {
+                        top: {
+                            style: "thin",
+                            color: {
+                                rgb: "000000"
+                            }
+                        },
+                        bottom: {
+                            style: "thin",
+                            color: {
+                                rgb: "000000"
+                            }
+                        },
+                        left: {
+                            style: "thin",
+                            color: {
+                                rgb: "000000"
+                            }
+                        },
+                        right: {
+                            style: "thin",
+                            color: {
+                                rgb: "000000"
+                            }
+                        }
+                    };
+                }
+            }
+
+            // Workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Feuille1");
+            XLSX.writeFile(wb, fileName);
+        }
 
         function getStatsGenerales(rows, colonnes) {
             const stats = {};
@@ -551,24 +644,27 @@ $afficheuse = true;
             });
         }
 
-        function afficheuseVilles(tabloVilles) {
+        function afficheuseVilles(tabloVilles, colors) {
             //console.log(tabloVilles);
             let optionVilles = ``;
             let tablo_graph = [];
+            let tablo_color = [];
+            let idcolor = 0;
 
             $.each(tabloVilles, function(indx, data) {
 
                 tablo_graph.push([indx, data, false], );
+                tablo_color.push(colors[idcolor]);
                 optionVilles += `<tr>
                                     <td>${indx}</td>
-                                    <td>${data}</td>
+                                    <td><span class="badge badge-pill" style="background-color:${colors[idcolor]};color:white ; font-size:12px">${data}</span></td>
                                 </tr>`;
+                idcolor++;
             });
 
             //console.log(tablo_graph);
             let htmlVilles = `<div class="card-box pd-20 shadow-sm border rounded">
                                             <h5 class="mb-3">Statistiques par ville :</h5>
-                                            
                                             <div class="table-responsive" style="height:400px;">
                                                 <table class="table table-striped table-bordered mb-0">
                                                     <thead>
@@ -582,7 +678,8 @@ $afficheuse = true;
                                         </div>`;
             $("#afficheuseVilles").html(htmlVilles);
             // chart 5
-            Highcharts.chart('chart5', {
+            Highcharts.chart('chartVilles', {
+                colors: tablo_color,
                 title: {
                     text: 'Statistiques par ville'
                 },
@@ -600,19 +697,23 @@ $afficheuse = true;
 
         }
 
-        function afficheuseMotif(tabloMotif) {
-            console.log(tabloMotif);
-
+        function afficheuseMotif(tabloMotif, colors) {
+            //console.log(tabloMotif);
             let optionMotif = ``;
             let tablo_graph = [];
-
+            let tablo_color = [];
+            let idcolor = 0;
+            //let colors = ["red", "green", "blue", "orange", "brown", "gold", "violet", "cyan", "magenta", "gray", "black", "yellow", "red", "green", "blue", "orange", "brown", "gold", "violet", "cyan", "magenta", "gray", "black", "yellow"];
             $.each(tabloMotif, function(indx, data) {
 
+                //console.log(indx);
                 tablo_graph.push([indx, data, false], );
+                tablo_color.push(colors[idcolor]);
                 optionMotif += `<tr>
                                     <td>${indx}</td>
-                                    <td>${data}</td>
+                                    <td> <span class="badge badge-pill" style="background-color:${colors[idcolor]};color:white ; font-size:12px"> ${data} </span> </td>
                                 </tr>`;
+                idcolor++;
             });
 
             let htmlMotif = `<div class="card-box pd-20 shadow-sm border rounded">
@@ -630,21 +731,28 @@ $afficheuse = true;
                                         </div>`;
             $("#afficheuseMotif").html(htmlMotif);
 
-            Highcharts.chart('chart1', {
-                title: {
-                    text: 'Statistiques par Motif'
-                },
-                xAxis: {
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                },
-                series: [{
-                    type: 'pie',
-                    allowPointSelect: true,
-                    keys: ['name', 'y', 'selected', 'sliced'],
-                    data: tablo_graph,
-                    showInLegend: true
-                }]
-            });
+            if (tablo_graph.length == 0) {
+                tablo_graph.push(["Aucun", 1, false], );
+            } else {
+                Highcharts.chart('chartMotif', {
+                    colors: tablo_color,
+                    title: {
+                        text: 'Statistiques par Motif'
+                    },
+                    xAxis: {
+                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                    },
+                    series: [{
+                        type: 'pie',
+                        allowPointSelect: true,
+                        keys: ['name', 'y', 'selected', 'sliced'],
+                        data: tablo_graph,
+                        showInLegend: true
+                    }]
+                });
+            }
+
+
         }
 
         function afficheuseEtat(tabloEtat) {
@@ -711,83 +819,27 @@ $afficheuse = true;
 
             // ---- CARTES INDIVIDUELLES ----
             $.each(tabloEtat, function(indx, data) {
-
                 let valeurDDD = tablo_statut_rdv[indx] ?? 0;
-                console.log(valeurDDD);
-
+                //console.log(valeurDDD);
                 optionEtat += `
-                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3">
-                        <div class="card-box pd-20 text-center shadow-sm border rounded">
-                            <input type="text" 
-                                class="knob dial2"      value="0" 
-                                data-valFinal="${data}" data-max="${total}"   data-width="120"  data-height="120" 
-                                data-linecap="round" data-thickness="0.12"   data-bgColor="#f1f1f1"  data-fgColor="${valeurDDD.color}"    data-angleOffset="180" 
-                                readonly>
-
-                            <h5 class="mt-2" style="color: ${valeurDDD.color};">
-                                ${data} RDV ${valeurDDD.libelle}
-                            </h5>
-                        </div>
-                    </div>`;
+                    <div class="col-xl-3 mb-30">
+							<div class="card-box height-100-p widget-style1 text-white"
+								style="background-color:${valeurDDD.color}; font-weight:bold; ">
+								<div class="d-flex flex-wrap align-items-center">
+									<div class="progress-data">	</div>
+									<div class="widget-data">
+										<div class="h4 mb-0 text-white"> ${data}</div>
+										<div class="weight-600 font-14">RDV ${valeurDDD.libelle}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+                    `;
             });
-
-            // ---- CARTE TOTAL ----
-            // optionEtat += `
-            //     <div class="col-lg-2 col-md-6 col-sm-12 mb-3">
-            //         <div class="card-box pd-20 text-center shadow-sm border rounded">
-            //             <input type="text" class="knob dial2 total-knob" value="0"  data-valFinal="${total}"  data-max="${total}" data-width="120" 
-            //                 data-height="120"  data-linecap="round"  data-thickness="0.12"  data-bgColor="#f1f1f1" 
-            //                 data-fgColor="green"  data-angleOffset="180"  readonly>
-
-            //             <h5 class="mt-2" style="color: green; font-weight:bold;">
-            //                 TOTAL : ${total}
-            //             </h5>
-            //         </div>
-            //     </div>`;
-
             // ---- INJECTION HTML ----
-            $("#afficheuseEtat").html(`<div class="row mb-4"> 
-                            ${optionEtat}
-                            
-                        </div>`);
-
-            // ---- INIT KNOBS ----
-            $(".dial2").knob();
-
-            // ---- ANIMATION ----
-            $(".dial2").each(function() {
-                let $this = $(this);
-                let finalVal = parseInt($this.data("valfinal"));
-
-                $({
-                    val: 0
-                }).animate({
-                    val: finalVal
-                }, {
-                    duration: 2000,
-                    easing: "swing",
-                    step: function() {
-                        $this.val(Math.ceil(this.val)).trigger("change");
-                    }
-                });
-            });
+            $("#afficheuseEtat").html(`<div class="row mb-4"> ${optionEtat} </div>`);
         }
 
-        function getStatsDelaiRDV2(rows, colonneDate) {
-            const stats = {};
-
-            rows.forEach(row => {
-                const delai = getDelaiRDV(row[colonneDate]);
-                const etat = delai.etat;
-
-                if (!stats[etat]) {
-                    stats[etat] = 0;
-                }
-                stats[etat]++;
-            });
-
-            return stats;
-        }
 
         function getStatsDelaiRDV(rows, colonneDate) {
             const stats = {};
@@ -818,8 +870,6 @@ $afficheuse = true;
 
             return stats;
         }
-
-
 
         function getDelaiRDV(dateRDV) {
             // Convertir d/m/Y → Y-m-d
@@ -881,48 +931,161 @@ $afficheuse = true;
 
         function afficheuseDelaiRDV(tabloMotif) {
 
-            console.log(tabloMotif);
-
             let optionMotif = ``;
             let tablo_graph = [];
 
             $.each(tabloMotif, function(indx, data) {
 
-                tablo_graph.push([indx, data, false], );
-                optionMotif += `<tr>
-                                    <td>${indx}</td>
-                                    <td>${data}</td>
-                                </tr>`;
+                // Renommage des clés
+                if (indx == "ok") {
+                    indx = "Aujourd’hui";
+                } else if (indx == "expire") {
+                    indx = "Délai expiré";
+                } else if (indx == "prochain") {
+                    indx = "À venir";
+                }
+
+                // --- TABLEAU HTML ---
+                optionMotif += `
+                    <tr>
+                        <td>${indx}</td>
+                        <td>
+                            <span class="badge badge-pill" 
+                                style="background:${data.couleur};color:white;font-size:12px">
+                                ${data.total}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+
+                // --- GRAPHIQUE HIGHCHARTS (mode objet obligatoire) ---
+                tablo_graph.push({
+                    name: indx,
+                    y: data.total,
+                    color: data.couleur
+                });
             });
 
-            let htmlMotif = `<div class="card-box pd-20 shadow-sm border rounded">
-                                            <h5 class="mb-3">Statistiques par Motif :</h5>
+            // --- TABLE HTML ---
+            let htmlMotif = `
+                <div class="card-box pd-20 shadow-sm border rounded">
+                    <h5 class="mb-3">Statistiques par Delai de Rendez-vous :</h5>
+                    
+                    <div class="table-responsive" style="max-height:400px; overflow-y:auto;">
+                        <table class="table table-striped table-bordered mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Motif</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${optionMotif}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
+
+            $("#afficheuseDelai").html(htmlMotif);
+
+            Highcharts.chart('chart7', {
+                chart: {
+                    type: 'bar', // ou 'column' ou 'pie' selon tes besoins
+                    options3d: {
+                        enabled: true,
+                        alpha: 15,
+                        beta: 15,
+                        depth: 50,
+                        viewDistance: 25
+                    }
+                },
+                title: {
+                    text: 'Statistiques par Delai de Rendez-vous'
+                },
+                xAxis: {
+                    type: "category"
+                },
+                plotOptions: {
+                    column: {
+                        depth: 25
+                    }
+                },
+                legend: {
+                    enabled: true
+                },
+                series: [{
+                    name: 'Delai RDV',
+                    data: tablo_graph, // 👉 data: [{name,y,color}]
+                    colorByPoint: false
+                }]
+            });
+
+
+
+        }
+
+        function afficheuseRDVGestionnaire(tabloGestionnaire, colors) {
+
+            let optionGestionnaire = ``;
+            let tablo_graph = [];
+            let tablo_color = [];
+            let idcolor = 0;
+            $.each(tabloGestionnaire, function(indx, data) {
+                //console.log(indx);
+                tablo_graph.push([indx, data, false], );
+                tablo_color.push(colors[idcolor]);
+                optionGestionnaire += `<tr>
+                                    <td>${indx}</td>
+                                    <td> <span class="badge badge-pill" style="background-color:${colors[idcolor]};color:white ; font-size:12px"> ${data} </span> </td>
+                                </tr>`;
+                idcolor++;
+            });
+
+            let htmlGestionnaire = `<div class="card-box pd-20 shadow-sm border rounded">
+                                            <h5 class="mb-3">Statistiques par RDV Gestionnaire :</h5>
                                             
                                             <div class="table-responsive" style="height:400px;">
                                                 <table class="table table-striped table-bordered mb-0">
                                                     <thead>
-                                                        ` + optionMotif + `
+                                                        ` + optionGestionnaire + `
                                                     </thead>
                                                     <tbody>
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>`;
-            $("#afficheuseMotif").html(htmlMotif);
+            $("#afficheuseRDVGestionnaire").html(htmlGestionnaire);
 
-            Highcharts.chart('chart7', {
+            Highcharts.chart('chartRDVGestionnaire', {
+                chart: {
+                    type: 'bar', // ou 'column' ou 'pie' selon tes besoins
+                    options3d: {
+                        enabled: true,
+                        alpha: 15,
+                        beta: 15,
+                        depth: 50,
+                        viewDistance: 25
+                    }
+                },
                 title: {
-                    text: 'Statistiques par Motif'
+                    text: 'Statistiques par RDV Gestionnaire'
                 },
                 xAxis: {
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                    type: "category"
+                },
+                plotOptions: {
+                    column: {
+                        depth: 25
+                    }
+                },
+                legend: {
+                    enabled: true
                 },
                 series: [{
-                    type: 'pie',
-                    allowPointSelect: true,
-                    keys: ['name', 'y', 'selected', 'sliced'],
-                    data: tablo_graph,
-                    showInLegend: true
+                    name: 'RDV Gestionnaire',
+                    data: tablo_graph, // 👉 data: [{name,y,color}]
+                    colorByPoint: true,
+                    colors: tablo_color
                 }]
             });
         }
