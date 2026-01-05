@@ -30,9 +30,12 @@ if (isset($_COOKIE["idrdv"])) {
     $retour_rdv = $fonction->_getSelectDatabases($sqlSelect);
 
     if ($retour_rdv == null) {
-        header('Location: liste-rdv-attente');
+        // retour a la page precedente
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        
         exit;
     }
+    // header('Location: liste-rdv-attente');
 
     $rdv = $retour_rdv[0];
 

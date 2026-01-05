@@ -56,7 +56,7 @@ if ($id != null && $dateUp != null) {
 
         $subject = "Réinitialisation de votre mot de passe - " . $users->nom . " " . $users->prenom;
         $message = format_mail_by_NISSA($users->nom . " " . $users->prenom, $text_form, $subject);
-        print_r($message);
+        // print_r($message);
         $to = $users->email;
         $mail = true;
     }

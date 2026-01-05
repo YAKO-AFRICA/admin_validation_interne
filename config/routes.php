@@ -62,7 +62,7 @@ if ($request->action != null) {
                         $result = array("result" => "ERROR", "code" => '100', "data" =>  "Desolé ce compte est desactivé !!");
                     } else {
                         if (isset($users->email) && $users->email != null) {
-                            echo $url_notification = $url . "/recuperation-mail?i=" . trim($users->id) . "&p=rp-" . date('YmdHis');
+                            $url_notification = $url . "/recuperation-mail?i=" . trim($users->id) . "&p=rp-" . date('YmdHis');
                             file_get_contents($url_notification);
                             $result = array("result" => "SUCCESS", "code" => '0', "data" =>  "Merci de continuer le traitement en suivant le lien envoyé par mail a l'adresse " . $users->email . " !!");
                         } else {
@@ -226,7 +226,14 @@ if ($request->action != null) {
 
                 //print_r($rdv);
 
-                if ($optionadditif != null) {
+                $tablo = array(
+                    "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partiel", "operation" => "Rachat partiel"),
+                    "avance" => array("etat" => "2", "libelle" => "Le client a demandé une avance / pret", "operation" => "Avance ou prêt"),
+                    "renonce" => array("etat" => "3", "libelle" => "Le client décide de conserver son contrat", "operation" => "Renonce"),
+                    "absent" => array("etat" => "5", "libelle" => "Le client ne s'est pas presenté", "operation" => "Absent"),
+                    "transformation" => array("etat" => "4", "libelle" => "Le client a demandé une transformation", "operation" => "transformation"),
+                    "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres")
+                );
 
                     $tablo_issue_rdv = explode("|", $optionadditif);
                     $resultatOpe = $tablo_issue_rdv[0];
@@ -238,75 +245,36 @@ if ($request->action != null) {
                     $resultat = $tabloOperation["resultat"];
                     $permission = $tabloOperation["permission"];
 
-                    if ($resultatOpe == "transformation") {
-                        $produitTransformation = $tablo_issue_rdv[1];
-                        $montantTransformation = $tablo_issue_rdv[2];
-                        $montantClient = $tablo_issue_rdv[3];
+                switch (strtolower($resultatOpe)) {
 
-                        print $libelleTraitement . "  ===> " . $produitTransformation . " " . $montantTransformation . " " . $montantClient . PHP_EOL;
-                    } elseif ($resultatOpe == "avance" || $resultatOpe == "partielle") {
-                        $montantSouhaite = $tablo_issue_rdv[1];
-                        print $libelleTraitement . "  ===> " . $montantSouhaite . PHP_EOL;
-                    } elseif ($resultatOpe == "absent") {
-                        if (count($tablo_issue_rdv) > 2) {
-                            $etat_absent = $tablo_issue_rdv[1];
-                            $nouvelle_date_rdv = $tablo_issue_rdv[2];
+                    case "partielle":
+                    case "avance":
+                        // Traitement spécifique
+                        $retour = traitementApresReceptionRDV($rdv, $etat, $libelleTraitement, $observation, $operation);
+                        echo json_encode($retour);
+                        break;
 
-                            print $libelleTraitement . "  ===> " . $etat_absent . " " . $nouvelle_date_rdv . PHP_EOL;
+                    case "transformation":
+                        // Cas particulier (renvoie directement le résultat brut)
+                        $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+                        echo json_encode($resultatOpe);
+                        break;
 
-                            //print_r($rdv);
-                            $retour = reprogrammerRDV($rdv, $nouvelle_date_rdv, $observation);
-                            echo json_encode($retour);
-                        }
-                    }
-                    //print_r($tabloOperation);
+                    case "renonce":
+                    case "absent":
+                    case "autres":
+                        // Traitement classique
+                        $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+                        echo json_encode($retour);
+                        break;
+
+                    default:
+                        // Cas par défaut similaire aux autres
+                        $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
+                        echo json_encode($retour);
+                        break;
                 }
             }
-
-
-
-
-            // echo json_encode($tabloOperation);
-
-            // //$retour = $fonction->_getRetournePrestation(" WHERE id='" . trim($idrdv) . "'");
-            // $sqlSelect = "SELECT tblrdv.* ,  TRIM(libelleVilleBureau) as villes  FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau WHERE tblrdv.idrdv = '" . $idrdv . "' ";
-            // $retour = $fonction->_getSelectDatabases($sqlSelect);
-            // if ($retour != null) {
-            //     $rdv = $retour[0];
-            //     //print_r($rdv);
-
-            //     $tablo = array(
-            //         "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partiel", "operation" => "Rachat partiel"),
-            //         "avance" => array("etat" => "2", "libelle" => "Le client a demandé une avance / pret", "operation" => "Avance ou prêt"),
-            //         "renonce" => array("etat" => "3", "libelle" => "Le client décide de conserver son contrat", "operation" => "Renonce"),
-            //         "absent" => array("etat" => "5", "libelle" => "Le client ne c'est pas presenté", "operation" => "Absent"),
-            //         "transformation" => array("etat" => "4", "libelle" => "Le client a demandé une transformation", "operation" => "transformation"),
-            //         "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres")
-            //     );
-
-
-            //     $rrr = $tablo[strtolower($resultatOpe)];
-            //     $etat = $rrr["etat"];
-            //     $libelleTraitement = $rrr["libelle"];
-            //     $operation = $rrr["operation"];
-
-            //     switch (strtolower($resultatOpe)) {
-
-            //         case "transformation":
-            //             $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
-            //             echo json_encode($resultatOpe);
-            //             break;
-            //         case "partielle" || "avance":
-            //             $retour = traitementApresReceptionRDV($rdv, $etat, $libelleTraitement, $observation, $operation);
-            //             echo json_encode($retour);
-            //             break;
-
-            //         default:
-            //             $retour = traitementApresReceptionRDVAutres($rdv, $etat, $libelleTraitement, $observation, $resultatOpe);
-            //             echo json_encode($retour);
-            //             break;
-            //     }
-            // }
 
             break;
 

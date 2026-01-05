@@ -29,7 +29,8 @@ if (isset($_COOKIE["idrdv"])) {
 
     $retour_rdv = $fonction->_getRetourneDetailRDV($idrdv);
     if ($retour_rdv == null) {
-        header('Location: liste-rdv-attente');
+        // header('Location: liste-rdv-attente');
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
 

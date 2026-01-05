@@ -31,7 +31,8 @@ if (isset($_COOKIE["idrdv"])) {
     $sqlSelect = "SELECT tblrdv.* , TRIM(libelleVilleBureau) as villes , concat(users.nom,' ',users.prenom) as nomgestionnaire , users.codeagent as codeagent FROM tblrdv INNER JOIN tblvillebureau on tblrdv.idTblBureau = tblvillebureau.idVilleBureau INNER JOIN users ON tblrdv.gestionnaire = users.id WHERE tblrdv.idrdv = '" . $idrdv . "'";
     $retour_rdv = $fonction->_getSelectDatabases($sqlSelect);
     if ($retour_rdv == null) {
-        header('Location: liste-rdv-attente');
+        // header('Location: liste-rdv-attente');
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
 
@@ -572,7 +573,7 @@ if (isset($_COOKIE["idrdv"])) {
                 },
                 success: function(response) {
 
-                    console.log(response);
+                    console.log("response",response);
 
                     if (response != '-1' && response != '0') {
                         let code = response;
@@ -580,9 +581,13 @@ if (isset($_COOKIE["idrdv"])) {
                         if (code == "transformation") {
                             a_afficher = `<div class="alert alert-success" role="alert">
 								<h2> Merci de vous connecter a la plateforme de <span class="text-success">` + code + `</span> afin de poursuivre le traitement !!</h2></div>`
+<<<<<<< HEAD
                         } else {
+=======
+                        }else {
+>>>>>>> 19073e2e5a94b9058b8008324281856bbc5c5918
                             a_afficher = `<div class="alert alert-success" role="alert">
-								<h2>La demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
+								<h2>Traitement de la demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
                         }
 
                     } else {
@@ -661,7 +666,7 @@ if (isset($_COOKIE["idrdv"])) {
                         let code = response;
 
                         a_afficher = `<div class="alert alert-success" role="alert">
-								<h2>La demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
+								<h2>Traitement de la demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
 
                     } else {
                         a_afficher = `<div class="alert alert-danger" role="alert">
@@ -914,8 +919,13 @@ if (isset($_COOKIE["idrdv"])) {
                                             <option value="transformation">Le client souhaite effectuer une Transformation</option>
                                             <option value="partielle">Le client a demandé un rachat partiel</option>
                                             <option value="avance">Le client a demandé une avance / pret</option>
+<<<<<<< HEAD
                                             <option value="renonce">Le client décide de conserver son contrat</option>
                                             <option value="absent">Le client ne s'est pas présenté</option>
+=======
+                                            <option value="renonce">Le client a decidé de conserver son contrat</option>
+                                            <option value="absent">Le client ne s'est pas presenté</option>
+>>>>>>> 19073e2e5a94b9058b8008324281856bbc5c5918
                                             <option value="autres">Autres</option>
                                         </select>
                                 </div>
