@@ -23,12 +23,12 @@ if (isset($etat) && $etat !== null && in_array($etat, array_keys(Config::tablo_s
 	$etat = $etat;
 	$retourEtat = Config::tablo_statut_rdv[$etat];
 	$libelleTraitement = " - " . $retourEtat["libelle"];
-	$couleur = $retourEtat["color"];
 } else {
 	$etat = null;
 	$libelleTraitement = " - Total(s)";
-	$couleur = "#000000";
 }
+
+
 
 $liste_rdvs = $fonction->getSelectRDVAfficher($etat);
 if ($liste_rdvs != null) $effectue = count($liste_rdvs);
@@ -77,11 +77,11 @@ else $effectue = 0;
 
 				<div class="card-box mb-30">
 					<div class="pd-20">
-						<h4 class="text-center" style="color:info; "> Liste des Rendez-vous <span style="color:<?= $couleur ?>;"><?= $libelleTraitement ?></span> </h4>
+						<h4 class="text-center" style="color:#033f1f; "> Liste des Rendez-vous <?= $libelleTraitement ?> </h4>
 					</div>
 					<div class="pb-20">
 						<div class="col text-center">
-							<h5><?= "Total Ligne  : " ?> <span style="color:<?= $couleur ?> !important;"><?= $effectue ?></span> </h5>
+							<h5><?= "Total Ligne  : " ?> <span style="color:#F9B233;"><?= $effectue ?></span></h5>
 						</div>
 					</div>
 
@@ -90,20 +90,19 @@ else $effectue = 0;
 							<thead>
 								<tr>
 									<th class="table-plus datatable-nosort">#Ref</th>
-									<th>Id RDV</th>
-									<th>Date prise RDV</th>
+									<th>Id</th>
+									<th>Date</th>
 									<th>Nom & prénom(s)</th>
 									<th>Id contrat</th>
 									<th>Motif</th>
 									<th>Date RDV</th>
 									<th>Lieu RDV</th>
-									<?php if (!empty($liste_rdvs) && ($liste_rdvs[0]->etat == "2" || $liste_rdvs[0]->etat == "3")): ?>
+									<th>Délais</th>
+
+									<?php if (!empty($liste_rdvs) && ($liste_rdvs[0]->etat == "2" || $liste_rdvs[0]->etat == "3" || $liste_rdvs[0]->etat == "0")): ?>
 										<th>Détail</th>
-									<?php elseif ($liste_rdvs[0]->etat == "0"): ?>
-										<th>Motif rejet</th>
-									<?php else: ?>
-										<th>Délais</th>
 									<?php endif; ?>
+
 									<th>État</th>
 									<th class="table-plus datatable-nosort">Action</th>
 								</tr>
@@ -116,37 +115,47 @@ else $effectue = 0;
 									<?php foreach ($liste_rdvs as $i => $rdv) : ?>
 
 										<?php
-										// État
-										//$etat = (!empty($rdv->etat) && isset(Config::tablo_statut_rdv[$rdv->etat]))	? $rdv->etat : 1;
-										$retourEtat = Config::tablo_statut_rdv[$rdv->etat];
-										//print_r(Config::tablo_statut_rdv[$rdv->etat]);
 										$dateCompare = null;
-										$lib_delai = null;
-										$couleur_fond = null;
-										$badge_delai = null;
 										// Détermination de la date RDV affichée
 										$dateRdv = $rdv->daterdv;
 										if ($rdv->etat == "2" || $rdv->etat == "3") {
 											if (isset($rdv->daterdveff) && $rdv->daterdveff != "") $dateRdv = date("d/m/Y", strtotime($rdv->daterdveff));
-
-											if ($rdv->etat == "2") $dateCompare = $rdv->transmisLe;
-											if ($rdv->etat == "3") $dateCompare = $rdv->traiterLe;
 										}
 
+										// Délai
+										if ($rdv->etat == "2") $dateCompare = $rdv->transmisLe;
+										if ($rdv->etat == "3") {
+											$dateCompare = $rdv->traiterLe;
+										}
 										$delai = $fonction->getDelaiRDV($dateRdv, $dateCompare);
-										if ($rdv->etat == "1") {
-											$lib_delai = $delai['libelle'];
-											$couleur_fond = $delai['couleur'] ?? 'transparent';
-											$badge_delai = $delai['badge'] ?? 'badge badge-secondary';
-										}
+										//print_r($delai);
+
+										//$delai = $fonction->getDelaiRDV($dateRdv);
+										$lib_delai = $delai['libelle'];
+										$couleur_fond = $delai['couleur'] ?? 'transparent';
+										$badge_delai = $delai['badge'] ?? 'badge badge-secondary';
+
+										// Villes
+										$villes = !empty($rdv->villes) ? strtoupper($rdv->villes) : "Non mentionné";
+
+										// État
+										$etat = (!empty($rdv->etat) && isset(Config::tablo_statut_rdv[$rdv->etat]))
+											? $rdv->etat
+											: 1;
+
+										$retourEtat = Config::tablo_statut_rdv[$etat];
 										?>
 
 										<tr id="ligne-<?= $i ?>" style="color: <?= htmlspecialchars($couleur_fond) ?>;">
+
 											<td class="table-plus"><?= $i + 1 ?></td>
+
 											<td id="id-<?= $i ?>"><?= htmlspecialchars($rdv->idrdv) ?></td>
+
 											<td>
-												<?= $rdv->dateajou ?>
+												<?= !empty($rdv->dateajou) ? date('d/m/Y H:i', strtotime($rdv->dateajou)) : "" ?>
 											</td>
+
 											<td class="text-wrap">
 												<?= htmlspecialchars($rdv->nomclient) ?>
 												<p class="mb-0 text-dark" style="font-size:0.7em;">
@@ -154,62 +163,73 @@ else $effectue = 0;
 													<span style="font-weight:bold;"><?= htmlspecialchars($rdv->tel) ?></span>
 												</p>
 											</td>
+
 											<td id="idcontrat-<?= $i ?>"><?= htmlspecialchars($rdv->police ?? '') ?></td>
+
 											<td><?= htmlspecialchars($rdv->motifrdv ?? '') ?></td>
+
 											<td id="daterdv-<?= $i ?>" style="font-weight:bold;">
 												<?= htmlspecialchars($dateRdv) ?>
 											</td>
+
 											<td style="color:#F9B233; font-weight:bold;">
-												<?= $villes = !empty($rdv->villes) ? strtoupper($rdv->villes) : "Non mentionné" ?>
+												<?= $villes ?>
 											</td>
-											<td class="text-wrap">
-												<?php if ($rdv->etat == "1"): ?>
-													<span class="<?= htmlspecialchars($badge_delai) ?>"><?= $lib_delai ?></span>
-												<?php elseif ($rdv->etat == "2"): ?>
-													<p class="mb-0 text-dark" style="font-size:0.7em;">
-														Gestionnaire :
-														<span style="font-weight:bold;"><?= htmlspecialchars($rdv->nomgestionnaire ?? "N/A") ?></span>
-													</p>
-													<p class="mb-0 text-dark" style="font-size:0.7em;">
-														Date Transmission :
-														<span style="font-weight:bold;"><?= !empty($rdv->transmisLe) ? date('d/m/Y', strtotime($rdv->transmisLe)) : "" ?></span>
-													</p>
-													<p class="mb-0 text-dark" style="font-size:0.7em;">
-														<?php if ($rdv->etat == "2" && ($dateRdv < date('Y-m-d'))): ?>
-															<span style="font-weight:bold; color:red;">Date RDV Expiré </span>
-														<?php endif; ?>
-													</p>
-												<?php elseif ($rdv->etat == "3"): ?>
-													<p class="mb-0 text-dark" style="font-size:0.7em;">
-														Gestionnaire :
-														<span style="font-weight:bold;"><?= htmlspecialchars($rdv->nomgestionnaire ?? "N/A") ?></span>
-													</p>
-													<p class="mb-0 text-dark" style="font-size:0.7em;">
-														Date Traitement :
-														<span style="font-weight:bold;"><?= !empty($rdv->traiterLe) ? date('d/m/Y H:i', strtotime($rdv->traiterLe)) : "" ?></span>
 
-													</p>
+											<!-- Délais -->
+											<td>
+												<?php if ($rdv->etat == "2" || $rdv->etat == "3"): ?>
 													<p class="mb-0 text-dark" style="font-size:0.7em;">
-														Traitement :
-														<span style="font-weight:bold;">
-															<?php if (isset($rdv->etatTraitement) && $rdv->etatTraitement != null && $rdv->etatTraitement != "0"): ?>
-																<?= $rdv->libelleTraitement ?>
-															<?php else: ?>
-																traitement non mentionné
-															<?php endif; ?>
-														</span>
+														Date RDV :
+														<span style="font-weight:bold;"><?= !empty($rdv->daterdveff) ? date('d/m/Y', strtotime($rdv->daterdveff)) : "" ?></span>
 													</p>
-												<?php else: ?>
-													<?= $rdv->reponse ?>
 												<?php endif; ?>
+												<span class="<?= htmlspecialchars($badge_delai) ?>"><?= $lib_delai ?></span>
 											</td>
 
+											<!-- Colonne DÉTAIL (uniquement état 2 ou 3) -->
+											<?php if ($rdv->etat == "2" || $rdv->etat == "3"): ?>
+												<td class="text-wrap">
+													<p class="mb-0 text-dark" style="font-size:0.7em;">
+														Agent Transformation :
+														<span style="font-weight:bold;"><?= htmlspecialchars($rdv->nomgestionnaire ?? "Non mentionné") ?></span>
+													</p>
+
+													<?php if ($rdv->etat == "3"): ?>
+														<p class="mb-0 text-dark" style="font-size:0.7em;">
+															Date Traitement :
+															<span style="font-weight:bold;"><?= !empty($rdv->traiterLe) ? date('d/m/Y H:i', strtotime($rdv->traiterLe)) : "" ?></span>
+
+														</p>
+														<p class="mb-0 text-dark" style="font-size:0.7em;">
+															Traitement :
+															<span style="font-weight:bold;">
+																<?php if (isset($rdv->etatTraitement) && $rdv->etatTraitement != null && $rdv->etatTraitement != "0"): ?>
+																	<?= $rdv->libelleTraitement ?>
+																<?php else: ?>
+																	traitement non mentionné
+																<?php endif; ?>
+															</span>
+
+														</p>
+
+													<?php endif; ?>
+
+												</td>
+											<?php elseif ($rdv->etat == "0"): ?>
+												<td class="text-wrap">
+													<?= $rdv->reponse ?>
+												</td>
+											<?php endif; ?>
+
+											<!-- État -->
 											<td>
 												<span class="<?= htmlspecialchars($retourEtat["color_statut"]) ?>">
 													<?= htmlspecialchars($retourEtat["libelle"]) ?>
 												</span>
 											</td>
 
+											<!-- Actions -->
 											<td>
 												<button class="btn btn-warning btn-sm view"
 													id="view-<?= $i ?>"
@@ -223,14 +243,6 @@ else $effectue = 0;
 														style="background-color:#033f1f; color:white">
 														<i class="fa fa-mouse-pointer"></i> Traiter
 													</button>
-												<?php elseif ($rdv->etat == "2" && ($dateRdv < date('Y-m-d'))): ?>
-
-													<button class="btn btn-info btn-sm traiter"
-														id="traiter-<?= $i ?>"
-														style="background-color:info; color:white">
-														<i class="fa fa-mouse-pointer"></i> retraiter le rdv
-													</button>
-
 												<?php endif; ?>
 
 											</td>

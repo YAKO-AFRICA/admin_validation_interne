@@ -12,10 +12,10 @@ class Config
     const LogDirectory = 'log/';
     const DatabaseHost = '51.255.64.8';
     const DatabaseName = 'laloyale_bdwebdev';
-    // const DatabaseName = 'laloyale_bdweb';
+    //const DatabaseName = 'laloyale_bdweb';
     const DatabaseUser = 'laloyale_masterdev';
     const DatabasePass = '1Mot2Passe.DSI';
-    
+
     // laloyale_masterdev
     // 1Mot2Passe.DSI
     // const DatabaseUser = 'laloyale_llvweb';
@@ -126,6 +126,18 @@ class Config
 
     );
 
+    const tablo_resultat_entretien_rdv = array(
+        "partielle" => array("etat" => "2", "libelle" => "Le client a demandé un rachat partiel", "operation" => "Rachat partiel", "permission" => "1", "resultat" => "conservation"),
+        "avance" => array("etat" => "2", "libelle" => "Le client a demandé une avance / pret", "operation" => "Avance ou prêt", "permission" => "1", "resultat" => "conservation"),
+        "conserver" => array("etat" => "3", "libelle" => "Le client décide de conserver son contrat", "operation" => "Renonce", "permission" => "1", "resultat" => "conservation"),
+        "absent" => array("etat" => "5", "libelle" => "Le client ne s'est pas présenté", "operation" => "Absent", "permission" => "0", "resultat" => "absent"),
+        "transformation" => array("etat" => "4", "libelle" => "Le client a demandé une transformation", "operation" => "transformation", "permission" => "1", "resultat" => "conservation"),
+        "rachat" => array("etat" => "6", "libelle" => "Le client desire un rachat total", "operation" => "rachat", "permission" => "1", "resultat" => "sortie"),
+        "terme" => array("etat" => "7", "libelle" => "Le contrat est terminé", "operation" => "terme", "permission" => "1", "resultat" => "sortie"),
+        
+        "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres", "permission" => "1", "resultat" => "conservation")
+    );
+
     const TABLE_USER = "users";
     const TABLE_PRESTATION = "tbl_prestations";
     const TABLE_RDV = "tblrdv";
@@ -171,4 +183,16 @@ class Config
     const URL_PRESTATION_RACINE = "https://testsite.yakoafricassur.com/";
     const URL_DOC_PRESTATION = "https://testsite.yakoafricassur.com/api/getPrestationsDoc/";
     const URL_DOC_SINISTRE = "https://testsite.yakoafricassur.com/api/getSinistreDoc/";
+
+
+    const clauseSelectAnneeEncours = "  ( 	YEAR(
+					CASE	WHEN tblrdv.daterdv LIKE '%/%' THEN STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')
+						WHEN tblrdv.daterdv LIKE '%-%' THEN STR_TO_DATE(tblrdv.daterdv, '%d-%m-%Y')
+						ELSE NULL 	END ) = YEAR(CURDATE()) ) ";
+
+    const orderBySelectAnneeEncours = " CASE
+				WHEN tblrdv.daterdv LIKE '%/%' THEN STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')
+				WHEN tblrdv.daterdv LIKE '%-%' THEN STR_TO_DATE(tblrdv.daterdv, '%d-%m-%Y')
+				ELSE NULL
+			END DESC ";
 }

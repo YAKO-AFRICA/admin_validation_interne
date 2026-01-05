@@ -22,6 +22,7 @@ $('document').ready(function() {
     });
 
     $('.data-table-export').DataTable({
+        order: [],
         scrollCollapse: true,
         autoWidth: false,
         responsive: true,

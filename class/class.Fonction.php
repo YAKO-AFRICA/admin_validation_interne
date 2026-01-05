@@ -24,6 +24,8 @@ class Fonction
 
 
 
+
+
 	function diff_date($date_debut)
 	{
 		$maintenant =  date('Y-m-d H:i:s');
@@ -55,7 +57,7 @@ class Fonction
 	}
 
 
-	public function getDelaiRDV($dateRDV)
+	public function getDelaiRDV($dateRDV, $dayCompare = null)
 	{
 		// Convertir format d/m/Y en Y-m-d
 		if ($dateRDV && strpos($dateRDV, '/') !== false) {
@@ -74,7 +76,12 @@ class Fonction
 		}
 
 		/* --- Création objets Date sans heure --- */
-		$today = new DateTime(date('Y-m-d'));           // Aujourd’hui à 00:00:00
+		if ($dayCompare != null) {
+			$today =  new DateTime(date('Y-m-d', strtotime($dayCompare))); // RDV à 00:00:00
+		} else {
+			$today = new DateTime(date('Y-m-d'));           // Aujourd’hui à 00:00:00
+		}
+
 		$rdv   = new DateTime(date('Y-m-d', strtotime($dateRDV))); // RDV à 00:00:00
 
 		/* --- Calcul différence en jours --- */
@@ -403,11 +410,11 @@ class Fonction
 
 
 		if ($nom != NULL) {
-			$par2 = "AND  TRIM(tbl_prestations.nom) LIKE '%" . addslashes($nom) . "%' ";
+			$par2 = " AND  TRIM(tbl_prestations.nom) LIKE '%" . addslashes($nom) . "%' ";
 			$libelle2 = "nom : " . $nom . '</br>';
 		}
 		if ($prenoms != NULL) {
-			$par3 = "AND  TRIM(tbl_prestations.prenom) LIKE '%" . addslashes($prenoms) . "%' ";
+			$par3 = " AND  TRIM(tbl_prestations.prenom) LIKE '%" . addslashes($prenoms) . "%' ";
 			$libelle3 = "prenoms : " . $prenoms . '</br>';
 		}
 
@@ -430,7 +437,7 @@ class Fonction
 
 		if ($DateNIL != NULL) {
 			$DateNIL = @date('Y-m-d', strtotime($DateNIL));
-			$par7 = "AND  ( date(tbl_prestations.migreele) = '$DateNIL' )";
+			$par7 = " AND  ( date(tbl_prestations.migreele) = '$DateNIL' )";
 			$libelle7 = "date migration NSIL : " . @date('d/m/Y', strtotime($DateNIL)) . ' </br>';
 		}
 
@@ -438,17 +445,17 @@ class Fonction
 		if ($DateDebutPrest != NULL and $DateFinPrest != NULL) {
 			$DateDebut = @date('Y-m-d', strtotime($_REQUEST["DateDebutPrest"]));
 			$DateFin = @date('Y-m-d', strtotime($_REQUEST["DateFinPrest"]));
-			$par1 = "AND  ( date(tbl_prestations.created_at) between '$DateDebut' AND '$DateFin' )";
+			$par1 = " AND  ( date(tbl_prestations.created_at) between '$DateDebut' AND '$DateFin' )";
 			$libelle1 = "date : " . $DateDebut . '-' . $DateFin . '</br>';
 		}
 		if ($DateDebutPrest != NULL and $DateFinPrest == NULL) {
 			$DateDebut = @date('Y-m-d', strtotime($_REQUEST["DateDebutPrest"]));
-			$par1 = "AND  (  date(tbl_prestations.created_at) = '$DateDebut' )";
+			$par1 = " AND  (  date(tbl_prestations.created_at) = '$DateDebut' )";
 			$libelle1 = "date : " . $DateDebut . '</br>';
 		}
 		if ($DateDebutPrest == NULL and $DateFinPrest != NULL) {
 			$DateFin = @date('Y-m-d', strtotime($_REQUEST["DateFinPrest"]));
-			$par1 = "AND  (  date(tbl_prestations.created_at) = '$DateFin' )";
+			$par1 = " AND  (  date(tbl_prestations.created_at) = '$DateFin' )";
 			$libelle1 = "date : " . $DateFin . '</br>';
 		}
 
@@ -456,18 +463,18 @@ class Fonction
 		if ($DateDebutTrait != NULL and $DateFinTrait != NULL) {
 			$DateDebut1 = @date('Y-m-d', strtotime($DateDebutTrait));
 			$DateFin1 = @date('Y-m-d', strtotime($DateFinTrait));
-			$par8 = "AND  ( date(tbl_prestations.updated_at) between '$DateDebut1' AND '$DateFin1' )";
-			$libelle8 = "date : " . $DateDebut1 . '-' . $DateFin1 . '</br>';
+			$par8 = " AND  ( date(tbl_prestations.updated_at) between '$DateDebut1' AND '$DateFin1' )";
+			$libelle8 = "date traitement : " . $DateDebut1 . '-' . $DateFin1 . '</br>';
 		}
 		if ($DateDebutTrait != NULL and $DateFinTrait == NULL) {
 			$DateDebut1 = @date('Y-m-d', strtotime($DateDebutTrait));
-			$par8 = "AND  (  date(tbl_prestations.updated_at) = '$DateDebut1' )";
-			$libelle8 = "date : " . $DateDebut1 . '</br>';
+			$par8 = " AND  (  date(tbl_prestations.updated_at) = '$DateDebut1' )";
+			$libelle8 = "date traitement : " . $DateDebut1 . '</br>';
 		}
 		if ($DateDebutTrait == NULL and $DateFinTrait != NULL) {
 			$DateFin1 = @date('Y-m-d', strtotime($DateFinTrait));
-			$par8 = "AND  (  date(tbl_prestations.updated_at) = '$DateFin1' )";
-			$libelle8 = "date : " . $DateFin1 . '</br>';
+			$par8 = " AND  (  date(tbl_prestations.updated_at) = '$DateFin1' )";
+			$libelle8 = "date traitement : " . $DateFin1 . '</br>';
 		}
 
 		if ($etapePrestation != NULL) {
@@ -1375,8 +1382,7 @@ class Fonction
 		$rang_etat = array();
 		$val = 0;
 
-		$plus = "  YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
-
+		$plus = Config::clauseSelectAnneeEncours;
 		$sqlQuery = " SELECT count(idrdv) as resultat FROM " . Config::TABLE_RDV . " WHERE $plus ORDER BY idrdv  DESC  ";
 
 		$nb_ligne_total = $this->_getValeursFormuleForSearch($sqlQuery);
@@ -1516,7 +1522,7 @@ class Fonction
 		} else {
 
 			foreach ($tab as $key => $record) {
-				
+
 				$code = $record->id;
 				$idVilleBureau = $record->ville;
 				$nomuser = $record->nom . ' ' . $record->prenom;
@@ -1779,21 +1785,27 @@ class Fonction
 	}
 
 	//////////////////////////////////////////////
-	public function afficheuseGlobalStatistiqueRDV()
+	public function afficheuseGlobalStatistiqueRDV($critereRecherche = null, $lienUrl = "liste-rdv")
 	{
 
 		$affiche_2 =	'';
 		$affiche_3 =	'';
-		$retourStatut = $this->pourcentageRDV();
+		$total = 0;
+		$retourStatut = $this->pourcentageRDV($critereRecherche);
 		if (isset($retourStatut) && $retourStatut != null) {
 
 			foreach ($retourStatut as $etat => $statut) {
 				if ($statut["statut"] == "-1") {
 					continue;
 				} else {
+					$total += $statut["nb_ligne_element"];
+
+					if ($critereRecherche != null && $statut["nb_ligne_element"] <= 0) {
+						continue;
+					}
 					$values = $statut["statut"] . ";" . $statut["libelle"];
 					$affiche_2 .= '<div class="col-xl-3 mb-30">
-							<a href="liste-rdv?i=' . $statut["statut"] . '">
+							<a href="' . $lienUrl . '?i=' . $statut["statut"] . '">
 							<div class="card-box height-100-p widget-style1 text-white"
 								style="background-color:' . trim($statut["color"]) . '; font-weight:bold; ">
 								<div class="d-flex flex-wrap align-items-center">
@@ -1809,9 +1821,28 @@ class Fonction
 						</div>';
 				}
 			}
-			$affiche_3 .= '
+			if ($critereRecherche != null) {
+				$affiche_3 .= '<div class="col-xl-3 mb-30">
+							<a href="' . $lienUrl . '">
+								<div class="card-box height-100-p widget-style1"
+									style="background-color:whitesmoke; font-weight:bold; color:#033f1f ">
+									<div class="d-flex flex-wrap align-items-center">
+										<div class="progress-data">
+
+										</div>
+										<div class="widget-data">
+											<div class="h4 mb-0">' . intval($total) . '</div>
+											<div class="weight-600 font-14" style="color:#033f1f !important;">TOTALS DEMANDES
+												RDV</div>
+										</div>
+									</div>
+								</div>
+							</a>
+						</div>';
+			} else {
+				$affiche_3 .= '
 				<div class="col-xl-3 mb-30">
-					<a href="liste-rdv">
+					<a href="' . $lienUrl . '">
 						<div class="card-box height-100-p widget-style1"
 							style="background-color:whitesmoke; font-weight:bold; color:#033f1f ">
 							<div class="d-flex flex-wrap align-items-center">
@@ -1828,6 +1859,7 @@ class Fonction
 					</a>
 				</div>
 				';
+			}
 
 			return	'<div class="row">' . $affiche_2 . $affiche_3 . '</div>';
 		}
@@ -1908,32 +1940,34 @@ class Fonction
 
 		if ($etape == NULL) $etape = "";
 		else $etape = " AND tblrdv.etat ='$etape' ";
-		// $plus = " AND YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
-		// $sqlSelect = "
-		// 	SELECT 
-		// 		tblrdv.*,
-		// 		CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
-		// 		TRIM(tblvillebureau.libelleVilleBureau) AS villes
-		// 	FROM tblrdv
-		// 	LEFT JOIN users ON tblrdv.gestionnaire = users.id
-		// 	LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
-		// 	WHERE tblrdv.etat = '$etat' 
-		// 	$plus
-		// 	ORDER BY tblrdv.idrdv DESC	";
-		$plus = " YEAR(STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')) = YEAR(CURDATE())";
-		$sqlSelect = "
-			SELECT 
-				tblrdv.*,
-				CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
-				TRIM(tblvillebureau.libelleVilleBureau) AS villes
-			FROM tblrdv
-			LEFT JOIN users ON tblrdv.gestionnaire = users.id
-			LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
-			WHERE   $plus  $etape
-			ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') DESC
-		";
 
-		//echo $sqlSelect; exit;
+		$plus = Config::clauseSelectAnneeEncours;
+		$orderBy = Config::orderBySelectAnneeEncours;
+
+		// $sqlSelect = " SELECT 	tblrdv.*, CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, TRIM(tblvillebureau.libelleVilleBureau) AS villes
+		// 	FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id 	LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+		// 	WHERE   $plus  $etape 	ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') DESC ";
+
+		$sqlSelect = "SELECT 
+			tblrdv.*,	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id LEFT JOIN tblvillebureau 	ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+			WHERE  $plus $etape  ORDER BY 		$orderBy	";
+		//echo $sqlSelect;exit;
+		return  $this->_getSelectDatabases($sqlSelect);
+	}
+	public function getSelectRDVAfficherGestionnaire($gestionnaireId, $critereEtat = NULL)
+	{
+
+		if ($critereEtat == NULL) $critereEtat = "";
+		else $critereEtat = " AND tblrdv.etat ='$critereEtat' ";
+
+		$plus = Config::clauseSelectAnneeEncours;
+		$orderBy = Config::orderBySelectAnneeEncours;
+
+		$sqlSelect = "SELECT 		tblrdv.*,	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id LEFT JOIN tblvillebureau 	ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+			WHERE tblrdv.gestionnaire= '" . trim($gestionnaireId) . "'  AND $plus $critereEtat  ORDER BY 		$orderBy	";
+		//echo $sqlSelect;exit;
 		return  $this->_getSelectDatabases($sqlSelect);
 	}
 
@@ -2528,5 +2562,13 @@ class Fonction
 			echo 'Exception reçue : ', $e->getMessage(), "\n";
 			return 0;
 		}
+	}
+
+	function getRetourneInfosBordereaux($critere)
+	{
+
+		$sqlQuery = "SELECT * FROM `tbl_detail_bordereau_rdv`  $critere ";
+		//echo $sqlQuery; exit;
+		return  $this->_getSelectDatabases($sqlQuery);
 	}
 }
