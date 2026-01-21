@@ -1935,7 +1935,7 @@ class Fonction
 		}
 	}
 
-	public function getSelectRDVAfficher($etape = NULL)
+	public function getSelectRDVAfficherOLD($etape = NULL)
 	{
 
 		if ($etape == NULL) $etape = "";
@@ -1944,17 +1944,93 @@ class Fonction
 		$plus = Config::clauseSelectAnneeEncours;
 		$orderBy = Config::orderBySelectAnneeEncours;
 
+
+		if ($_SESSION['profil'] == 'interim' && $_SESSION['typeCompte'] == 'rdv') {
+
+			$sqlSelect = "SELECT 
+				tblrdv.*,
+				CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire,
+				TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv
+
+			LEFT JOIN users 
+				ON tblrdv.gestionnaire = users.id 
+				AND users.agent_principal = '14'
+
+			LEFT JOIN tblvillebureau 
+				ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau  
+			WHERE  $plus $etape  ORDER BY 		$orderBy	";
+		} else {
+			$sqlSelect = "SELECT 
+			tblrdv.*,	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, TRIM(tblvillebureau.libelleVilleBureau) AS villes
+			FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id LEFT JOIN tblvillebureau 	ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
+			WHERE  $plus $etape  ORDER BY 		$orderBy	";
+		}
+
 		// $sqlSelect = " SELECT 	tblrdv.*, CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, TRIM(tblvillebureau.libelleVilleBureau) AS villes
 		// 	FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id 	LEFT JOIN tblvillebureau ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
 		// 	WHERE   $plus  $etape 	ORDER BY STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y') DESC ";
 
-		$sqlSelect = "SELECT 
-			tblrdv.*,	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, TRIM(tblvillebureau.libelleVilleBureau) AS villes
-			FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id LEFT JOIN tblvillebureau 	ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
-			WHERE  $plus $etape  ORDER BY 		$orderBy	";
-		//echo $sqlSelect;exit;
+
+		echo $sqlSelect;
+		exit;
 		return  $this->_getSelectDatabases($sqlSelect);
 	}
+
+	public function getSelectRDVAfficher($etape = null)
+	{
+		// Gestion de l'état
+		$conditionEtape = '';
+		if ($etape !== null && $etape !== '') {
+			$conditionEtape = " AND tblrdv.etat = '" . addslashes($etape) . "' ";
+		}
+
+		// Clauses dynamiques
+		$plus    = Config::clauseSelectAnneeEncours;
+		$orderBy = Config::orderBySelectAnneeEncours;
+
+		// Base SELECT commun
+		$selectBase = "
+        SELECT
+            tblrdv.*,
+            CONCAT(u.nom, ' ', u.prenom) AS nomgestionnaire,
+            TRIM(vb.libelleVilleBureau) AS villes
+        FROM tblrdv
+        LEFT JOIN users u ON tblrdv.gestionnaire = u.id
+        LEFT JOIN tblvillebureau vb ON tblrdv.idTblBureau = vb.idVilleBureau
+    ";
+
+		// Cas profil intérim + compte rdv
+		if ($_SESSION['profil'] === 'interim' && $_SESSION['typeCompte'] === 'rdv') {
+			$agent_principal = $_SESSION['agent_principal'];
+			$selectBase = "
+            SELECT
+                tblrdv.*,
+                CONCAT(u.nom, ' ', u.prenom) AS nomgestionnaire,
+                TRIM(vb.libelleVilleBureau) AS villes
+            FROM tblrdv
+            LEFT JOIN users u 
+                ON tblrdv.gestionnaire = u.id
+                AND u.agent_principal = '$agent_principal'
+            LEFT JOIN tblvillebureau vb 
+                ON tblrdv.idTblBureau = vb.idVilleBureau
+        ";
+		}
+
+		// Requête finale
+		$sqlSelect = $selectBase . "
+        WHERE 1=1
+        $plus
+        $conditionEtape
+        ORDER BY $orderBy
+    ";
+
+		// Debug (à commenter en prod)
+		// echo $sqlSelect; exit;
+
+		return $this->_getSelectDatabases($sqlSelect);
+	}
+
 	public function getSelectRDVAfficherGestionnaire($gestionnaireId, $critereEtat = NULL)
 	{
 
@@ -1967,7 +2043,26 @@ class Fonction
 		$sqlSelect = "SELECT 		tblrdv.*,	CONCAT(users.nom, ' ', users.prenom) AS nomgestionnaire, TRIM(tblvillebureau.libelleVilleBureau) AS villes
 			FROM tblrdv LEFT JOIN users ON tblrdv.gestionnaire = users.id LEFT JOIN tblvillebureau 	ON tblrdv.idTblBureau = tblvillebureau.idVilleBureau
 			WHERE tblrdv.gestionnaire= '" . trim($gestionnaireId) . "'  AND $plus $critereEtat  ORDER BY 		$orderBy	";
-		//echo $sqlSelect;exit;
+
+
+		if ($_SESSION['profil'] === 'interim') {
+			$agent_principal = $_SESSION['agent_principal'];
+			$sqlSelect = "SELECT
+					tblrdv.*,
+					CONCAT(u.nom, ' ', u.prenom) AS nomgestionnaire,
+					TRIM(vb.libelleVilleBureau) AS villes
+				FROM tblrdv
+				LEFT JOIN users u 
+					ON tblrdv.gestionnaire = u.id
+					AND u.agent_principal = '$agent_principal'
+				LEFT JOIN tblvillebureau vb 
+					ON tblrdv.idTblBureau = vb.idVilleBureau
+				WHERE $plus $critereEtat ORDER BY 		$orderBy  
+			";
+		}
+
+
+		// echo $sqlSelect;exit;
 		return  $this->_getSelectDatabases($sqlSelect);
 	}
 

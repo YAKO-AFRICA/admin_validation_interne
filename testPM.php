@@ -33,7 +33,7 @@ $pidcontrat = 2862238;
 $pdateevaluation = '16/12/2025'; // FORMAT DD/MM/AAAA
 
 $pidcontrat = !empty($_REQUEST['pidcontrat']) ? intval($_REQUEST['pidcontrat']) : null;
-$pdateevaluation = !empty($_REQUEST['pdateevaluation']) ? date('d/m/Y', strtotime($_REQUEST['pdateevaluation'])) : null;
+$pdateevaluation = !empty($_REQUEST['pdateevaluation']) ? date('d/m/Y', strtotime($_REQUEST['pdateevaluation'])) : $pdateevaluation;
 
 if (empty($pidcontrat) || empty($pdateevaluation)) {
     die("Paramètres d'entrée manquants");

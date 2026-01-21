@@ -726,7 +726,6 @@ if (isset($_COOKIE["idrdv"])) {
 
         function checkDate(parms) {
 
-
             var objetVillesRDV = document.getElementById("villesRDV").value;
             var daterdv = document.getElementById("daterdv").value;
             var daterdveff = document.getElementById("daterdveff").value;

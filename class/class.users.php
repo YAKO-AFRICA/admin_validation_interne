@@ -36,6 +36,7 @@ class users
     var $cible = null;
     var $villes_reception=null;
     var $localisation = null;
+    var $agent_principal = null;
 
 
     public function __construct($infos)

@@ -1,0 +1,2538 @@
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DDD CCCC  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DDD CCCC</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'agent a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 16:20:19</b></li>
+                                            <li>Login : <b>vvv@gg.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>agent</b></li>
+                                            <li>Type de compte : <b>sinistre</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à vvv@gg.com ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DDD CCCC  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DDD CCCC</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'agent a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 16:20:19</b></li>
+                                            <li>Login : <b>vvv@gg.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>agent</b></li>
+                                            <li>Type de compte : <b>sinistre</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; TEST INTERIM  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>TEST INTERIM</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'agent a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 16:38:19</b></li>
+                                            <li>Login : <b>aaaaa@ffffff.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>agent</b></li>
+                                            <li>Type de compte : <b>interim</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à aaaaa@ffffff.com ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; TEST INTERIM  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>TEST INTERIM</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'agent a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 16:38:19</b></li>
+                                            <li>Login : <b>aaaaa@ffffff.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>agent</b></li>
+                                            <li>Type de compte : <b>interim</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; AMAMA FFF  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>AMAMA FFF</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'agent a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 16:40:57</b></li>
+                                            <li>Login : <b>test222@hrfh.ci</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>agent</b></li>
+                                            <li>Type de compte : <b>interim</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à test222@hrfh.ci ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; AMAMA FFF  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>AMAMA FFF</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'agent a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 16:40:57</b></li>
+                                            <li>Login : <b>test222@hrfh.ci</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>agent</b></li>
+                                            <li>Type de compte : <b>interim</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DSI TEST  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DSI TEST</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à dsi@ttt.com ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DSI TEST  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DSI TEST</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DSI TEST  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DSI TEST</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à dsi@ttt.com ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DSI TEST  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DSI TEST</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DSI TEST  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DSI TEST</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à dsi@ttt.com ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DSI TEST  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DSI TEST</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DSI TEST  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DSI TEST</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à dsi@ttt.com ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; DSI TEST  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>DSI TEST</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; RRRR KONE  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>RRRR KONE</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>rdv</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à dsi@ttt.com ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; RRRR KONE  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>RRRR KONE</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2026-01-15 17:53:22</b></li>
+                                            <li>Login : <b>dsi@ttt.com</b></li>
+                                            <li>Mot de passe : <b>fcea920f7412b5da7be0cf42b8c93759</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>rdv</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 
+
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; ADMIN DSI  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>ADMIN DSI</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2025-11-24 17:26:18</b></li>
+                                            <li>Login : <b>super.admin</b></li>
+                                            <li>Mot de passe : <b>827ccb0eea8a706c4c34a16891f84e7b</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+
+ | Message de notification a bien été envoyé à test@yako.com ( 
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #555;
+            }
+            .title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 10px;
+            }
+            .content {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+            .important {
+                font-weight: bold;
+                color: #2C7B77;
+            }
+            .link {
+                color: #2F67F6;
+                text-decoration: none;
+            }
+            .button {
+                background-color: #033f1f;
+                color: #ffffff;
+                padding: 10px 20px;
+                text-align: center;
+                border-radius: 3px;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>                   
+
+        <div style='background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;'>
+
+            <div class='row'>
+                <div class='card-box mb-30'>
+                    <div class='row center-block'>
+                        <div class='col-lg-3'></div>
+
+                        <div class='col-lg-6'>
+                            <center>
+                                <img src='www.yakoafricassur.com/gestion-demande-compte/vendors/images/entete-yako-africa.png' width='100%' alt='' srcset=''>
+                            </center>
+                        </div>
+                        <div class='col-lg-3'></div>
+                    </div>
+                </div>
+            </div>
+            <table align='center' border='0' cellpadding='0' cellspacing='0' role='presentation'  style='background:#fff;background-color:#fff;width:100%;'>
+                <tbody>
+                    <tr>
+                        <td  style='border:#dddddd solid 1px;border-top:0px;direction:ltr;font-size:0px;padding:20px 0;text-align:center;vertical-align:top;'>
+                            <div class='mj-column-per-100 outlook-group-fix' style='font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;'>
+
+                            <table border='0' cellpadding='0' cellspacing='0' role='presentation'  style='vertical-align:bottom;' width='100%'>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                        <table align='center' border='0' cellpadding='0' cellspacing='0'
+                                            role='presentation'
+                                            style='border-collapse:collapse;border-spacing:0px; background-color:#033f1f;'>
+                                            <tbody>
+                                                <tr>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align='center'
+                                        style='font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;'>
+                                        <div
+                                            style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;'>
+                                            Chèr(e) &nbsp; ADMIN DSI  !!
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;'>
+                                    <div class='content'>
+                                    <div class='title'>
+                                        Bonjour <span class='important'>ADMIN DSI</span> !
+                                    </div>  <br>
+                                               <label style='color:green'> Le compte de l'interim a bien éte crée </label>,</br> <br>                                
+                                        Resume de la demande  :<br>
+                                        <ul>
+                                            <li>Date  : <b>2025-11-24 17:26:18</b></li>
+                                            <li>Login : <b>super.admin</b></li>
+                                            <li>Mot de passe : <b>827ccb0eea8a706c4c34a16891f84e7b</b></li>
+                                            <li>Profil : <b>interim</b></li>
+                                            <li>Type de compte : <b>gestionnaire</b></li>
+                                        </ul>                       
+                                </div>
+                                  
+        
+                                
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align='left' style='font-size:0px;padding:10px 25px;word-break:break-word;'>
+
+                                <div
+                                    style='font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;'>
+                                    Best regards,<br><br> YAKOAFRICASSUR<br>DSI conception<br>
+                                    <a href='https://www.yakoafricassur.com'
+                                        style='color:#2F67F6'>yakoafricassur.com</a>
+                                </div>
+                                 <div class='content'>
+            Cordialement,<br>
+            L'équipe de YAKOAFRICASSUR<br>
+            <a href='https://www.yakoafricassur.com' class='link'>www.yakoafricassur.com</a>
+        </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+    </body>
+    </html>
+ ) 

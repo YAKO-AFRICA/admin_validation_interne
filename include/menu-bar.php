@@ -175,7 +175,6 @@ if (!isset($_SESSION['typeCompte'])) {
                     <li class="dropdown">
                         <a href="liste-bordereau-rdv" class="dropdown-toggle no-arrow" style="font-size:14px">
                             <span class="micon fa fa-file"></span><span class="mtext">BORDEREAU RDV</span>
-
                         </a>
                     </li>
                 <?php

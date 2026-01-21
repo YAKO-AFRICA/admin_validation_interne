@@ -99,7 +99,7 @@ else $effectue = 0;
 									<th>Lieu RDV</th>
 									<?php if (!empty($liste_rdvs) && ($liste_rdvs[0]->etat == "2" || $liste_rdvs[0]->etat == "3")): ?>
 										<th>Détail</th>
-									<?php elseif ($liste_rdvs[0]->etat == "0"): ?>
+									<?php elseif (!empty($liste_rdvs) && $liste_rdvs[0]->etat == "0"): ?>
 										<th>Motif rejet</th>
 									<?php else: ?>
 										<th>Délais</th>
@@ -117,8 +117,9 @@ else $effectue = 0;
 
 										<?php
 										// État
-										//$etat = (!empty($rdv->etat) && isset(Config::tablo_statut_rdv[$rdv->etat]))	? $rdv->etat : 1;
-										$retourEtat = Config::tablo_statut_rdv[$rdv->etat];
+										$etat = (!empty($rdv->etat) && isset(Config::tablo_statut_rdv[$rdv->etat]))	? $rdv->etat : 1;
+										// $retourEtat = Config::tablo_statut_rdv[$rdv->etat];
+										$retourEtat = Config::tablo_statut_rdv[$etat];
 										//print_r(Config::tablo_statut_rdv[$rdv->etat]);
 										$dateCompare = null;
 										$lib_delai = null;

@@ -275,10 +275,10 @@ else $effectue = 0;
 										<label for="nomRdv" style="color: #000000;">Type de compte <bold style="color: #F9B233;"> *</bold></label>
 										<select id="typeCompte" name="typeCompte" class="form-control" required>
 											<option value="" selected disabled>Veuillez selectionner</option>
-											<option value="rdv">gestionnaire RDV</option>
+											<option value="rdv">admin RDV</option>
 											<option value="prestation">gestionnaire Prestation</option>
 											<option value="sinistre">gestionnaire Sinistre</option>
-											<option value="gestionnaire">agent transformation RDV</option>
+											<option value="gestionnaire">gestionnaire RDV</option>
 											<option value="compte-ynov">compte-ynov</option>
 
 										</select>
@@ -290,7 +290,6 @@ else $effectue = 0;
 									<div class="form-group col-sm-12 col-md-12" id="divCible"></div>
 									<div class="form-group col-sm-12 col-md-12" id="ListeVilles"></div>
 									<div class="form-group col-sm-12 col-md-12" id="ListeUtilisateurs"></div>
-									<div class="form-group col-sm-12 col-md-12" id="optionInterimaire"></div>
 									<div class="form-group col-sm-12 d-flex align-items-center justify-content-end col-md-12" id="divEtat">
 
 									</div>
@@ -352,14 +351,15 @@ else $effectue = 0;
 		$(document).ready(function() {
 
 
-			$("#optionInterimaire").html('');
+
 
 			function updateFormFields() {
 				const typeCompte = $("#typeCompte").val();
 				const profil = $("#profil").val();
 				const idville = $("#villeRDV").val();
 				//alert(idville);
-				$("#optionInterimaire").html('');
+
+
 				$("#ListeVilles").html('');
 				// -- PROFIL --
 				let profilSelect = `
@@ -380,6 +380,12 @@ else $effectue = 0;
 				// -- CIBLE / CODE AGENT --
 				let cibleHtml = "";
 
+				if (profil === "interim") {
+
+					//console.log(" 2 : idville", idville);
+					getSelectUtilisateurRDV(null);
+
+				}
 
 				if ((typeCompte === "prestation" && profil === "agent")) {
 					cibleHtml = `
@@ -461,11 +467,7 @@ else $effectue = 0;
                         <select name="ListePartenaire" id="ListePartenaire" class="form-control" required>
                         </select>
                     </div>
-                	</div>`;
-				} else if (profil === "interim") {
-
-					//console.log(" 2 : idville", idville);
-					getSelectUtilisateurRDV(null);
+                </div>`;
 
 				}
 
@@ -507,24 +509,23 @@ else $effectue = 0;
 
 					//$("#id").val(tabloUsers[0]);
 					$("#service").val(tabloUsers[2]);
-					//$("#profil").val(tabloUsers[3]);
+					$("#profil").val(tabloUsers[3]);
 					$("#cible").val(tabloUsers[4]);
 					//$("#codeagent").val(tabloUsers[5]);
-					$("#typeCompte").val(tabloUsers[1]);
+					//$("#typeCompte").val(tabloUsers[1]);
 
-					//
 
 					if (tabloUsers[1] === "rdv" || tabloUsers[1] === "gestionnaire") {
 
 						cibleHtml = `
 							<label for="codeagent" style="color: #000000;">
-							code agent de l'interimaire <strong style="color: #F9B233;">*</strong>
+							code agent <strong style="color: #F9B233;">*</strong>
 							</label>
 							<input type="text" id="codeagent" name="codeagent" required placeholder="Entrez le code agent" class="form-control">
 						`;
-						$("#optionInterimaire").html(cibleHtml);
+						$("#divCible").html(cibleHtml);
 					} else {
-						$("#optionInterimaire").html("");
+						$("#divCible").html("");
 					}
 
 					//$("#gestionnairenom").val(tabloUsers[6]);
@@ -715,7 +716,7 @@ else $effectue = 0;
 							optionsHtml += `<option value="${values}" ${selected}>${libelle}</option>`;
 						});
 					} else {
-						optionsHtml += `<option value="" disabled>Aucun utilisateur disponible</option>`;
+						optionsHtml += `<option value="" disabled>Aucune ville disponible</option>`;
 					}
 
 					const selectHtml = `
@@ -819,7 +820,7 @@ else $effectue = 0;
 				return;
 			}
 
-			//alert(profil);
+			alert(typeCompte);
 
 			if (etatCompte == true) {
 				etatCompte = 1;
@@ -827,31 +828,27 @@ else $effectue = 0;
 				etatCompte = 0;
 			}
 
-			if (profil == "interim") {
-
-				usersByInterim = document.getElementById("selectUtilisateur").value;
-				codeagent = document.getElementById("codeagent").value;
-				//alert(usersByInterim);
-			} else {
-
-				if ((typeCompte == "prestation" && profil == "agent") || (typeCompte == "prestation" && profil == "nsil")) {
-					ciblePrestation = document.getElementById("ciblePrestation").value;
-				}
-
-				if ((typeCompte == "rdv" || typeCompte == "gestionnaire") && profil == "agent") {
-					codeagent = document.getElementById("codeagent").value;
-					villesRDV = document.getElementById("villesRDV").value;
-				}
-
-				if ((typeCompte == "sinistre" || typeCompte == "prestation") && profil == "nsil") {
-					provenance = document.getElementById("provenance").value;
-					ListePartenaire = document.getElementById("ListePartenaire").value;
-
-				}
+			if ((typeCompte == "prestation" && profil == "agent") || (typeCompte == "prestation" && profil == "nsil")) {
+				ciblePrestation = document.getElementById("ciblePrestation").value;
 			}
 
+			if ((typeCompte == "rdv" || typeCompte == "gestionnaire") && profil == "agent") {
+				codeagent = document.getElementById("codeagent").value;
+				villesRDV = document.getElementById("villesRDV").value;
+			}
 
+			if ((typeCompte == "sinistre" || typeCompte == "prestation") && profil == "nsil") {
+				provenance = document.getElementById("provenance").value;
+				ListePartenaire = document.getElementById("ListePartenaire").value;
 
+			}
+
+			if (typeCompte == "interim") {
+
+				usersByInterim = document.getElementById("selectUtilisateur").value;
+
+				//alert(usersByInterim);
+			}
 
 
 

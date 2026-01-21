@@ -35,6 +35,7 @@ if ($request->action != null) {
                     $_SESSION["cible"] = $retourUsers->cible;
                     $_SESSION["codeagent"] = $retourUsers->codeagent;
                     $_SESSION["infos"] = $retourUsers->infos;
+                    $_SESSION["agent_principal"] = $retourUsers->agent_principal;
 
                     echo json_encode($retourUsers->infos);
                 } else echo json_encode("-1");
@@ -235,15 +236,15 @@ if ($request->action != null) {
                     "autres" => array("etat" => "3", "libelle" => "Autre observation", "operation" => "Autres")
                 );
 
-                    $tablo_issue_rdv = explode("|", $optionadditif);
-                    $resultatOpe = $tablo_issue_rdv[0];
-                    $tabloOperation = Config::tablo_resultat_entretien_rdv[$resultatOpe];
+                $tablo_issue_rdv = explode("|", $optionadditif);
+                $resultatOpe = $tablo_issue_rdv[0];
+                $tabloOperation = Config::tablo_resultat_entretien_rdv[$resultatOpe];
 
-                    $etat = $tabloOperation["etat"];
-                    $libelleTraitement = $tabloOperation["libelle"];
-                    $operation = $tabloOperation["operation"];
-                    $resultat = $tabloOperation["resultat"];
-                    $permission = $tabloOperation["permission"];
+                $etat = $tabloOperation["etat"];
+                $libelleTraitement = $tabloOperation["libelle"];
+                $operation = $tabloOperation["operation"];
+                $resultat = $tabloOperation["resultat"];
+                $permission = $tabloOperation["permission"];
 
                 switch (strtolower($resultatOpe)) {
 
@@ -438,7 +439,13 @@ if ($request->action != null) {
         case "afficherGestionnaire":
 
             $idVilleEff = GetParameter::FromArray($_REQUEST, 'idVilleEff');
-           echo $sqlQuery = "SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='$idVilleEff'  ORDER BY users.id ASC";
+
+            $plus = "";
+            if ($idVilleEff != null) {
+                $sqlQuery = "SELECT users.id , users.email , users.codeagent ,  TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom ,tblvillebureau.libelleVilleBureau as villeEffect FROM users INNER JOIN tblvillebureau ON tblvillebureau.idVilleBureau = users.ville WHERE  users.etat='1' AND tblvillebureau.idVilleBureau='$idVilleEff'  ORDER BY users.id ASC";
+            } else {
+                $sqlQuery = "SELECT users.* , TRIM(CONCAT(users.nom ,' ', users.prenom)) as gestionnairenom  FROM users  WHERE users.etat='1' ORDER BY users.id ASC ";
+            }
             $resultat = $fonction->_getSelectDatabases($sqlQuery);
             if ($resultat != NULL) {
                 echo json_encode($resultat);
@@ -737,7 +744,11 @@ if ($request->action != null) {
             $villesRDV = GetParameter::FromArray($_REQUEST, 'villesRDV');
             $provenance = GetParameter::FromArray($_REQUEST, 'provenance');
             $ListePartenaire = GetParameter::FromArray($_REQUEST, 'ListePartenaire');
+            $usersByInterim = GetParameter::FromArray($_REQUEST, 'usersByInterim');
 
+            $service = $typeCompte;
+            $usersPrincipal = "";
+            //print_r($_REQUEST); exit;
 
             $existe = false;
             if ($agent_id != null) {
@@ -749,8 +760,11 @@ if ($request->action != null) {
             $sqlSelect = " SELECT * FROM " . Config::TABLE_USER . "  $parms";
             $result = $fonction->_getSelectDatabases($sqlSelect);
             if ($result != NULL) {
+                $agent_id = $result[0]->id;
                 $existe = true;
             }
+
+            //
 
             if ($ListePartenaire != null && $ListePartenaire != "All") {
                 list($idpartenaire, $codePartenaire, $nomPartenaire) = explode('-', $ListePartenaire, 3);
@@ -766,7 +780,16 @@ if ($request->action != null) {
                 }
             }
 
-            $retour = traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id, $provenance, $codePartenaire);
+            if ($usersByInterim != null) {
+                //const values = utilisateur.id + "|" + utilisateur.typeCompte + "|" + utilisateur.service + "|" + utilisateur.profil + "|" + utilisateur.cible + "|" + utilisateur.codeagent + "|" + utilisateur.gestionnairenom;
+                $tabloInterim = explode("|", $usersByInterim);
+                $service = $tabloInterim[1];
+                $typeCompte = $tabloInterim[1];
+                $ciblePrestation = $tabloInterim[4];
+                $usersPrincipal = $tabloInterim[0];
+            }
+
+            $retour = traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id, $provenance, $codePartenaire, $service, $usersPrincipal);
             echo json_encode($retour);
             break;
 
@@ -1076,7 +1099,7 @@ function reprogrammerRDV($rdv, $dateAProgrammer, $motifmodif = null)
     if ($result != null) {
 
 
-       print $message = "Votre RDV prévu le " . date("d/m/Y", strtotime($rdv->daterdveff)) . " a ete modifier pour le " . date("d/m/Y", strtotime($dateAProgrammer)) . " à " . $rdv->villes . ". Merci de contacter le " . $telGestionnaire . " pour toute information complémentaire.";
+        $message = "Votre RDV prévu le " . date("d/m/Y", strtotime($rdv->daterdveff)) . " a ete modifier pour le " . date("d/m/Y", strtotime($dateAProgrammer)) . " à " . $rdv->villes . ". Merci de contacter le " . $telGestionnaire . " pour toute information complémentaire.";
         $numero = "225" . substr($rdv->tel, -10);
         $ref_sms = "RDV-" . $rdv->idrdv;
 
@@ -1088,7 +1111,7 @@ function reprogrammerRDV($rdv, $dateAProgrammer, $motifmodif = null)
     } else return "-1";
 }
 
-function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id, $provenance, $codePartenaire)
+function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCompte, $ciblePrestation, $codeagent, $villesRDV, $nom, $prenom, $email, $telephone, $agent_id, $provenance, $codePartenaire, $service, $agent_principal)
 {
 
     global $fonction, $lienEnvoiMail;
@@ -1107,7 +1130,7 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
     $motdepasse = md5($motdepasse);
     if ($existe) {
 
-        $sqlUpdatePrestation = "UPDATE " . Config::TABLE_USER . " SET etat= ?, nom=?, prenom=?, email=?, telephone =? , typeCompte =? , profil=? ,cible=?, codeagent=?, ville=? , reseaux=? , partenaire=? WHERE id = ?";
+        $sqlUpdatePrestation = "UPDATE " . Config::TABLE_USER . " SET etat= ?, nom=?, prenom=?, email=?, telephone =? , typeCompte =? , profil=? ,cible=?, codeagent=?, ville=? , reseaux=? , partenaire=? , service=? , agent_principal=? WHERE id = ?";
         $queryOptions = array(
             $etatCompte,
             addslashes(htmlspecialchars(trim(ucfirst(strtoupper($nom))))),
@@ -1121,13 +1144,18 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
             $villesRDV,
             $provenance,
             $codePartenaire,
-            intval($agent_id)
+            $service,
+            $agent_principal,
+            $agent_id
         );
+
+        // print_r($queryOptions);
+        // print $sqlUpdatePrestation;
         $result = $fonction->_Database->Update($sqlUpdatePrestation, $queryOptions);
         $retour = "le compte de l'utilisateur $nom $prenom a bien été mis à jour ";
     } else {
 
-        $sqlInsertUtilisateur = "INSERT INTO " . Config::TABLE_USER . " (nom,prenom,email,telephone,typeCompte,profil,etat,cible,codeagent,ville,login,password,date,modifiele,reseaux,partenaire) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?,?)";
+        $sqlInsertUtilisateur = "INSERT INTO " . Config::TABLE_USER . " (nom,prenom,email,telephone,typeCompte,profil,etat,cible,codeagent,ville,login,password,date,modifiele,reseaux,partenaire,service,agent_principal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,now(),now(),?,?,?,?)";
         $queryOptions = array(
             addslashes(htmlspecialchars(trim(ucfirst(strtoupper($nom))))),
             addslashes(htmlspecialchars(trim(ucfirst(strtoupper($prenom))))),
@@ -1142,7 +1170,9 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
             $login,
             $motdepasse,
             $provenance,
-            $codePartenaire
+            $codePartenaire,
+            $service,
+            $agent_principal
 
         );
         $result = $fonction->_Database->Update($sqlInsertUtilisateur, $queryOptions);
