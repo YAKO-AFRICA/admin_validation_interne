@@ -1126,8 +1126,9 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
         $login = $email;
         $libelleTraitement = strtoupper($typeCompte) . 'S';
     }
-    $motdepasse = "1234567";
-    $motdepasse = md5($motdepasse);
+    $motdepass = "1234567";
+
+    $motdepasse = md5($motdepass);
     if ($existe) {
 
         $sqlUpdatePrestation = "UPDATE " . Config::TABLE_USER . " SET etat= ?, nom=?, prenom=?, email=?, telephone =? , typeCompte =? , profil=? ,cible=?, codeagent=?, ville=? , reseaux=? , partenaire=? , service=? , agent_principal=? WHERE id = ?";
@@ -1185,7 +1186,7 @@ function traitementGestionDesUtilisateur($existe, $typeCompte, $profil, $etatCom
             $ref_sms = "COMPTE-" . $agent_id;
 
             //$dateeffective = date('d/m/Y', strtotime($rdv->daterdv));
-            $message = "Cher $profil , votre compte pour la gestion des $libelleTraitement a bien été créer ." . PHP_EOL . "Login : $login" . PHP_EOL . "mot de passe : $motdepasse.";
+            $message = "Cher $profil , votre compte pour la gestion des $libelleTraitement a bien été créer ." . PHP_EOL . "Login : $login" . PHP_EOL . "mot de passe : $motdepass. Consultez vos mails pour plus d'informations.";
             $sms_envoi = new SMSService();
             if (strlen($message) > 160) $message = substr($message, 0, 160);
             $sms_envoi->sendOtpInfobip($numero, $message, "YAKO AFRICA");

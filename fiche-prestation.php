@@ -1163,7 +1163,7 @@ if (isset($_COOKIE["id"])) {
                                 `<option value="${valus}" id="ob-${indx}">${data.libelle}</option>`;
                         });
 
-                        html += `<option value="99|autres">AUTRE MOTIF</option></select>`;
+                        //html += `<option value="99|autres">AUTRE MOTIF</option></select>`;
 
                         $("#afficheuseMotifRejet").html(html);
 

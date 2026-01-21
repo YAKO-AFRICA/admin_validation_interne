@@ -240,9 +240,10 @@ if ($refchamp != null && $champ == "idprestation") {
                                                " . $titre . " <br>                                
                                         Resume de la demande  :<br>
                                         <ul>
+                                            <li>Lien de connexion : <b><a href='https://yakoafricassur.com/admin/login.php' target='_blank'>Cliquez ici</a></b></li>
                                             <li>Date  : <b>" . $agent->date . "</b></li>
                                             <li>Login : <b>" . $agent->login . "</b></li>
-                                            <li>Mot de passe : <b>" . $agent->password . "</b></li>
+                                            <li>Mot de passe : <b>1234567</b></li>
                                             <li>Profil : <b>" . $agent->profil . "</b></li>
                                             <li>Type de compte : <b>" . $agent->typeCompte . "</b></li>
                                         </ul>                       
