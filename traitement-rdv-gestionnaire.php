@@ -581,11 +581,7 @@ if (isset($_COOKIE["idrdv"])) {
                         if (code == "transformation") {
                             a_afficher = `<div class="alert alert-success" role="alert">
 								<h2> Merci de vous connecter a la plateforme de <span class="text-success">` + code + `</span> afin de poursuivre le traitement !!</h2></div>`
-<<<<<<< HEAD
                         } else {
-=======
-                        }else {
->>>>>>> 19073e2e5a94b9058b8008324281856bbc5c5918
                             a_afficher = `<div class="alert alert-success" role="alert">
 								<h2>Traitement de la demande de rdv <span class="text-success">` + code + `</span> a bien été enregistrée  !</h2></div>`
                         }

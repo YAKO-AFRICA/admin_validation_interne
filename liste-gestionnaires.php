@@ -577,50 +577,6 @@ else $effectue = 0;
 
 			});
 
-			// $(".fa-edit").click(function(evt) {
-
-			// 	const data = evt.target.id;
-			// 	const ind = data.split('-')[1];
-
-			// 	if (ind) {
-			// 		// Remplissage du modal
-			// 		$("#titreModale").text("Modifier un utilisateur");
-			// 		$("#titreAction").text("Modifier");
-			// 		$("#action").val("modifier");
-
-			// 		$("#agent_id").val($("#id-" + ind).html());
-			// 		$("#nom").val($("#nom-" + ind).html());
-			// 		$("#prenom").val($("#prenom-" + ind).html());
-			// 		$("#email").val($("#email-" + ind).html());
-			// 		$("#telephone").val($("#telephone-" + ind).html());
-			// 		$("#typeCompte").val($("#typeCompte-" + ind).html());
-			// 		$("#profil").val($("#profil-" + ind).html());
-			// 		$("#villesRDV").val($("#villes-" + ind).html());
-			// 		const villeid = $("#villes-" + ind).html();
-
-			// 		// Met à jour les champs dynamiques selon les valeurs remplies
-			// 		updateFormFields();
-			// 		if (($("#typeCompte-" + ind).html() === "rdv" || $("#typeCompte-" + ind).html() === "gestionnaire") && $("#profil-" + ind).html() === "agent") {
-
-			// 			getListeVillesRDV(villeid);
-			// 		}
-
-			// 		// Gérer le code agent si présent
-			// 		const codeagent = $("#codeagent-" + ind).html();
-			// 		$("#codeagent").val(codeagent || "");
-
-			// 		// ✅ Gérer l'état (1 = actif, 0 = inactif)
-			// 		const etat = $("#etat-" + ind).html()?.trim();
-			// 		if (etat === "1" || etat === "oui" || etat.toLowerCase() === "actif") {
-			// 			$("#etat").prop("checked", true);
-			// 		} else {
-			// 			$("#etat").prop("checked", false);
-			// 		}
-
-			// 		// Afficher le modal
-			// 		$("#AjouterRDV").modal("show");
-			// 	}
-			// });
 
 			// --- Cas initial (ajout d’un utilisateur) ---
 			updateFormFields();
