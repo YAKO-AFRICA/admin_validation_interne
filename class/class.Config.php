@@ -185,10 +185,13 @@ class Config
     const URL_DOC_SINISTRE = "https://testsite.yakoafricassur.com/api/getSinistreDoc/";
 
 
-    const clauseSelectAnneeEncours = "  ( 	YEAR(
-					CASE	WHEN tblrdv.daterdv LIKE '%/%' THEN STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')
-						WHEN tblrdv.daterdv LIKE '%-%' THEN STR_TO_DATE(tblrdv.daterdv, '%d-%m-%Y')
-						ELSE NULL 	END ) = YEAR(CURDATE()) ) ";
+    const clauseSelectAnneeEncours = " YEAR(
+    CASE
+        WHEN tblrdv.daterdv LIKE '%/%' THEN STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')
+        WHEN tblrdv.daterdv LIKE '%-%' THEN STR_TO_DATE(tblrdv.daterdv, '%d-%m-%Y')
+        ELSE NULL
+    END
+) IN (YEAR(CURDATE()), YEAR(CURDATE()) - 1)";
 
     const orderBySelectAnneeEncours = " CASE
 				WHEN tblrdv.daterdv LIKE '%/%' THEN STR_TO_DATE(tblrdv.daterdv, '%d/%m/%Y')

@@ -466,6 +466,9 @@ else $effectue = 0;
 
 					//console.log(" 2 : idville", idville);
 					getSelectUtilisateurRDV(null);
+					// getListeVillesRDV(utilisateur.ville);
+
+					
 
 				}
 
@@ -497,13 +500,13 @@ else $effectue = 0;
 			$("#AjouterRDV").on("change", "#selectUtilisateur", function() {
 				const datas = this.value;
 
-				//const values = utilisateur.id + "|" + utilisateur.typeCompte + "|" + utilisateur.service + "|" + utilisateur.profil + "|" + utilisateur.cible + "|" + utilisateur.codeagent+"|" + utilisateur.gestionnairenom;
+				// const values = utilisateur.id + "|" + utilisateur.typeCompte + "|" + utilisateur.service + "|" + utilisateur.profil + "|" + utilisateur.cible + "|" + utilisateur.codeagent+"|" + utilisateur.gestionnairenom;
 
-				//getListeVillesRDV(idagent);
+				console.log("datas", datas);
 
 				if (datas) {
 					let tabloUsers = datas.split("|");
-					//const values = utilisateur.id + "|" + utilisateur.typeCompte + "|" + utilisateur.service + "|" + utilisateur.profil + "|" + utilisateur.cible + "|" + utilisateur.codeagent+"|" + utilisateur.gestionnairenom;
+					//const values = utilisateur.id + "|" + utilisateur.typeCompte + "|" + utilisateur.service + "|" + utilisateur.profil + "|" + utilisateur.cible + "|" + utilisateur.codeagent+"|" + utilisateur.gestionnairenom + "|" + utilisateur.ville;
 
 					//$("#id").val(tabloUsers[0]);
 					$("#service").val(tabloUsers[2]);
@@ -511,6 +514,10 @@ else $effectue = 0;
 					$("#cible").val(tabloUsers[4]);
 					//$("#codeagent").val(tabloUsers[5]);
 					$("#typeCompte").val(tabloUsers[1]);
+					// $("#gestionnairenom").val(tabloUsers[6]);
+					$("#ville").val(tabloUsers[7]);
+					
+					getListeVillesRDV(tabloUsers[7]);
 
 					//
 
@@ -521,6 +528,8 @@ else $effectue = 0;
 							code agent de l'interimaire <strong style="color: #F9B233;">*</strong>
 							</label>
 							<input type="text" id="codeagent" name="codeagent" required placeholder="Entrez le code agent" class="form-control">
+
+							
 						`;
 						$("#optionInterimaire").html(cibleHtml);
 					} else {
@@ -645,7 +654,7 @@ else $effectue = 0;
 			}
 		}
 
-		function getSelectUtilisateurRDV(idVilleEff = "") {
+		function getSelectUtilisateurRDV(idVilleEff = null) {
 			//console.log("Chargement des villes de réception, sélection :", idVilleEff);
 
 			$.ajax({
@@ -653,21 +662,22 @@ else $effectue = 0;
 				method: "POST",
 				dataType: "json",
 				data: {
-					idVilleEff: null,
+					idVilleEff: idVilleEff,
 					etat: "afficherGestionnaire"
 				},
 				success: function(response) {
 					let optionsHtml = `<option value="" disabled ${!idVilleEff ? "selected" : ""}>[Les utilisateurs]</option>`;
 
-					console.log("utilisateurs :", response);
+					// console.log("utilisateurs :", response);
 					if (response && response.length > 0) {
 						$.each(response, function(index, utilisateur) {
 
 							const id = utilisateur.id
-							const values = utilisateur.id + "|" + utilisateur.typeCompte + "|" + utilisateur.service + "|" + utilisateur.profil + "|" + utilisateur.cible + "|" + utilisateur.codeagent + "|" + utilisateur.gestionnairenom;
+							const values = utilisateur.id + "|" + utilisateur.typeCompte + "|" + utilisateur.service + "|" + utilisateur.profil + "|" + utilisateur.cible + "|" + utilisateur.codeagent + "|" + utilisateur.gestionnairenom + "|" + utilisateur.ville;
 							const libelle = utilisateur.gestionnairenom;
 							const selected = idVilleEff == id ? "selected" : "";
-							//console.log(id, libelle, idVilleEff);
+							// const idVilleEff = ;
+							// console.log('id' ,id, 'libelle', libelle, 'idVilleEff', idVilleEff);
 							optionsHtml += `<option value="${values}" ${selected}>${libelle}</option>`;
 						});
 					} else {
@@ -682,7 +692,9 @@ else $effectue = 0;
 						${optionsHtml}
 						</select>
 					`;
+				
 
+					
 					$("#ListeUtilisateurs").html(selectHtml);
 				},
 				error: function(xhr, status, error) {
