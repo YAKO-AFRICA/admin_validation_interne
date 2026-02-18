@@ -36,6 +36,7 @@ if ($request->action != null) {
                     $_SESSION["codeagent"] = $retourUsers->codeagent;
                     $_SESSION["infos"] = $retourUsers->infos;
                     $_SESSION["agent_principal"] = $retourUsers->agent_principal;
+                    $_SESSION['reseaux'] = $retourUsers->reseaux;
 
                     echo json_encode($retourUsers->infos);
                 } else echo json_encode("-1");

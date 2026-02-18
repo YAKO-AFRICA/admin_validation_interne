@@ -76,7 +76,17 @@ if (!isset($_SESSION['typeCompte'])) {
 
                             </a>
                         </li>
-
+                        
+                    
+                     <?php
+                    } else if ($_SESSION['profil'] == "nsil") {
+                        //admin
+                    ?>
+                        <li class="dropdown">
+                            <a href="bordereau-prestation" class="dropdown-toggle no-arrow" style="font-size:14px">
+                                <span class="micon dw dw-folder"></span><span class="mtext">Bordereau<br>prestation</span>
+                            </a>
+                        </li>
                     <?php
                     } else {
                         //admin
@@ -110,16 +120,7 @@ if (!isset($_SESSION['typeCompte'])) {
                     }
 
                     ?>
-                    <li class="dropdown">
-                        <a href="tableau-suivi-prestation" class="dropdown-toggle no-arrow" style="font-size:14px">
-                            <span class="micon fa fa-area-chart"></span><span class="mtext">Tableau de suivi Prestation</span>
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="bordereau-prestation" class="dropdown-toggle no-arrow" style="font-size:14px">
-                            <span class="micon dw dw-folder"></span><span class="mtext">Bordereau<br>prestation</span>
-                        </a>
-                    </li>
+                   
                     <li>
                         <div class="sidebar-small-cap">Options</div>
                     </li>

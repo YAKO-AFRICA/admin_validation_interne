@@ -179,12 +179,23 @@ class Fonction
 	function getSelectTypePrestationFiltre()
 	{
 
-		if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
-		else {
+		// if (isset($_SESSION['profil']) && ($_SESSION['profil'] == "agent")){
+		// 	if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
+		// 	else $cible = " WHERE prestationlibelle != 'Autre' ";
+		// } else if (isset($_SESSION['profil']) && ($_SESSION['profil'] == "nsil")){
+		// 	if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
+		// 	else {
+		// 		$cible = " WHERE prestationlibelle != 'Autre' ";
+		// 	} 
+			
+		// }else {
 
-			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
+		// 	if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
+		// 	else $cible = " WHERE prestationlibelle != 'Autre' ";
+		// }
+
+		if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
 			else $cible = " WHERE prestationlibelle != 'Autre' ";
-		}
 
 
 		$ind1 = '';
@@ -193,6 +204,9 @@ class Fonction
 													<option value="">...</option>';
 
 		$sqlQuery = "SELECT distinct(typeprestation) as libelle FROM " . Config::TABLE_PRESTATION . "  $cible ORDER BY id ";
+
+		// echo $sqlQuery;
+		// exit;
 
 		$tab = $this->_Database->Select($sqlQuery);
 		if ($this->_Database->ErrorMessage != NULL || count($tab) == 0) {
@@ -215,12 +229,66 @@ class Fonction
 	function getSelectPartenairePrestationFiltre()
 	{
 
-		if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
-		else {
+		// if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
+		// else {
 
-			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
-			else $cible = " WHERE prestationlibelle != 'Autre' ";
+		// 	if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " WHERE prestationlibelle = 'Autre' ";
+		// 	else $cible = " WHERE prestationlibelle != 'Autre' ";
+		// }
+
+		// if (isset($_SESSION['profil'])&& ($_SESSION['profil'] == "nsil")){
+			
+		// 	if (isset($_SESSION['cible'])&& ($_SESSION['cible'] == "administratif")){
+
+		// 		if (isset($_SESSION['reseaux']) && ($_SESSION['reseaux'] == "LLV")){
+
+		// 			$cible = " WHERE prestationlibelle = 'Autre' AND partenaire = 'LLV' ";
+
+		// 		}else{
+
+		// 			$cible = " WHERE prestationlibelle = 'Autre' AND partenaire != 'LLV' ";
+					
+		// 		}
+
+		// 	}else{
+		// 		if (isset($_SESSION['reseaux']) && ($_SESSION['reseaux'] == "LLV")){
+
+		// 			$cible = " WHERE prestationlibelle = 'Autre' AND partenaire = 'LLV' ";
+
+		// 		}else{
+
+		// 			$cible = " WHERE prestationlibelle = 'Autre' AND partenaire != 'LLV' ";
+					
+		// 		}
+		// 	}
+
+		// }else{
+		// 	$cible = " WHERE prestationlibelle != 'Autre' AND partenaire != 'LLV' ";
+		// }
+		if (isset($_SESSION['profil']) && $_SESSION['profil'] == "nsil") {
+
+			$isAdministratif = isset($_SESSION['cible']) && $_SESSION['cible'] == "administratif";
+			$isLLV = isset($_SESSION['reseaux']) && $_SESSION['reseaux'] == "LLV";
+
+			if ($isAdministratif) {
+
+				// Administratif voit tout "Autre"
+				$cible = " WHERE prestationlibelle = 'Autre' ";
+
+			} else {
+
+				// Non administratif → filtré par réseau
+				$cible = $isLLV
+					? " WHERE prestationlibelle = 'Autre' AND partenaire = 'LLV' "
+					: " WHERE prestationlibelle = 'Autre' AND partenaire != 'LLV' ";
+			}
+
+		} else {
+
+			$cible = "  ";
 		}
+
+
 
 
 		$ind1 = '';
@@ -750,12 +818,12 @@ class Fonction
 	public function _getRetourneListePrestation($etape, $plus = NULL)
 	{
 
-		if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
-		else {
+		// if (isset($_SESSION['profil']) && ($_SESSION['profil'] != "agent")) $cible = "  ";
+		// else {
 
-			if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
-			else $cible = " AND prestationlibelle != 'Autre' ";
-		}
+		// }
+		if (isset($_SESSION['cible']) && ($_SESSION['cible'] == "administratif")) $cible = " AND prestationlibelle = 'Autre' ";
+		else $cible = " AND prestationlibelle != 'Autre' ";
 		// echo Config::SqlSelect_ListPrestations . " WHERE etape ='$etape' $cible  $plus ORDER BY id DESC  ";
 		//  exit;
 
