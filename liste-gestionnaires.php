@@ -279,6 +279,7 @@ else $effectue = 0;
 											<option value="prestation">gestionnaire Prestation</option>
 											<option value="sinistre">gestionnaire Sinistre</option>
 											<option value="gestionnaire">agent transformation RDV</option>
+											<option value="gestionnaire">gestionnaire bordereau RDV</option>
 											<option value="compte-ynov">compte-ynov</option>
 
 										</select>
@@ -372,6 +373,7 @@ else $effectue = 0;
 						<option value="supervisseur" ${profil === "supervisseur" ? "selected" : ""}>superviseur</option>
 						<option value="admin" ${profil === "admin" ? "selected" : ""}>administrateur</option>
 						<option value="nsil" ${profil === "nsil" ? "selected" : ""}>gestionnaire NSIL</option>
+						<option value="bordereaurdv" ${profil === "bordereaurdv" ? "selected" : ""}>Bordereau RDV</option>
 						<option value="interim" ${profil === "interim" ? "selected" : ""}>interimaire</option>
 					</select>
 				`;
